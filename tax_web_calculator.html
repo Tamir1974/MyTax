@@ -206,7 +206,7 @@
       </label>
     </div>
 
-    <img src="https://tamir1974.github.io/MyTax/Simulation.png" alt="סימולציה" />
+   
 
     <button onclick="calculate()">
       <h1>חשב</h1>
@@ -404,20 +404,14 @@
               <td><h5>אחוז מס שולי וביטוח לאומי ממוצע על התמורה הנוספת</h5></td>
               <td><h5>${(100*(TaxTotal+expectedIncomeGain*(bituachLeumiRate + RateYesfef))/expectedIncomeGain).toFixed(2)}%</h5></td>
             </tr>
-            <tr>
-              <td><h5>תמורה צפויה מימוש- איזופ <small style="color: red;">*</small></h5></td>
-              <td><h5>${Math.round(((expectedIncomeGain*(1-ESOPTax) + expectedCapitalGain*0.75))).toLocaleString()} ₪</h5></td>
-            </tr>
-            <tr>
-              <td><h5>החזר מס צפוי במשכורת</h5></td>
-              <td><h5>${Math.round((expectedIncomeGain*ESOPTax-(TaxTotal+expectedIncomeGain*(bituachLeumiRate + RateYesfef)))).toLocaleString()} ₪</h5></td>
-            </tr>
+            
+            
           </tbody>
         </table>
-        <small class="footnote" style="margin-top: 1rem;">*מס הכנסה הינו הערכה, תחשיב מדוייק יבוצע ע"י מחלקת שכר בחודש שלאחר המימוש</small>
-        <small class="footnote">*בתקבול מהמימוש נלקח מס הכנסה 62.17% ולאחר מכן בשכר מחושב המס המדוייק ומתקבל החזר (עבור עובדים שעברו את תקרת ביטוח לאומי מנכים 50%)</small>
+        <small class="footnote" style="margin-top: 1rem;">*מס הכנסה הינו הערכה</small>
+
         <br>
-        <h5 style="color: #dc3545;">סה"כ מס יסף (באחריות העובד לשלם): ${Math.round(CapitalGain25*0.25+CapitalGain28*0.28+CapitalGain30*0.3-expectedCapitalGain*0.25).toLocaleString()} ₪</h5>
+        <h4 style="color: #dc3545;">סה"כ מס יסף (באחריות העובד לשלם): ${Math.round(CapitalGain25*0.25+CapitalGain28*0.28+CapitalGain30*0.3-expectedCapitalGain*0.25).toLocaleString()} ₪</h4>
         <small class="footnote">*התחשיב הינו הערכה, יש לפנות לרו"ח לצורך תחשיב מדוייק</small>
       `;
     }
