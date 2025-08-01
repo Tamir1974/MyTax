@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+  <meta charset="UTF-8">
+  <title>סימולציית מס</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      direction: rtl;
+      padding: 2rem;
+      background: #f0f2f5;
+      color: #333;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    h2, h3 {
+      border-bottom: 2px solid #007bff;
+      padding-bottom: 0.5rem;
+      color: #007bff;
+      margin-top: 2rem;
+    }
+    .section-header {
+      background: #e9ecef;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+    }
+    label {
+      display: block;
+      margin-top: 1.5rem;
+      font-weight: 600;
+      color: #555;
+    }
+    input[type="text"], input[type="number"] {
+      width: 100%;
+      max-width: 300px;
+      padding: 10px;
+      margin-top: 8px;
+      border: 1px solid #ced4da;
+      border-radius: 6px;
+      direction: ltr;
+      text-align: right;
+      box-sizing: border-box;
+    }
+    input[type="checkbox"] {
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    small {
+      display: block;
+      margin-top: 5px;
+      color: #777;
+      font-size: 0.85rem;
+    }
+    img {
+      max-width: 100%;
+      height: auto;
+      margin-top: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+    button {
+      width: 100%;
+      padding: 1rem;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.5rem;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 2rem;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #218838;
+    }
+    .results {
+      margin-top: 2rem;
+      background: #e9f7ef;
+      padding: 2rem;
+      border-radius: 12px;
+      border: 1px solid #d4edda;
+    }
+    .results h4, .results h5 {
+      color: #155724;
+    }
+    .results table {
+      width: 100%;
+      margin-top: 1.5rem;
+      border-collapse: collapse;
+      direction: rtl;
+    }
+    .results th, .results td {
+      border: 1px solid #dee2e6;
+      padding: 12px;
+      text-align: right;
+    }
+    .results thead {
+      background-color: #e2e3e5;
+    }
+    .results tbody tr:nth-child(odd) {
+      background-color: #f8f9fa;
+    }
+    .footnote {
+      color: #dc3545;
+      font-size: 0.8rem;
+      margin-top: 1rem;
+    }
+    .appendix {
+      margin-top: 3rem;
+      background: #f8f9fa;
+      padding: 2rem;
+      border-radius: 12px;
+    }
+    .appendix label {
+      margin-top: 0.5rem;
+      font-weight: normal;
+    }
+    .appendix input {
+      width: 150px;
+    }
+    .flex-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>סימולציה לחישוב מס שולי ורווח הון</h2>
+
+    <div class="section-header">
+      <h3>שלב 1 - שכר</h3>
+    </div>
+
+    <div class="input-group">
+      <label>
+        שכר שנתי צפוי (כולל הכנסות אחרות בתלוש):
+        <input type="text" id="income" value="438,939" oninput="formatNumberInput(this)">
+        <small>לצורך חישוב ניתן לקחת מהתלוש <strong>"שכר חייב ב.ל."</strong> עבור העבר + <strong>"ברוטו לב. לאומי"</strong> כפול מס' חודשים עד סוף שנה</small>
+        <small>מהדוגמא -> 36,824x9 + 107,523 = 438,939</small>
+      </label>
+
+      <div class="flex-row" style="align-items: center;">
+        <label style="margin-top: 1rem;">
+          * אם סך השכר 12 חודשים אחרונים גבוה מהתקרה לביטוח לאומי (50,645 × 12), סמן ועבור לשלב 2.
+          <input type="checkbox" id="aboveThreshold" onchange="checkThreshold()">
+        </label>
+      </div>
+
+      <label>
+        שכר 12 חודשים אחרונים (כולל הכנסות אחרות):
+        <input type="text" id="last12Income" value="395,523" oninput="formatNumberInput(this)">
+        <small>ניתן לקחת <strong>"שכר חייב ב.ל."</strong> מהתלוש עבור השנה הנוכחית + <strong>"ברוטו לב. לאומי"</strong> עבור החודשים משנה קודמת</small>
+        <small>מהדוגמא נניח שהשכר החודשי שנה קודמת היה 31,000 ובדצמבר 43,000 (בדצמבר התקבל בונוס בסך 12,000), יש לקחת חלק יחסי של תשלומים חד פעמיים כגון: עמלות, בונוס, רווח פרותי וכו' → 107,523 + 31,000 × 9 + 12,000 × 9/12 = 395,523</small>
+      </label>
+    </div>
+
+    <img src="\\mtlnvfs01\app_tools\Data_Internal\TempAppsBefore\Tax_Rate_Simulation\PaySlip.png" alt="תלוש שכר" />
+
+    <div class="section-header">
+      <h3>שלב 2 - רווח הון מימושים קודמים</h3>
+    </div>
+
+    <div class="input-group">
+      <label>
+        רווח הון קודם (מימושים בשנה נוכחית):
+        <input type="text" id="prevCapitalGain" value="374,472" oninput="formatNumberInput(this)">
+        <small>לצורך חישוב ניתן לקחת מהתלוש <strong>"הכנסה חייבת במס"</strong> בניכוי <strong>"שכר חייב ב.ל."</strong></small>
+        <small>מהדוגמא ->  233,898 - 608,370  = 374,472</small>
+        <small class="footnote">*יש להוסיף רווח הון מימושים של השקעות פרטיות</small>
+      </label>
+    </div>
+
+    <img src="\\mtlnvfs01\app_tools\Data_Internal\TempAppsBefore\Tax_Rate_Simulation\ESOP.png" alt="איזופ" />
+
+    <div class="section-header">
+      <h3>שלב 3 - תמורה ממימוש/הכנסה נוספת</h3>
+    </div>
+
+    <div class="input-group">
+      <label>
+        רווח הון צפוי מהמימוש הקרוב:
+        <input type="text" id="expectedCapitalGain" value="125,141.49" oninput="formatNumberInput(this)">
+        <small>להריץ סימולציה על מה שרוצים למכור ולקחת את ה - <strong>Capital Income</strong></small>
+      </label>
+
+      <label>
+        רווח פרותי צפוי (על מימוש הקרוב/הכנסה נוספת):
+        <input type="text" id="expectedIncomeGain" value="17,325.52" oninput="formatNumberInput(this)">
+        <small>להריץ סימולציה על מה שרוצים למכור ולקחת את ה - <strong>Ordinary Income</strong></small>
+      </label>
+    </div>
+
+    <img src="\\mtlnvfs01\app_tools\Data_Internal\TempAppsBefore\Tax_Rate_Simulation\Simulation.png" alt="סימולציה" />
+
+    <button onclick="calculate()">
+      <h1>חשב</h1>
+    </button>
+
+    <div class="results" id="results"></div>
+
+    <div class="appendix">
+      <h2>תקרות למס 2025 - נספח</h2>
+      <label>מדרגות מס הכנסה חודשיות 10% עד <input type="number" id="Tax10" value="7010" disabled></label>
+      <label>מדרגות מס הכנסה חודשיות 14% עד <input type="number" id="Tax14" value="10060" disabled></label>
+      <label>מדרגות מס הכנסה חודשיות 20% עד <input type="number" id="Tax20" value="16150" disabled></label>
+      <label>מדרגות מס הכנסה חודשיות 31% עד <input type="number" id="Tax31" value="22440" disabled></label>
+      <label>מדרגות מס הכנסה חודשיות 35% עד <input type="number" id="Tax35" value="46690" disabled></label>
+      <label>מדרגות מס הכנסה חודשיות 47% עד <input type="number" id="Tax47" value="60130" disabled></label>
+      <label>תקרת חודשית מס ביטוח לאומי <input type="number" id="bituachLeumiMonthlyThreshold" value="50645" disabled></label>
+      <label>תקרת רווח הון שנתי <input type="number" id="yesef3Limit" value="721560" disabled></label>
+    </div>
+  </div>
+
+  <script>
+    function formatNumberInput(input) {
+      const raw = input.value.replace(/,/g, '').replace(/[^\d.]/g, '');
+      if (raw === '') {
+        input.value = '';
+        return;
+      }
+      input.value = Number(raw).toLocaleString('he-IL');
+    }
+
+    function getNumericValue(id) {
+      const val = document.getElementById(id).value;
+      return Number(val.replace(/,/g, '').replace(/[^\d.]/g, '')) || 0;
+    }
+
+    function checkThreshold() {
+      const checkbox = document.getElementById('aboveThreshold');
+      const input = document.getElementById('last12Income');
+      const threshold = 50645 * 12;
+
+      if (checkbox.checked) {
+        input.value = threshold.toLocaleString('he-IL');
+        input.disabled = true;
+      } else {
+        input.disabled = false;
+      }
+    }
+
+    function calculate() {
+      const income = getNumericValue('income');
+      const last12Income = getNumericValue('last12Income');
+      const prevCapitalGain = getNumericValue('prevCapitalGain');
+      const expectedCapitalGain = getNumericValue('expectedCapitalGain');
+      const expectedIncomeGain = getNumericValue('expectedIncomeGain');
+      const Tax10 = parseFloat(document.getElementById('Tax10').value) || 0;
+      const Tax14 = parseFloat(document.getElementById('Tax14').value) || 0;
+      const Tax20 = parseFloat(document.getElementById('Tax20').value) || 0;
+      const Tax31 = parseFloat(document.getElementById('Tax31').value) || 0;
+      const Tax35 = parseFloat(document.getElementById('Tax35').value) || 0;
+      const Tax47 = parseFloat(document.getElementById('Tax47').value) || 0;
+      const yesef3Limit = parseFloat(document.getElementById('yesef3Limit').value) || 0;
+      const bituachLeumiMonthlyThreshold = parseFloat(document.getElementById('bituachLeumiMonthlyThreshold').value) || 0;
+ 
+
+      const avgMonthlyIncome = (income+expectedIncomeGain) / 12;
+
+      const taxBrackets = [
+        { upTo: Tax10 * 12, rate: 0.10 , raten: 0.14},
+        { upTo: Tax14 * 12, rate: 0.14 , raten: 0.20},
+        { upTo: Tax20 * 12, rate: 0.20 , raten: 0.31},
+        { upTo: Tax31 * 12, rate: 0.31 , raten: 0.35},
+        { upTo: Tax35 * 12, rate: 0.35 , raten: 0.47},
+        { upTo: Tax47 * 12, rate: 0.47 , raten: 0.50},
+        { upTo: Infinity, rate: 0.50 , raten: 0.50}
+      ];
+
+      let marginalRate = 0;
+      for (const bracket of taxBrackets) {
+        if (income+expectedIncomeGain <= bracket.upTo) {
+          marginalRate = bracket.rate ;
+          break;
+        }
+      }
+
+      let TaxTotal = 0;
+      let totalIncome = income + expectedIncomeGain;
+      let remainingGain = expectedIncomeGain;
+      let currentIncome = income;
+
+      for (let i = 0; i < taxBrackets.length; i++) {
+        const bracket = taxBrackets[i];
+        const bracketStart = i === 0 ? 0 : taxBrackets[i - 1].upTo;
+        const bracketEnd = bracket.upTo;
+
+        if (totalIncome <= bracketStart) break;
+
+        const taxableStart = Math.max(currentIncome, bracketStart);
+        const taxableEnd = Math.min(totalIncome, bracketEnd);
+        const taxableAmount = taxableEnd - taxableStart;
+
+        if (taxableAmount > 0) {
+          TaxTotal += taxableAmount * bracket.rate;
+          remainingGain -= taxableAmount;
+          currentIncome += taxableAmount;
+        }
+        if (remainingGain <= 0) break;
+      }
+
+      let bituachLeumiRate = 0;
+      if ((last12Income) / 12 <= bituachLeumiMonthlyThreshold) {
+        bituachLeumiRate = 0.1217*Math.min(expectedIncomeGain,bituachLeumiMonthlyThreshold*12-last12Income)/expectedIncomeGain;
+      }
+
+      let ESOPTax = 0;
+      if ((last12Income) / 12 < bituachLeumiMonthlyThreshold) {
+        ESOPTax = 0.6217;
+      } else { ESOPTax = 0.50;}
+
+
+      const capitalTaxRate = 0.25;
+      const capitalTax = expectedCapitalGain * capitalTaxRate;
+
+      let masYesef = 0;
+      if (income+expectedIncomeGain+expectedCapitalGain+prevCapitalGain > yesef3Limit && expectedCapitalGain+prevCapitalGain <= yesef3Limit) {
+        masYesef = 3;
+      } else if (income+expectedIncomeGain+expectedCapitalGain+prevCapitalGain > yesef3Limit && expectedCapitalGain+prevCapitalGain > yesef3Limit) {
+        masYesef = 5;
+      }
+
+      let RateYesfef = 0;
+      if (income+expectedIncomeGain+expectedCapitalGain+prevCapitalGain > yesef3Limit && marginalRate < 0.50 ) {
+        RateYesfef = 0.03;
+      }
+
+      const combinedRate = (marginalRate + bituachLeumiRate + RateYesfef) * 100;
+
+      let CapitalGain25 = 0, CapitalGain28 = 0, CapitalGain30 = 0;
+      if (income+expectedIncomeGain <= yesef3Limit) {
+        CapitalGain25 = Math.min(expectedCapitalGain , Math.max(yesef3Limit-income-expectedIncomeGain-prevCapitalGain,0));
+      if (yesef3Limit-income-expectedIncomeGain-CapitalGain25 < prevCapitalGain ) {	
+        CapitalGain28 = Math.min(expectedCapitalGain+ prevCapitalGain-CapitalGain25, yesef3Limit)-prevCapitalGain;}
+        else {
+	CapitalGain28 = Math.min(expectedCapitalGain -CapitalGain25, yesef3Limit-CapitalGain25);}
+        CapitalGain30 = Math.max(expectedCapitalGain -CapitalGain28-CapitalGain25, 0);
+      } else {
+        CapitalGain28 = Math.min(expectedCapitalGain + prevCapitalGain, yesef3Limit)-prevCapitalGain;
+        CapitalGain30 = Math.max(expectedCapitalGain + prevCapitalGain-CapitalGain28, 0)-prevCapitalGain;
+      }
+
+      const NetProfit = expectedIncomeGain + expectedCapitalGain* 0.75-(TaxTotal+expectedIncomeGain*(bituachLeumiRate + RateYesfef));
+
+      document.getElementById('results').innerHTML = `
+        <h4 style="border-bottom: 2px solid #28a745; padding-bottom: 0.5rem;">תוצאות הסימולציה</h4>
+        <p><strong>שכר ממוצע חודשי:</strong> ${Math.round(avgMonthlyIncome).toLocaleString()} ₪</p>
+        <p><strong>מס יסף צפוי:</strong> ${(RateYesfef * 100).toFixed(1)}%</p>
+        <p><strong>מס שולי צפוי:</strong> ${(marginalRate * 100).toFixed(1)}%</p>
+        <p><strong>אחוז ביטוח לאומי צפוי:</strong> ${(bituachLeumiRate * 100).toFixed(2)}%</p>
+        <h5 style="color: #007bff; margin-top: 1rem;">סך מס שולי + ביטוח לאומי צפוי: ${combinedRate.toFixed(2)}%</h5>
+        <br>
+        <p><strong>מס רווח הון צפוי:</strong> ${(capitalTaxRate * 100)}%</p>
+        <p><strong>מס יסף צפוי:</strong> ${masYesef.toFixed(0)}%</p>
+        <h5 style="color: #007bff; margin-top: 1rem;">סך מס רווח הון שולי צפוי: ${capitalTaxRate*100+masYesef}%</h5>
+        <small class="footnote">*בתלוש מנכים 25% עבור רווח הון ואחריות העובד לשלם את ההפרש למס הכנסה במידה ועבר את תקרת רווח הון וחייב במס יסף</small>
+        <br><br>
+        <p><strong>רווח הון בשיעור מס 25%:</strong> ${CapitalGain25.toLocaleString()} ₪</p>
+        <p><strong>רווח הון בשיעור מס 28%:</strong> ${CapitalGain28.toLocaleString()} ₪</p>
+        <p><strong>רווח הון בשיעור מס 30%:</strong> ${CapitalGain30.toLocaleString()} ₪</p>
+        <br>
+
+        <table>
+          <thead style="background-color: #e0f7fa;">
+            <tr>
+              <th>תאור</th>
+              <th>סכום</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>סה"כ תמורה ממימוש</td>
+              <td>${Math.round(expectedIncomeGain + expectedCapitalGain).toLocaleString()} ₪</td>
+            </tr>
+            <tr>
+              <td>סה"כ מס הכנסה פרותי <small style="color: red;">*</small></td>
+              <td>${Math.round(TaxTotal+expectedIncomeGain*(bituachLeumiRate + RateYesfef)).toLocaleString()} ₪</td>
+            </tr>
+            <tr>
+              <td>סה"כ מס רווח הון 25% (ללא מס יסף) </td>
+              <td>${Math.round(expectedCapitalGain * 0.25).toLocaleString()} ₪</td>
+            </tr>
+            <tr>
+              <td><h4>סה"כ תמורה נטו </h4></td>
+              <td><h4>${Math.round(NetProfit).toLocaleString()} ₪</h4></td>
+            </tr>
+            <tr>
+              <td><h5>אחוז מס שולי וביטוח לאומי ממוצע על התמורה הנוספת</h5></td>
+              <td><h5>${(100*(TaxTotal+expectedIncomeGain*(bituachLeumiRate + RateYesfef))/expectedIncomeGain).toFixed(2)}%</h5></td>
+            </tr>
+            <tr>
+              <td><h5>תמורה צפויה מימוש- איזופ <small style="color: red;">*</small></h5></td>
+              <td><h5>${Math.round(((expectedIncomeGain*(1-ESOPTax) + expectedCapitalGain*0.75))).toLocaleString()} ₪</h5></td>
+            </tr>
+            <tr>
+              <td><h5>החזר מס צפוי במשכורת</h5></td>
+              <td><h5>${Math.round((expectedIncomeGain*ESOPTax-(TaxTotal+expectedIncomeGain*(bituachLeumiRate + RateYesfef)))).toLocaleString()} ₪</h5></td>
+            </tr>
+          </tbody>
+        </table>
+        <small class="footnote" style="margin-top: 1rem;">*מס הכנסה הינו הערכה, תחשיב מדוייק יבוצע ע"י מחלקת שכר בחודש שלאחר המימוש</small>
+        <small class="footnote">*בתקבול מהמימוש נלקח מס הכנסה 62.17% ולאחר מכן בשכר מחושב המס המדוייק ומתקבל החזר (עבור עובדים שעברו את תקרת ביטוח לאומי מנכים 50%)</small>
+        <br>
+        <h5 style="color: #dc3545;">סה"כ מס יסף (באחריות העובד לשלם): ${Math.round(CapitalGain25*0.25+CapitalGain28*0.28+CapitalGain30*0.3-expectedCapitalGain*0.25).toLocaleString()} ₪</h5>
+        <small class="footnote">*התחשיב הינו הערכה, יש לפנות לרו"ח לצורך תחשיב מדוייק</small>
+      `;
+    }
+  </script>
+</body>
+</html>
