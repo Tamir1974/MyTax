@@ -1,233 +1,298 @@
 <!DOCTYPE html>
-<html lang="he">
+<html lang="he" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <title>סימולציית מס</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      direction: rtl;
-      padding: 2rem;
-      background: #f0f2f5;
-      color: #333;
-    }
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-      background: #fff;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-    h2, h3 {
-      border-bottom: 2px solid #007bff;
-      padding-bottom: 0.5rem;
-      color: #007bff;
-      margin-top: 2rem;
-    }
-    .section-header {
-      background: #e9ecef;
-      padding: 1rem;
-      border-radius: 8px;
-      margin-bottom: 1.5rem;
-    }
-    label {
-      display: block;
-      margin-top: 1.5rem;
-      font-weight: 600;
-      color: #555;
-    }
-    input[type="text"], input[type="number"] {
-      width: 100%;
-      max-width: 300px;
-      padding: 10px;
-      margin-top: 8px;
-      border: 1px solid #ced4da;
-      border-radius: 6px;
-      direction: ltr;
-      text-align: right;
-      box-sizing: border-box;
-    }
-    input[type="checkbox"] {
-      margin-right: 8px;
-      vertical-align: middle;
-    }
-    .input-group {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    small {
-      display: block;
-      margin-top: 5px;
-      color: #777;
-      font-size: 0.85rem;
-    }
-    img {
-      max-width: 100%;
-      height: auto;
-      margin-top: 1rem;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-    }
-    button {
-      width: 100%;
-      padding: 1rem;
-      background-color: #28a745;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 1.5rem;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 2rem;
-      transition: background-color 0.3s;
-    }
-    button:hover {
-      background-color: #218838;
-    }
-    .results {
-      margin-top: 2rem;
-      background: #e9f7ef;
-      padding: 2rem;
-      border-radius: 12px;
-      border: 1px solid #d4edda;
-    }
-    .results h4, .results h5 {
-      color: #155724;
-    }
-    .results table {
-      width: 100%;
-      margin-top: 1.5rem;
-      border-collapse: collapse;
-      direction: rtl;
-    }
-    .results th, .results td {
-      border: 1px solid #dee2e6;
-      padding: 12px;
-      text-align: right;
-    }
-    .results thead {
-      background-color: #e2e3e5;
-    }
-    .results tbody tr:nth-child(odd) {
-      background-color: #f8f9fa;
-    }
-    .footnote {
-      color: #dc3545;
-      font-size: 0.8rem;
-      margin-top: 1rem;
-    }
-    .appendix {
-      margin-top: 3rem;
-      background: #f8f9fa;
-      padding: 2rem;
-      border-radius: 12px;
-    }
-    .appendix label {
-      margin-top: 0.5rem;
-      font-weight: normal;
-    }
-    .appendix input {
-      width: 150px;
-    }
-    .flex-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CapitalGainCalc</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Assistant', sans-serif;
+            background-color: #f7fafc;
+        }
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            transition: all 0.3s ease-in-out;
+        }
+        .card:hover {
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            transform: translateY(-2px);
+        }
+        .rtl-input::placeholder {
+            text-align: right;
+        }
+        details > summary {
+            cursor: pointer;
+            list-style: none;
+        }
+        details > summary::-webkit-details-marker {
+            display: none;
+        }
+        details[open] .arrow-down {
+            transform: rotate(180deg);
+        }
+        .arrow-down {
+            transition: transform 0.2s;
+        }
+    </style>
 </head>
-<body>
-  <div class="container">
-    <h2>סימולציה לחישוב מס שולי ורווח הון</h2>
+<body class="bg-gray-50 text-gray-800">
 
-    <div class="section-header">
-      <h3>שלב 1 - שכר</h3>
+    <div class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-5xl">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-blue-800">מס יסף 2025: המדריך המלא לעובד</h1>
+            <p class="mt-4 text-lg text-gray-600">כל מה שצריך לדעת על השינויים, באחריות שלכם ואיך להיערך נכון - בפשטות ובבהירות.</p>
+        </header>
+
+        <main class="space-y-8">
+            <!-- Main Change Section -->
+            <div class="card p-6">
+                <h2 class="text-2xl font-bold text-blue-700 mb-3 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 ml-3 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    🎯 בשורה התחתונה: מה השינוי המרכזי?
+                </h2>
+                <p class="text-gray-700 leading-relaxed">
+                    החל מינואר 2025, האחריות לתשלום <strong>מס יסף על רווחי הון</strong> (כמו רווחים ממכירת מניות) עוברת אליכם, העובדים. החברה תמשיך לנכות מס יסף על הכנסות פירותיות (שכר וכו') בתלוש, אך את מס היסף על רווחי ההון יהיה עליכם להעביר ישירות לרשות המיסים.
+                </p>
+            </div>
+
+            <!-- Infographic Section -->
+            <div class="card p-6">
+                <h2 class="text-2xl font-bold text-blue-700 mb-4 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 ml-3 text-teal-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+                    אינפוגרפיקה: מס יסף ב-2 דקות
+                </h2>
+                <div class="text-center mb-4 p-4 bg-blue-50 rounded-lg">
+                    <p class="text-lg text-gray-700">תקרת ההכנסה החייבת במס יסף לשנת 2025:</p>
+                    <p class="text-3xl font-bold text-blue-800">₪721,560</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="p-4 bg-gray-100 rounded-lg">
+                        <h3 class="font-bold text-lg text-gray-800">מס יסף רגיל: <span class="text-blue-600">3%</span></h3>
+                        <p class="mt-2 text-gray-600"><strong>על מה?</strong> חל כאשר <span class="font-semibold">כלל ההכנסות</span> (שכר + פירותי + הוני) עוברות את התקרה.</p>
+                        <p class="mt-2 text-gray-600"><strong>מי משלם?</strong> <br>
+                            - <span class="font-semibold">החברה:</span> על שכר ורווח פירותי.<br>
+                            - <span class="font-semibold">העובד:</span> על רווחי הון.
+                        </p>
+                    </div>
+                    <div class="p-4 bg-gray-100 rounded-lg">
+                        <h3 class="font-bold text-lg text-gray-800">מס יסף הוני נוסף: <span class="text-red-600"><small>2%</small></span></h3>
+                        <p class="mt-2 text-gray-600"><strong>על מה?</strong> חל <span class="font-semibold">רק אם ההכנסה ההונית</span> בפני עצמה עוברת את התקרה.</p>
+                        <p class="mt-2 text-gray-600"><strong>מי משלם?</strong> <br>
+                            - <span class="font-semibold">העובד:</span> על רווחי הון.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calculator Section -->
+            <div class="card p-6">
+                <h2 class="text-2xl font-bold text-blue-700 mb-4 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 ml-3 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
+                    מחשבון מס יסף אישי (הערכה בלבד)
+                </h2>
+                <p class="text-gray-600 mb-4">הזינו את נתוני ההכנסה המצטברת מהתלוש (בש"ח) ולחצו על "חשב" כדי לקבל הערכה של חבות מס היסף.</p>
+                <div class="grid md:grid-cols-4 gap-4 mb-4">
+                    <div>
+			<label for="salary1" class="block text-sm font-medium text-gray-700">הכנסה חייבת במס</label>
+                        <input type="text" id="salary1" value = "1,207,266" class="mt-1 block w-30 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 rtl-input" 			placeholder="לדוגמה: 1,207,266" oninput="formatNumberInput(this)" > </div>
+ 		     <div>
+		     	<label for="salary2" class="block text-sm font-medium text-gray-700">שכר חייב ב.ל</label>
+                        <input type="text" id="salary2" value = "607,266" class="mt-1 block w-30 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 rtl-input" 				placeholder="לדוגמה: 607,266" oninput="formatNumberInput(this)" > </div>
+ 		    <div>
+			<label for="salary3" class="block text-sm font-medium text-gray-700">ברוטו רגיל</label>
+                        <input type="text" id="salary3" value = "304,425" class="mt-1 block w-30 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 rtl-input" 				placeholder="לדוגמה: 304,425" oninput="formatNumberInput(this)" > </div>
+ 		<div>
+			<label for="salary4" class="block text-sm font-medium text-gray-700">חודש התלוש</label>
+                        <input type="number" id="salary4" value = "8" class="mt-1 block w-30 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 rtl-input" 				placeholder="לדוגמה: 8">
+			</div>
+<div>
+		     	<label for="salary5" class="block text-sm font-medium text-gray-700">שכר חודשי צפוי <small>(השאר 0 כדי שהמערכת תחשב)</small></label>
+                        <input type="text" id="salary5" value = "0" class="mt-1 block w-40 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 rtl-input" 				placeholder="27,266" oninput="formatNumberInput(this)" > </div>
+
+
+ <div>
+<img src="https://tamir1974.github.io/MyTax/Example.png" alt="שכר" />
+ </div>
+<div>
+<img src="https://tamir1974.github.io/MyTax/ExampleFull.png" alt="תלוש" />
+ </div>
+
+
+
+ <div> </div>
+
+
+                   
+                </div>
+
+                <div class="text-center">
+                    <button onclick="calculateTax()" class="bg-blue-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-blue-700 transition-colors">
+                        חשב
+                    </button>
+                </div>
+<!-- Explain -->
+                    <details class="bg-gray-50 p-4 rounded-lg">
+                        <summary class="font-semibold text-lg flex justify-between items-center">
+                            הסבר
+                            <svg class="w-5 h-5 text-gray-500 arrow-down" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                        </summary>
+                        <div class="mt-3 pt-3 border-t">
+                            <p><strong>הכנסה חייבת במס:</strong> סה"כ שכר מעבודה+ רווח פירותי(ממימוש מניות)+רווח הון(ממימוש מניות), מצטבר מתחילת שנה לחודש התלוש.</p>
+                            <p><strong>שכר חייב ב.ל.:</strong> סה"כ שכר+ רווח פירותי(ממימוש מניות), מצטבר מתחילת שנה לחודש התלוש.</p>
+                            <p><strong>ברוטו רגיל:</strong> סה"כ שכר מעבודה, מצטבר מתחילת שנה לחודש התלוש</p>
+                            <p><strong>חודש התלוש:</strong> החודש בגינו התקבל השכר (תלוש משכורת של חודש אוגוסט = 8)</p>
+                            <p><strong>רווח הון:</strong> הכנסות ממקורות שאינם יגיעה אישית, כגון רווחי הון, שבח מקרקעין, דיבידנדים, ריבית ודמי שכירות וכו'</p>
+
+
+                             <div class="mt-2 p-2 bg-red-100 text-red-800 rounded">
+                                <p class="font-bold">חישוב המס:</p>
+                                <ul class="list-disc list-inside mt-1">
+                                    <li><strong>שכר שנתי צפוי:</strong> "שכר חייב ב.ל." + "שכר חודשי צפוי" כפול יתרת החודשים לסוף שנה</li>
+                                    <li><strong>שכר חודשי צפוי עד סוף שנה:</strong> "ברוטו רגיל" חלקי "חודש התלוש" (במידה ולא הוזן שכר חודשי צפוי)</li>
+                                    <li><strong>רווח הון:</strong>"הכנסה חייבת במס" בניכוי "שכר חייב ב.ל". </li>
+                                </ul>
+                                <p class="mt-2 font-bold"><strong><small>במידה ויש הכנסות ממקור נוסף ניתן להוסיף לנתונים מהתלוש בהתאם (לדוגמא: רווח הון מהשקעות פרטיות ניתן להוסיף ל-"הכנסה חייבת במס") </small></strong></p>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+            </div>
+
+		
+                <div id="results" style="display:none;" class="mt-6 p-4 border-t-2 border-gray-200">
+                    <h3 class="text-xl font-bold text-gray-800 text-center mb-4">תוצאות (הערכה)</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-blue-100 p-4 rounded-lg text-center">
+                             <p class="text-gray-700">שכר שנתי צפוי:</p>
+                             <p id="salary" class="text-2xl font-bold text-blue-800"></p>
+                        </div>
+			<div class="bg-blue-100 p-4 rounded-lg text-center">
+                             <p class="text-gray-700">שכר חודשי צפוי עד סוף שנה:</p>
+                             <p id="salaryfut" class="text-2xl font-bold text-blue-800"></p>
+                        </div>
+			<div class="bg-green-100 p-4 rounded-lg text-center">
+                             <p class="text-gray-700">רווח הון:</p>
+                             <p id="capital" class="text-2xl font-bold text-green-800"></p>
+                        </div>
+
+                        <div class="bg-green-100 p-4 rounded-lg text-center">
+                             <p class="text-gray-700">סה"כ מס יסף לתשלום עצמאי על העובד:</p>
+                             <p id="employeeTaxTotal" class="text-2xl font-bold text-green-800"></p>
+                        </div>
+                    </div>
+                    <div id="employeeBreakdown" style="display:none;" class="mt-4 p-4 bg-gray-50 rounded-lg">
+                        <h4 class="font-semibold text-center mb-2">פירוט התשלום העצמאי:</h4>
+                        <ul class="list-disc list-inside text-center space-y-1">
+                            <li>מס יסף הוני (3%):<span id="employeeTax3" class="font-bold"></span> </li> 
+				<p class="text-gray-300"><span id="CapitalGain28A" ></span>*3%</p> 
+
+                            <li>מס יסף הוני נוסף (2%): <span id="employeeTax2" class="font-bold"></span></li>
+				<p class="text-gray-300"><span id="CapitalGain30" ></span>*2%</p> 
+                        </ul>
+                    </div>
+                    <p class="text-center text-sm text-gray-500 mt-4" style="color: #dc3545;"><strong>*זוהי הערכה בלבד ואינה מהווה תחליף לייעוץ מס מקצועי.</strong></p>
+                </div>
+            </div>
+           
+ 		<div>
+
+            <!-- Examples Section -->
+            <div class="card p-6">
+                <h2 class="text-2xl font-bold text-blue-700 mb-4 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 ml-3 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a2 2 0 01-2-2V7a2 2 0 012-2h6l2-2h2l-2 2z" /></svg>
+                    דוגמאות להמחשה
+                </h2>
+                <div class="space-y-4">
+                    <!-- Example 1 -->
+                    <details class="bg-gray-50 p-4 rounded-lg">
+                        <summary class="font-semibold text-lg flex justify-between items-center">
+                            דוגמה 1: סך ההכנסה מתחת לתקרה
+                            <svg class="w-5 h-5 text-gray-500 arrow-down" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                        </summary>
+                        <div class="mt-3 pt-3 border-t">
+                            <p><strong>תרחיש:</strong> שכר שנתי: ₪360,000, רווח הון: ₪150,000.</p>
+                            <p><strong>סה"כ הכנסה: ₪560,000</strong> (פחות מהתקרה של ₪721,560).</p>
+                            <p class="mt-2 p-2 bg-green-100 text-green-800 font-bold rounded"><strong>תוצאה:</strong> אין חבות במס יסף כלל.</p>
+                        </div>
+                    </details>
+                    <!-- Example 2 -->
+                    <details class="bg-gray-50 p-4 rounded-lg">
+                        <summary class="font-semibold text-lg flex justify-between items-center">
+                            דוגמה 2: הכנסה כללית מעל התקרה
+                            <svg class="w-5 h-5 text-gray-500 arrow-down" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                        </summary>
+                        <div class="mt-3 pt-3 border-t">
+                            <p><strong>תרחיש:</strong> שכר: ₪500,000, רווח פירותי: ₪150,000, רווח הון: ₪250,000.</p>
+                            <p><strong>סה"כ הכנסה פירותית: ₪650,000</strong> (מתחת לתקרה).</p>
+                            <p><strong>סה"כ הכנסה כללית: ₪900,000</strong> (מעל התקרה).</p>
+                            <div class="mt-2 p-2 bg-yellow-100 text-yellow-800 rounded">
+                                <p class="font-bold">חישוב המס:</p>
+                                <ul class="list-disc list-inside mt-1">
+                                    <li><strong>מס יסף רגיל (3%):</strong> חל על ₪178,440 (ההפרש מעל התקרה). כולו חל על רווח ההון.</li>
+                                    <li><strong>מס יסף הוני (2%):</strong> לא חל (רווח הון של ₪250,000 נמוך מהתקרה).</li>
+                                </ul>
+                                <p class="mt-2 font-bold"><strong>סה"כ לתשלום עצמאי: ₪5,353.</strong></p>
+                            </div>
+                        </div>
+                    </details>
+                    <!-- Example 3 -->
+                    <details class="bg-gray-50 p-4 rounded-lg">
+                        <summary class="font-semibold text-lg flex justify-between items-center">
+                            דוגמה 3: הכנסות פירותיות והוניות מעל התקרה
+                            <svg class="w-5 h-5 text-gray-500 arrow-down" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                        </summary>
+                        <div class="mt-3 pt-3 border-t">
+                            <p><strong>תרחיש:</strong> שכר: ₪500,000, רווח פירותי: ₪400,000, רווח הון: ₪1,000,000.</p>
+                            <p><strong>סה"כ הכנסה פירותית: ₪900,000</strong> (מעל התקרה).</p>
+                            <p><strong>סה"כ הכנסה הונית: ₪1,000,000</strong> (מעל התקרה).</p>
+                             <div class="mt-2 p-2 bg-red-100 text-red-800 rounded">
+                                <p class="font-bold">חישוב המס:</p>
+                                <ul class="list-disc list-inside mt-1">
+                                    <li><strong>מס יסף רגיל (3%) - חלק החברה:</strong> ₪5,353 (על החלק הפירותי שעבר את התקרה).</li>
+                                    <li><strong>מס יסף רגיל (3%) - חלק העובד:</strong> ₪30,000 (על כל רווח ההון).</li>
+                                    <li><strong>מס יסף הוני (2%) - חלק העובד:</strong> ₪5,569 (על החלק ההוני שעבר את התקרה).</li>
+                                </ul>
+                                <p class="mt-2 font-bold"><strong>סה"כ לתשלום עצמאי: ₪35,569.</strong></p>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+            </div>
+
+            <!-- Recommendations Section -->
+            <div class="card p-6 border-l-4 border-yellow-400">
+                <h2 class="text-2xl font-bold text-blue-700 mb-4 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 ml-3 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                    אז מה עליי לעשות? (Checklist)
+                </h2>
+                <ul class="space-y-3 text-gray-700">
+                    <li class="flex items-start"><span class="font-bold text-blue-600 ml-2">1.</span> <strong>שמרו מסמכים:</strong> הקפידו לשמור את כל דוחות המכירה המסכמים שאתם מקבלים מ-ESOP.</li>
+                    <li class="flex items-start"><span class="font-bold text-blue-600 ml-2">2.</span> <strong>התייעצו עם איש מקצוע:</strong> שוחחו בהקדם עם רו"ח או יועץ מס כדי לבחון את מצבכם האישי.</li>
+                    <li class="flex items-start"><span class="font-bold text-blue-600 ml-2">3.</span> <strong>שלמו מקדמות:</strong> בררו עם יועץ המס על תשלום מקדמות למס הכנסה כדי להימנע מחיובי ריבית והצמדה.</li>
+                    <li class="flex items-start"><span class="font-bold text-blue-600 ml-2">4.</span> <strong>היערכו לדו"ח שנתי:</strong> זכרו שתצטרכו להגיש דו"ח שנתי לרשות המיסים.</li>
+                    <li class="flex items-start"><span class="font-bold text-blue-600 ml-2">5.</span> <strong>עמדו בלוחות הזמנים:</strong> יש לשלם את המס עד סוף ינואר 2026 כדי למנוע קנסות.</li>
+                </ul>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="text-center mt-10 pt-6 border-t border-gray-200">
+            <p class="text-gray-600">זכרו, היערכות מוקדמת תמנע הפתעות ותחסוך לכם כסף.</p>
+            <p class="text-gray-500 mt-2">לשאלות נוספות, אתם מוזמנים לפנות למחלקת השכר.</p>
+        </footer>
     </div>
 
-    <div class="input-group">
-      <label>
-        שכר שנתי צפוי (כולל הכנסות אחרות בתלוש):
-        <input type="text" id="income" value="438,939" oninput="formatNumberInput(this)">
-        <small>לצורך חישוב ניתן לקחת מהתלוש <strong>"שכר חייב ב.ל."</strong> עבור העבר + <strong>"ברוטו לב. לאומי"</strong> כפול מס' חודשים עד סוף שנה</small>
-        <small>מהדוגמא -> 36,824x9 + 107,523 = 438,939</small>
-      </label>
+    <script>
 
-      <div class="flex-row" style="align-items: center;">
-        <label style="margin-top: 1rem;">
-          * אם סך השכר 12 חודשים אחרונים גבוה מהתקרה לביטוח לאומי (50,645 × 12), סמן ועבור לשלב 2.
-          <input type="checkbox" id="aboveThreshold" onchange="checkThreshold()">
-        </label>
-      </div>
+        // JavaScript for the calculator
 
-      <label>
-        שכר 12 חודשים אחרונים (כולל הכנסות אחרות):
-        <input type="text" id="last12Income" value="395,523" oninput="formatNumberInput(this)">
-        <small>ניתן לקחת <strong>"שכר חייב ב.ל."</strong> מהתלוש עבור השנה הנוכחית + <strong>"ברוטו לב. לאומי"</strong> עבור החודשים משנה קודמת</small>
-        <small>מהדוגמא נניח שהשכר החודשי שנה קודמת היה 31,000 ובדצמבר 43,000 (בדצמבר התקבל בונוס בסך 12,000), יש לקחת חלק יחסי של תשלומים חד פעמיים כגון: עמלות, בונוס, רווח פרותי וכו' → 107,523 + 31,000 × 9 + 12,000 × 9/12 = 395,523</small>
-      </label>
-    </div>
-
-    <img src="https://tamir1974.github.io/MyTax/PaySlip.png" alt="תלוש שכר" />
-
-    <div class="section-header">
-      <h3>שלב 2 - רווח הון מימושים קודמים</h3>
-    </div>
-
-    <div class="input-group">
-      <label>
-        רווח הון קודם (מימושים בשנה נוכחית):
-        <input type="text" id="prevCapitalGain" value="374,472" oninput="formatNumberInput(this)">
-        <small>לצורך חישוב ניתן לקחת מהתלוש <strong>"הכנסה חייבת במס"</strong> בניכוי <strong>"שכר חייב ב.ל."</strong></small>
-        <small>מהדוגמא ->  233,898 - 608,370  = 374,472</small>
-        <small class="footnote">*יש להוסיף רווח הון מימושים של השקעות פרטיות</small>
-      </label>
-    </div>
-
-    <img src="https://tamir1974.github.io/MyTax/ESOP.png" alt="איזופ" />
-
-    <div class="section-header">
-      <h3>שלב 3 - תמורה ממימוש/הכנסה נוספת</h3>
-    </div>
-
-    <div class="input-group">
-      <label>
-        רווח הון צפוי מהמימוש הקרוב:
-        <input type="text" id="expectedCapitalGain" value="125,141.49" oninput="formatNumberInput(this)">
-        <small>להריץ סימולציה על מה שרוצים למכור ולקחת את ה - <strong>Capital Income</strong></small>
-      </label>
-
-      <label>
-        רווח פרותי צפוי (על מימוש הקרוב/הכנסה נוספת):
-        <input type="text" id="expectedIncomeGain" value="17,325.52" oninput="formatNumberInput(this)">
-        <small>להריץ סימולציה על מה שרוצים למכור ולקחת את ה - <strong>Ordinary Income</strong></small>
-      </label>
-    </div>
-
-       <img src="https://tamir1974.github.io/MyTax/Simulation.png" alt="סימולציה" />
-
-    <button onclick="calculate()">
-      <h1>חשב</h1>
-    </button>
-
-    <div class="results" id="results"></div>
-
-    <div class="appendix">
-      <h2>תקרות למס 2025 - נספח</h2>
-      <label>מדרגות מס הכנסה חודשיות 10% עד <input type="number" id="Tax10" value="7010" disabled></label>
-      <label>מדרגות מס הכנסה חודשיות 14% עד <input type="number" id="Tax14" value="10060" disabled></label>
-      <label>מדרגות מס הכנסה חודשיות 20% עד <input type="number" id="Tax20" value="16150" disabled></label>
-      <label>מדרגות מס הכנסה חודשיות 31% עד <input type="number" id="Tax31" value="22440" disabled></label>
-      <label>מדרגות מס הכנסה חודשיות 35% עד <input type="number" id="Tax35" value="46690" disabled></label>
-      <label>מדרגות מס הכנסה חודשיות 47% עד <input type="number" id="Tax47" value="60130" disabled></label>
-      <label>תקרת חודשית מס ביטוח לאומי <input type="number" id="bituachLeumiMonthlyThreshold" value="50645" disabled></label>
-      <label>תקרת רווח הון שנתי <input type="number" id="yesef3Limit" value="721560" disabled></label>
-    </div>
-  </div>
-
-  <script>
     function formatNumberInput(input) {
       const raw = input.value.replace(/,/g, '').replace(/[^\d.]/g, '');
       if (raw === '') {
@@ -255,166 +320,79 @@
       }
     }
 
-    function calculate() {
-      const income = getNumericValue('income');
-      const last12Income = getNumericValue('last12Income');
-      const prevCapitalGain = getNumericValue('prevCapitalGain');
-      const expectedCapitalGain = getNumericValue('expectedCapitalGain');
-      const expectedIncomeGain = getNumericValue('expectedIncomeGain');
-      const Tax10 = parseFloat(document.getElementById('Tax10').value) || 0;
-      const Tax14 = parseFloat(document.getElementById('Tax14').value) || 0;
-      const Tax20 = parseFloat(document.getElementById('Tax20').value) || 0;
-      const Tax31 = parseFloat(document.getElementById('Tax31').value) || 0;
-      const Tax35 = parseFloat(document.getElementById('Tax35').value) || 0;
-      const Tax47 = parseFloat(document.getElementById('Tax47').value) || 0;
-      const yesef3Limit = parseFloat(document.getElementById('yesef3Limit').value) || 0;
-      const bituachLeumiMonthlyThreshold = parseFloat(document.getElementById('bituachLeumiMonthlyThreshold').value) || 0;
- 
+        function calculateTax() {
+	     
+            const TIKRA = 721560;
+            const salary1 = getNumericValue('salary1');
+            const salary2 = getNumericValue('salary2');
+            const salary3 = getNumericValue('salary3');
+            const salary4 = getNumericValue('salary4');
+            const salary5 = getNumericValue('salary5');
+            const fruity = 0;
+            const capital = salary1-salary2;
 
-      const avgMonthlyIncome = (income+expectedIncomeGain) / 12;
+let salary = 0 ,salaryfut = 0;
 
-      const taxBrackets = [
-        { upTo: Tax10 * 12, rate: 0.10 , raten: 0.14},
-        { upTo: Tax14 * 12, rate: 0.14 , raten: 0.20},
-        { upTo: Tax20 * 12, rate: 0.20 , raten: 0.31},
-        { upTo: Tax31 * 12, rate: 0.31 , raten: 0.35},
-        { upTo: Tax35 * 12, rate: 0.35 , raten: 0.47},
-        { upTo: Tax47 * 12, rate: 0.47 , raten: 0.50},
-        { upTo: Infinity, rate: 0.50 , raten: 0.50}
-      ];
-
-      let marginalRate = 0;
-      for (const bracket of taxBrackets) {
-        if (income+expectedIncomeGain <= bracket.upTo) {
-          marginalRate = bracket.rate ;
-          break;
-        }
-      }
-
-      let TaxTotal = 0;
-      let totalIncome = income + expectedIncomeGain;
-      let remainingGain = expectedIncomeGain;
-      let currentIncome = income;
-
-      for (let i = 0; i < taxBrackets.length; i++) {
-        const bracket = taxBrackets[i];
-        const bracketStart = i === 0 ? 0 : taxBrackets[i - 1].upTo;
-        const bracketEnd = bracket.upTo;
-
-        if (totalIncome <= bracketStart) break;
-
-        const taxableStart = Math.max(currentIncome, bracketStart);
-        const taxableEnd = Math.min(totalIncome, bracketEnd);
-        const taxableAmount = taxableEnd - taxableStart;
-
-        if (taxableAmount > 0) {
-          TaxTotal += taxableAmount * bracket.rate;
-          remainingGain -= taxableAmount;
-          currentIncome += taxableAmount;
-        }
-        if (remainingGain <= 0) break;
-      }
-
-      let bituachLeumiRate = 0;
-      if ((last12Income) / 12 <= bituachLeumiMonthlyThreshold) {
-        bituachLeumiRate = 0.1217*Math.min(expectedIncomeGain,bituachLeumiMonthlyThreshold*12-last12Income)/expectedIncomeGain;
-      }
-
-      let ESOPTax = 0;
-      if ((last12Income) / 12 < bituachLeumiMonthlyThreshold) {
-        ESOPTax = 0.6217;
-      } else { ESOPTax = 0.50;}
+if (salary5 === 0) {
+  salary = (12 - salary4) * (salary3 / salary4) + salary2;
+  totalFruityIncome = salary ;
+  totalOverallIncome = totalFruityIncome + capital;
+  salaryfut = salary3 / salary4;
 
 
-      const capitalTaxRate = 0.25;
-      const capitalTax = expectedCapitalGain * capitalTaxRate;
+} else {
+  salary = (12 - salary4) * salary5 + salary2;
+totalFruityIncome = salary ;
+  totalOverallIncome = totalFruityIncome + capital;
+  salaryfut = salary5;
 
-      let masYesef = 0;
-      if (income+expectedIncomeGain+expectedCapitalGain+prevCapitalGain > yesef3Limit && expectedCapitalGain+prevCapitalGain <= yesef3Limit) {
-        masYesef = 3;
-      } else if (income+expectedIncomeGain+expectedCapitalGain+prevCapitalGain > yesef3Limit && expectedCapitalGain+prevCapitalGain > yesef3Limit) {
-        masYesef = 5;
-      }
 
-      let RateYesfef = 0;
-      if (income+expectedIncomeGain+expectedCapitalGain+prevCapitalGain > yesef3Limit && marginalRate < 0.50 ) {
-        RateYesfef = 0.03;
-      }
+}
+        const CapitalGain25 = Math.min(capital , Math.max(TIKRA-salary,0));
+        const CapitalGain28 = Math.min(capital-CapitalGain25 , TIKRA-CapitalGain25);
+        const CapitalGain30 = Math.max(capital -CapitalGain28-CapitalGain25, 0);
 
-      const combinedRate = (marginalRate + bituachLeumiRate + RateYesfef) * 100;
 
-      let CapitalGain25 = 0, CapitalGain28 = 0, CapitalGain30 = 0;
-      if (income+expectedIncomeGain <= yesef3Limit) {
-        CapitalGain25 = Math.min(expectedCapitalGain , Math.max(yesef3Limit-income-expectedIncomeGain-prevCapitalGain,0));
-      if (yesef3Limit-income-expectedIncomeGain-CapitalGain25 < prevCapitalGain ) {	
-        CapitalGain28 = Math.min(expectedCapitalGain+ prevCapitalGain-CapitalGain25, yesef3Limit)-prevCapitalGain;}
-        else {
-	CapitalGain28 = Math.min(expectedCapitalGain -CapitalGain25, yesef3Limit-CapitalGain25);}
-        CapitalGain30 = Math.max(expectedCapitalGain -CapitalGain28-CapitalGain25, 0);
-      } else {
-        CapitalGain28 = Math.min(expectedCapitalGain + prevCapitalGain, yesef3Limit)-prevCapitalGain;
-        CapitalGain30 = Math.max(expectedCapitalGain + prevCapitalGain-CapitalGain28, 0)-prevCapitalGain;
-      }
+            // 1. Tax paid by the company on the "fruity" part
+            const companyTax = capital * 0.25;
 
-      const NetProfit = expectedIncomeGain + expectedCapitalGain* 0.75-(TaxTotal+expectedIncomeGain*(bituachLeumiRate + RateYesfef));
+            // 2. Employee's 3% tax portion on the capital part
+	    const CapitalGain28A = CapitalGain28 +CapitalGain30;
+            const employeeTax3 = CapitalGain28A * 0.03;
 
-      document.getElementById('results').innerHTML = `
-        <h4 style="border-bottom: 2px solid #28a745; padding-bottom: 0.5rem;">תוצאות הסימולציה</h4>
-        <p><strong>שכר ממוצע חודשי:</strong> ${Math.round(avgMonthlyIncome).toLocaleString()} ₪</p>
-        <p><strong>מס יסף צפוי:</strong> ${(RateYesfef * 100).toFixed(1)}%</p>
-        <p><strong>מס שולי צפוי:</strong> ${(marginalRate * 100).toFixed(1)}%</p>
-        <p><strong>אחוז ביטוח לאומי צפוי:</strong> ${(bituachLeumiRate * 100).toFixed(2)}%</p>
-        <h5 style="color: #007bff; margin-top: 1rem;">סך מס שולי + ביטוח לאומי צפוי: ${combinedRate.toFixed(2)}%</h5>
-        <br>
-        <p><strong>מס רווח הון צפוי:</strong> ${(capitalTaxRate * 100)}%</p>
-        <p><strong>מס יסף צפוי:</strong> ${masYesef.toFixed(0)}%</p>
-        <h5 style="color: #007bff; margin-top: 1rem;">סך מס רווח הון שולי צפוי: ${capitalTaxRate*100+masYesef}%</h5>
-        <small class="footnote">*בתלוש מנכים 25% עבור רווח הון ואחריות העובד לשלם את ההפרש למס הכנסה במידה ועבר את תקרת רווח הון וחייב במס יסף</small>
-        <br><br>
-        <p><strong>רווח הון בשיעור מס 25%:</strong> ${CapitalGain25.toLocaleString()} ₪</p>
-        <p><strong>רווח הון בשיעור מס 28%:</strong> ${CapitalGain28.toLocaleString()} ₪</p>
-        <p><strong>רווח הון בשיעור מס 30%:</strong> ${CapitalGain30.toLocaleString()} ₪</p>
-        <br>
+            // 3. Employee's 5% additional tax on capital income
+            const employeeTax2 = CapitalGain30 * 0.02;
 
-        <table>
-          <thead style="background-color: #e0f7fa;">
-            <tr>
-              <th>תאור</th>
-              <th>סכום</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>סה"כ תמורה ממימוש</td>
-              <td>${Math.round(expectedIncomeGain + expectedCapitalGain).toLocaleString()} ₪</td>
-            </tr>
-            <tr>
-              <td>סה"כ מס הכנסה פרותי <small style="color: red;">*</small></td>
-              <td>${Math.round(TaxTotal+expectedIncomeGain*(bituachLeumiRate + RateYesfef)).toLocaleString()} ₪</td>
-            </tr>
-            <tr>
-              <td>סה"כ מס רווח הון 25% (ללא מס יסף) </td>
-              <td>${Math.round(expectedCapitalGain * 0.25).toLocaleString()} ₪</td>
-            </tr>
-            <tr>
-              <td><h4>סה"כ תמורה נטו </h4></td>
-              <td><h4>${Math.round(NetProfit).toLocaleString()} ₪</h4></td>
-            </tr>
-            <tr>
-              <td><h5>אחוז מס שולי וביטוח לאומי ממוצע על התמורה הנוספת</h5></td>
-              <td><h5>${(100*(TaxTotal+expectedIncomeGain*(bituachLeumiRate + RateYesfef))/expectedIncomeGain).toFixed(2)}%</h5></td>
-            </tr>
+            // 4. Total tax for the employee to pay independently
+            const employeeTaxTotal = CapitalGain30*0.05+CapitalGain28*0.03;
+
+            // Function to format numbers as currency
+            const formatCurrency = (num) => '₪' + num.toLocaleString('he-IL', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+            // Display results
+           // document.getElementById('companyTax').textContent = formatCurrency(companyTax);
+            document.getElementById('employeeTaxTotal').textContent = formatCurrency(employeeTaxTotal);
+            document.getElementById('salary').textContent = formatCurrency(salary);
+            document.getElementById('capital').textContent = formatCurrency(capital);  
+            document.getElementById('salaryfut').textContent = formatCurrency(salaryfut);       
+
+
+           
+           const employeeBreakdown = document.getElementById('employeeBreakdown');
+            if(employeeTaxTotal > 0) {
+                document.getElementById('employeeTax3').textContent = formatCurrency(employeeTax3);
+               document.getElementById('employeeTax2').textContent = formatCurrency(employeeTax2);
+               document.getElementById('CapitalGain28A').textContent = formatCurrency(CapitalGain28A); 
+               document.getElementById('CapitalGain30').textContent = formatCurrency(CapitalGain30); 
+
+                employeeBreakdown.style.display = 'block';
+            } else {
+                employeeBreakdown.style.display = 'none';
+            }
             
-            
-          </tbody>
-        </table>
-        <small class="footnote" style="margin-top: 1rem;">*מס הכנסה הינו הערכה</small>
+            document.getElementById('results').style.display = 'block';
+        }
+    </script>
 
-        <br>
-        <h4 style="color: #dc3545;">סה"כ מס יסף (באחריות העובד לשלם): ${Math.round(CapitalGain25*0.25+CapitalGain28*0.28+CapitalGain30*0.3-expectedCapitalGain*0.25).toLocaleString()} ₪</h4>
-        <small class="footnote">*התחשיב הינו הערכה, יש לפנות לרו"ח לצורך תחשיב מדוייק</small>
-      `;
-    }
-  </script>
 </body>
 </html>
