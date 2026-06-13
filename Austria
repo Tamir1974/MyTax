@@ -1,0 +1,1161 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="format-detection" content="telephone=no" />
+  <title>אוסטריה 2026 – אפליקציית טיול</title>
+  <style>
+    :root{
+      --bg:#f5f7fb; --card:#ffffff; --ink:#18222d; --muted:#5e6b78;
+      --line:#e2e8f0; --blue:#0f5b9d; --blue2:#e9f3ff; --gold:#f5b301;
+      --green:#0d8b62; --greenbg:#e9fbf4; --alt:#fff7e6; --altink:#8a5a00;
+      --stop:#f0f3ff; --stopink:#3448a5; --shadow:0 8px 24px rgba(18,38,63,.08);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans Hebrew",Arial,sans-serif;background:var(--bg);color:var(--ink);-webkit-text-size-adjust:100%;}
+    .app{max-width:900px;margin:0 auto;padding:16px 14px 36px}
+    .hero{background:linear-gradient(135deg,#0f5b9d,#3b82f6);color:#fff;border-radius:24px;padding:18px 18px 16px;box-shadow:var(--shadow)}
+    .hero h1{margin:0 0 8px;font-size:24px}
+    .hero p{margin:0;font-size:14px;line-height:1.55;opacity:.95}
+    .meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .pill{background:rgba(255,255,255,.14);padding:8px 12px;border-radius:999px;font-size:12px}
+    .tabs{display:flex;gap:8px;overflow:auto;padding:14px 2px 4px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+    .tabs::-webkit-scrollbar{display:none}
+    .tab{border:none;background:#fff;color:var(--blue);padding:10px 14px;border-radius:999px;cursor:pointer;font-weight:700;box-shadow:var(--shadow);white-space:nowrap;font-size:14px}
+    .tab.active{background:var(--blue);color:#fff}
+    .section-title{display:flex;align-items:center;justify-content:space-between;margin:14px 2px 10px;gap:10px}
+    .section-title h2{margin:0;font-size:18px}
+    .hint{color:var(--muted);font-size:12px}
+    .legend{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:12px}
+    .legend .item{background:#fff;border-radius:14px;padding:10px 12px;box-shadow:var(--shadow);font-size:12px;color:var(--muted)}
+    .hotels{display:grid;gap:10px;margin-bottom:16px}
+    .hotel-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:var(--shadow)}
+    .hotel-name{font-weight:800;font-size:16px;margin-bottom:4px}
+    .hotel-chip{font-size:12px;color:var(--muted)}
+    .btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .btn{display:inline-flex;align-items:center;gap:8px;text-decoration:none;border:none;cursor:pointer;background:var(--blue);color:#fff;padding:10px 12px;border-radius:12px;font-size:13px;font-weight:700}
+    .btn.secondary{background:#fff;color:var(--blue);border:1px solid var(--line)}
+    .btn.alt{background:#fff7e6;color:#8a5a00;border:1px solid #f2d18b}
+    .btn.stop{background:#eef2ff;color:#3448a5;border:1px solid #c7d2fe}
+    .cards{display:grid;gap:14px}
+    .day{background:var(--card);border-radius:22px;box-shadow:var(--shadow);overflow:hidden;border:1px solid var(--line)}
+    .day.hide{display:none}
+    .day-head{padding:14px 16px;background:#fff;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+    .day-head h3{margin:0;font-size:18px}
+    .sub{color:var(--muted);font-size:13px;margin-top:4px;line-height:1.5}
+    .tag{padding:8px 10px;border-radius:999px;font-size:12px;font-weight:800;white-space:nowrap}
+    .tag.tamir{background:#e9fbf4;color:#0d8b62}
+    .tag.both{background:#e9f3ff;color:#0f5b9d}
+    .tag.ayal{background:#fff7e6;color:#8a5a00}
+    .day-body{padding:14px 16px}
+    .tripmeta{display:grid;gap:8px;margin-bottom:12px}
+    .meta-card{background:#f8fafc;border:1px solid var(--line);border-radius:14px;padding:10px 12px;font-size:13px;line-height:1.5}
+    .main, .altbox, .stopbox, .evening{border-radius:18px;padding:14px;margin-top:10px}
+    .main{background:var(--blue2)}
+    .altbox{background:var(--alt)}
+    .stopbox{background:var(--stop)}
+    .evening{background:#f8fafc;border:1px dashed var(--line)}
+    .box-title{font-weight:900;margin-bottom:6px}
+    .box-sub{font-size:14px;line-height:1.6}
+    .toggle{display:flex;align-items:center;gap:10px}
+    .checkbox{appearance:none;-webkit-appearance:none;width:22px;height:22px;border-radius:6px;border:2px solid #8fb7dc;display:inline-grid;place-items:center;cursor:pointer;background:#fff;flex:0 0 auto}
+    .checkbox:checked{background:#0f5b9d;border-color:#0f5b9d}
+    .checkbox:checked::after{content:"✓";color:#fff;font-weight:900}
+    .empty-state{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;text-align:center;color:var(--muted);display:none}
+    .footer-note{margin-top:16px;background:#eff6ff;color:#0f5b9d;padding:12px 14px;font-size:12px;text-align:center;border-radius:14px;border:1px solid #bfdbfe}
+    @media (min-width:700px){
+      .legend{grid-template-columns:repeat(4,minmax(0,1fr))}
+      .hotels{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="hero">
+    <h1>אוסטריה 2026 – אפליקציית הטיול</h1>
+    <p>תכנון יומי מסודר לטלפון: מרחקי נסיעה וזמני נהיגה משוערים, ניווט ישיר ב‑Google Maps, הסבר קצר לכל מקום, אופציה חלופית מלאה ונקודות עצירה בדרך.</p>
+    <div class="meta">
+      <div class="pill">תמיר: 3–17.7</div>
+      <div class="pill">אייל: 8–22.7</div>
+      <div class="pill">מותאם לאייפון</div>
+      <div class="pill">אפשר לשמור למסך הבית</div>
+    </div>
+  </div>
+
+  <div class="tabs" id="tabs">
+    <button class="tab active" type="button" data-filter="all">כל הימים</button>
+    <button class="tab" type="button" data-filter="tamir">תמיר</button>
+    <button class="tab" type="button" data-filter="both">ביחד</button>
+    <button class="tab" type="button" data-filter="ayal">אייל</button>
+  </div>
+
+  <div class="section-title">
+    <h2>מלונות וניווט מהיר</h2>
+    <div class="hint">לחיצה פותחת את Google Maps</div>
+  </div>
+  <div class="legend">
+    <div class="item">🔵 <strong>תוכנית עיקרית</strong><br>האטרקציה המומלצת של היום</div>
+    <div class="item">🟡 <strong>אופציה חלופית</strong><br>טיול אחר במקום התוכנית הראשית</div>
+    <div class="item">🟣 <strong>עצירת דרך</strong><br>קפה, תצפית או כפר על ציר הנסיעה</div>
+    <div class="item">🌙 <strong>ערב</strong><br>איפה להוריד קצב: אוכל, קניות או סיבוב קל</div>
+  </div>
+  <div class="hotels"><div class="hotel-card">
+      <div class="hotel-name">Dormio Resort Obertraun</div>
+      <div class="hotel-chip">Dormio Resort Obertraun</div>
+      <div class="btnrow"><a class="btn" href="https://www.google.com/maps/search/?api=1&query=Dormio%20Resort%20Obertraun" target="_blank" rel="noopener">ניווט למלון</a></div>
+    </div><div class="hotel-card">
+      <div class="hotel-name">All-Suite Resort Fieberbrunn</div>
+      <div class="hotel-chip">All-Suite Resort Fieberbrunn</div>
+      <div class="btnrow"><a class="btn" href="https://www.google.com/maps/search/?api=1&query=All-Suite%20Resort%20Fieberbrunn" target="_blank" rel="noopener">ניווט למלון</a></div>
+    </div><div class="hotel-card">
+      <div class="hotel-name">Kummererhof, Itter</div>
+      <div class="hotel-chip">Kummererhof Itter Austria</div>
+      <div class="btnrow"><a class="btn" href="https://www.google.com/maps/search/?api=1&query=Kummererhof%20Itter%20Austria" target="_blank" rel="noopener">ניווט למלון</a></div>
+    </div><div class="hotel-card">
+      <div class="hotel-name">Stöcklhof</div>
+      <div class="hotel-chip">Stöcklhof Austria</div>
+      <div class="btnrow"><a class="btn" href="https://www.google.com/maps/search/?api=1&query=St%C3%B6cklhof%20Austria" target="_blank" rel="noopener">ניווט למלון</a></div>
+    </div><div class="hotel-card">
+      <div class="hotel-name">das mondsee</div>
+      <div class="hotel-chip">das mondsee Austria</div>
+      <div class="btnrow"><a class="btn" href="https://www.google.com/maps/search/?api=1&query=das%20mondsee%20Austria" target="_blank" rel="noopener">ניווט למלון</a></div>
+    </div><div class="hotel-card">
+      <div class="hotel-name">Leonardo Hotel Salzburg Airport</div>
+      <div class="hotel-chip">Leonardo Hotel Salzburg Airport</div>
+      <div class="btnrow"><a class="btn" href="https://www.google.com/maps/search/?api=1&query=Leonardo%20Hotel%20Salzburg%20Airport" target="_blank" rel="noopener">ניווט למלון</a></div>
+    </div></div>
+
+  <div class="section-title">
+    <h2>התכנון היומי</h2>
+    <div class="hint">אפשר לסמן ימים שבוצעו ✔︎</div>
+  </div>
+  <div class="cards"><div class="day" data-family="tamir" data-id="2026-07-03">
+      <div class="day-head">
+        <div>
+          <h3>ו׳ 3.7 · נחיתה + Hallstatt קצר</h3>
+          <div class="sub">לינה: Dormio Resort Obertraun</div>
+        </div>
+        <div class="toggle">
+          <span class="tag tamir">תמיר</span>
+          <input type="checkbox" class="checkbox" aria-label="סמן יום שבוצע">
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="tripmeta">
+          <div class="meta-card"><strong>טווח זמן מומלץ:</strong> 10:30–17:30</div>
+          <div class="meta-card"><strong>נסיעה יומית משוערת:</strong> שדה זלצבורג → Hallstatt → Obertraun · כ־85–95 ק״מ · כ־1:30–1:45 ש׳ נטו</div>
+          <div class="meta-card"><strong>מלון הלילה:</strong> Dormio Resort Obertraun</div>
+        </div>
+        <div class="main">
+          <div class="box-title">🔵 התוכנית העיקרית — Hallstatt</div>
+          <div class="box-sub">כפר אגם איקוני עם טיילת, כיכר קטנה, בתים יפים על המים ונקודות צילום מעולות לפתיחת הטיול.</div>
+          <div class="btnrow">
+            <a class="btn" href="https://www.google.com/maps/dir/?api=1&origin=Salzburg%20Airport&destination=Dormio%20Resort%20Obertraun&travelmode=driving&waypoints=Parking%20P1%20Hallstatt%20Austria" target="_blank" rel="noopener">ניווט למסלול היום</a>
+            <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Parking%20P1%20Hallstatt%20Austria" target="_blank" rel="noopener">ניווט לאטרקציה</a>
+            <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Dormio%20Resort%20Obertraun" target="_blank" rel="noopener">ניווט למלון</a>
+          </div>
+        </div>
+        <div class="altbox">
+          <div class="box-title">🟡 אופציה חלופית — Gosausee במקום Hallstatt</div>
+          <div class="box-sub">אם מעדיפים פחות עומס ויותר טבע – סיבוב קל סביב אגם הרים מול פסגת Dachstein.</div>
+          <div class="btnrow">
+            <a class="btn alt" href="https://www.google.com/maps/dir/?api=1&origin=Salzburg%20Airport&destination=Dormio%20Resort%20Obertraun&travelmode=driving&waypoints=Gosausee%20Austria" target="_blank" rel="noopener">ניווט לאופציה החלופית</a>
+            <a class="btn alt" href="https://www.google.com/maps/search/?api=1&query=Gosausee%20Austria" target="_blank" rel="noopener">פתיחת היעד החלופי</a>
+          </div>
+        </div>
+        <div class="stopbox">
+          <div class="box-title">🟣 עצירת דרך מומלצת — Bad Ischl לעצירת קפה</div>
+          <div class="box-sub">עיירת ספא קיסרית עם מדרחוב נעים, גלידריות ובתי קפה; עצירה טובה אם לא רוצים למהר ישר למלון.</div>
+          <div class="btnrow"><a class="btn stop" href="https://www.google.com/maps/search/?api=1&query=Bad%20Ischl%20Austria" target="_blank" rel="noopener">ניווט לעצירה</a></div>
+        </div>
+        <div class="evening">
+          <div class="box-title">🌙 בילוי ערב</div>
+          <div class="box-sub">ארוחת ערב רגועה ב‑Obertraun / במלון והליכה קצרה על שפת האגם.</div>
+        </div>
+      </div>
+    </div><div class="day" data-family="tamir" data-id="2026-07-04">
+      <div class="day-head">
+        <div>
+          <h3>שבת 4.7 · Gosausee</h3>
+          <div class="sub">לינה: Dormio Resort Obertraun</div>
+        </div>
+        <div class="toggle">
+          <span class="tag tamir">תמיר</span>
+          <input type="checkbox" class="checkbox" aria-label="סמן יום שבוצע">
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="tripmeta">
+          <div class="meta-card"><strong>טווח זמן מומלץ:</strong> 09:30–15:30</div>
+          <div class="meta-card"><strong>נסיעה יומית משוערת:</strong> Dormio ↔ Gosausee · כ־35 ק״מ · כ־45–55 דק׳ נטו</div>
+          <div class="meta-card"><strong>מלון הלילה:</strong> Dormio Resort Obertraun</div>
+        </div>
+        <div class="main">
+          <div class="box-title">🔵 התוכנית העיקרית — Gosausee</div>
+          <div class="box-sub">מסלול טבע קל מאוד סביב האגם, עם תצפית חזקה אל קרחון Dachstein. מתאים למשפחות ולעגלות.</div>
+          <div class="btnrow">
+            <a class="btn" href="https://www.google.com/maps/dir/?api=1&origin=Dormio%20Resort%20Obertraun&destination=Dormio%20Resort%20Obertraun&travelmode=driving&waypoints=Gosausee%20Austria" target="_blank" rel="noopener">ניווט למסלול היום</a>
+            <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Gosausee%20Austria" target="_blank" rel="noopener">ניווט לאטרקציה</a>
+            <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Dormio%20Resort%20Obertraun" target="_blank" rel="noopener">ניווט למלון</a>
+          </div>
+        </div>
+        <div class="altbox">
+          <div class="box-title">🟡 אופציה חלופית — Hallstatt רגוע</div>
+          <div class="box-sub">חלופה קלה יותר למי שמעדיף שיטוט קצר בכפר, תמונות וגלידה במקום הליכה סביב אגם.</div>
+          <div class="btnrow">
+            <a class="btn alt" href="https://www.google.com/maps/dir/?api=1&origin=Dormio%20Resort%20Obertraun&destination=Dormio%20Resort%20Obertraun&travelmode=driving&waypoints=Parking%20P1%20Hallstatt%20Austria" target="_blank" rel="noopener">ניווט לאופציה החלופית</a>
+            <a class="btn alt" href="https://www.google.com/maps/search/?api=1&query=Parking%20P1%20Hallstatt%20Austria" target="_blank" rel="noopener">פתיחת היעד החלופי</a>
+          </div>
+        </div>
+        <div class="stopbox">
+          <div class="box-title">🟣 עצירת דרך מומלצת — כפר Gosau</div>
+          <div class="box-sub">עצירת דרך טובה לקפה, מאפה מקומי או צילום של העמק לפני העלייה לאגם.</div>
+          <div class="btnrow"><a class="btn stop" href="https://www.google.com/maps/search/?api=1&query=Gosau%20Austria" target="_blank" rel="noopener">ניווט לעצירה</a></div>
+        </div>
+        <div class="evening">
+          <div class="box-title">🌙 בילוי ערב</div>
+          <div class="box-sub">ארוחת ערב בדירה / במלון וזמן משפחתי רגוע.</div>
+        </div>
+      </div>
+    </div><div class="day" data-family="tamir" data-id="2026-07-05">
+      <div class="day-head">
+        <div>
+          <h3>א׳ 5.7 · מעבר ל‑Fieberbrunn עם עצירה בדרך</h3>
+          <div class="sub">לינה: All-Suite Resort Fieberbrunn</div>
+        </div>
+        <div class="toggle">
+          <span class="tag tamir">תמיר</span>
+          <input type="checkbox" class="checkbox" aria-label="סמן יום שבוצע">
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="tripmeta">
+          <div class="meta-card"><strong>טווח זמן מומלץ:</strong> 09:30–17:00</div>
+          <div class="meta-card"><strong>נסיעה יומית משוערת:</strong> Obertraun → Bad Ischl → Fieberbrunn · כ־170–185 ק״מ · כ־2:40–3:05 ש׳ נטו</div>
+          <div class="meta-card"><strong>מלון הלילה:</strong> All-Suite Resort Fieberbrunn</div>
+        </div>
+        <div class="main">
+          <div class="box-title">🔵 התוכנית העיקרית — Bad Ischl</div>
+          <div class="box-sub">עצירת מעבר קלאסית: מרכז אלגנטי, קפה/גלידה, ואווירת עיירת ספא קיסרית בלי לבזבז יום שלם.</div>
+          <div class="btnrow">
+            <a class="btn" href="https://www.google.com/maps/dir/?api=1&origin=Dormio%20Resort%20Obertraun&destination=All-Suite%20Resort%20Fieberbrunn&travelmode=driving&waypoints=Bad%20Ischl%20Austria" target="_blank" rel="noopener">ניווט למסלול היום</a>
+            <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Bad%20Ischl%20Austria" target="_blank" rel="noopener">ניווט לאטרקציה</a>
+            <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=All-Suite%20Resort%20Fieberbrunn" target="_blank" rel="noopener">ניווט למלון</a>
+          </div>
+        </div>
+        <div class="altbox">
+          <div class="box-title">🟡 אופציה חלופית — Hallstatt או Gosausee להשלמה</div>
+          <div class="box-sub">אם אחד מהם עדיין לא בוצע – זה היום להשלים לפני שעוברים לטירול.</div>
+          <div class="btnrow">
+            <a class="btn alt" href="https://www.google.com/maps/dir/?api=1&origin=Dormio%20Resort%20Obertraun&destination=All-Suite%20Resort%20Fieberbrunn&travelmode=driving&waypoints=Parking%20P1%20Hallstatt%20Austria" target="_blank" rel="noopener">ניווט לאופציה החלופית</a>
+            <a class="btn alt" href="https://www.google.com/maps/search/?api=1&query=Parking%20P1%20Hallstatt%20Austria" target="_blank" rel="noopener">פתיחת היעד החלופי</a>
+          </div>
+        </div>
+        <div class="stopbox">
+          <div class="box-title">🟣 עצירת דרך מומלצת — Mondsee שירות/קפה</div>
+          <div class="box-sub">אם יוצאים מוקדם ורוצים שבירת נסיעה קצרה, Mondsee טובה להפסקת קפה נוחה על הציר.</div>
+          <div class="btnrow"><a class="btn stop" href="https://www.google.com/maps/search/?api=1&query=Mondsee%20Austria" target="_blank" rel="noopener">ניווט לעצירה</a></div>
+        </div>
+        <div class="evening">
+          <div class="box-title">🌙 בילוי ערב</div>
+          <div class="box-sub">צ׳ק‑אין, קניות סופר וארוחה רגועה ליד המלון.</div>
+        </div>
+      </div>
+    </div><div class="day" data-family="tamir" data-id="2026-07-06">
+      <div class="day-head">
+        <div>
+          <h3>ב׳ 6.7 · Timok’s Wild World</h3>
+          <div class="sub">לינה: All-Suite Resort Fieberbrunn</div>
+        </div>
+        <div class="toggle">
+          <span class="tag tamir">תמיר</span>
+          <input type="checkbox" class="checkbox" aria-label="סמן יום שבוצע">
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="tripmeta">
+          <div class="meta-card"><strong>טווח זמן מומלץ:</strong> 09:30–17:00</div>
+          <div class="meta-card"><strong>נסיעה יומית משוערת:</strong> Fieberbrunn ↔ Timok’s Wild World · כ־5–10 ק״מ · כ־10–15 דק׳ נטו</div>
+          <div class="meta-card"><strong>מלון הלילה:</strong> All-Suite Resort Fieberbrunn</div>
+        </div>
+        <div class="main">
+          <div class="box-title">🔵 התוכנית העיקרית — Timok’s Wild World</div>
+          <div class="box-sub">פארק הרים משפחתי עם Alpine Coaster, משחקי מים, מתקני טיפוס ושבילי חוויה בגובה.</div>
+          <div class="btnrow">
+            <a class="btn" href="https://www.google.com/maps/dir/?api=1&origin=All-Suite%20Resort%20Fieberbrunn&destination=All-Suite%20Resort%20Fieberbrunn&travelmode=driving&waypoints=Timok%27s%20Wild%20World%20Fieberbrunn" target="_blank" rel="noopener">ניווט למסלול היום</a>
+            <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Timok%27s%20Wild%20World%20Fieberbrunn" target="_blank" rel="noopener">ניווט לאטרקציה</a>
+            <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=All-Suite%20Resort%20Fieberbrunn" target="_blank" rel="noopener">ניווט למלון</a>
+          </div>
+        </div>
+        <div class="altbox">
+          <div class="box-title">🟡 אופציה חלופית — Familienland Pillersee</div>
+          <div class="box-sub">אם רוצים יום פארק קלאסי עם המון מתקנים במקום הרכבל והפארק ההררי.</div>
+          <div class="btnrow">
+            <a class="btn alt" href="https://www.google.com/maps/dir/?api=1&origin=All-Suite%20Resort%20Fieberbrunn&destination=All-Suite%20Resort%20Fieberbrunn&travelmode=driving&waypoints=Freizeitpark%20Familienland%20St.%20Jakob%20in%20Haus" target="_blank" rel="noopener">ניווט לאופציה החלופית</a>
+            <a class="btn alt" href="https://www.google.com/maps/search/?api=1&query=Freizeitpark%20Familienland%20St.%20Jakob%20in%20Haus" target="_blank" rel="noopener">פתיחת היעד החלופי</a>
+          </div>
+        </div>
+        <div class="stopbox">
+          <div class="box-title">🟣 עצירת דרך מומלצת — Lauchsee</div>
+          <div class="box-sub">אגם רחצה קטן וכיפי ליד Fieberbrunn; מתאים להתרעננות קצרה בבוקר או בסוף היום.</div>
+          <div class="btnrow"><a class="btn stop" href="https://www.google.com/maps/search/?api=1&query=Lauchsee%20Fieberbrunn" target="_blank" rel="noopener">ניווט לעצירה</a></div>
+        </div>
+        <div class="evening">
+          <div class="box-title">🌙 בילוי ערב</div>
+          <div class="box-sub">ארוחת ערב ב‑Fieberbrunn או ערב קל בדירה.</div>
+        </div>
+      </div>
+    </div><div class="day" data-family="tamir" data-id="2026-07-07">
+      <div class="day-head">
+        <div>
+          <h3>ג׳ 7.7 · Erlebnispark Familienland Pillersee</h3>
+          <div class="sub">לינה: All-Suite Resort Fieberbrunn</div>
+        </div>
+        <div class="toggle">
+          <span class="tag tamir">תמיר</span>
+          <input type="checkbox" class="checkbox" aria-label="סמן יום שבוצע">
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="tripmeta">
+          <div class="meta-card"><strong>טווח זמן מומלץ:</strong> 10:00–18:00</div>
+          <div class="meta-card"><strong>נסיעה יומית משוערת:</strong> Fieberbrunn ↔ Familienland · כ־20–25 ק״מ · כ־25–35 דק׳ נטו</div>
+          <div class="meta-card"><strong>מלון הלילה:</strong> All-Suite Resort Fieberbrunn</div>
+        </div>
+        <div class="main">
+          <div class="box-title">🔵 התוכנית העיקרית — Familienland Pillersee</div>
+          <div class="box-sub">יום פארק מלא עם מעל 50 אטרקציות: מתקנים, קרוסלות, מתקני מים, רכבות ואזורים לקטנים וגדולים.</div>
+          <div class="btnrow">
+            <a class="btn" href="https://www.google.com/maps/dir/?api=1&origin=All-Suite%20Resort%20Fieberbrunn&destination=All-Suite%20Resort%20Fieberbrunn&travelmode=driving&waypoints=Freizeitpark%20Familienland%20St.%20Jakob%20in%20Haus" target="_blank" rel="noopener">ניווט למסלול היום</a>
+            <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Freizeitpark%20Familienland%20St.%20Jakob%20in%20Haus" target="_blank" rel="noopener">ניווט לאטרקציה</a>
+            <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=All-Suite%20Resort%20Fieberbrunn" target="_blank" rel="noopener">ניווט למלון</a>
+          </div>
+        </div>
+        <div class="altbox">
+          <div class="box-title">🟡 אופציה חלופית — Timok’s Wild World</div>
+          <div class="box-sub">חלופה טובה יותר אם רוצים יום קצת יותר הרים ונוף ופחות פארק קלאסי.</div>
+          <div class="btnrow">
+            <a class="btn alt" href="https://www.google.com/maps/dir/?api=1&origin=All-Suite%20Resort%20Fieberbrunn&destination=All-Suite%20Resort%20Fieberbrunn&travelmode=driving&waypoints=Timok%27s%20Wild%20World%20Fieberbrunn" target="_blank" rel="noopener">ניווט לאופציה החלופית</a>
+            <a class="btn alt" href="https://www.google.com/maps/search/?api=1&query=Timok%27s%20Wild%20World%20Fieberbrunn" target="_blank" rel="noopener">פתיחת היעד החלופי</a>
+          </div>
+        </div>
+        <div class="stopbox">
+          <div class="box-title">🟣 עצירת דרך מומלצת — אגם Pillersee</div>
+          <div class="box-sub">עצירת צילום או גלידה לפני/אחרי הפארק באגם היפה של העמק.</div>
+          <div class="btnrow"><a class="btn stop" href="https://www.google.com/maps/search/?api=1&query=Pillersee%20Austria" target="_blank" rel="noopener">ניווט לעצירה</a></div>
+        </div>
+        <div class="evening">
+          <div class="box-title">🌙 בילוי ערב</div>
+          <div class="box-sub">חזרה מוקדמת, ארוחת ערב רגועה ולילה קל.</div>
+        </div>
+      </div>
+    </div><div class="day" data-family="both" data-id="2026-07-08">
+      <div class="day-head">
+        <div>
+          <h3>ד׳ 8.7 · מעבר ל‑Itter + Salvistabahn</h3>
+          <div class="sub">לינה: Kummererhof, Itter</div>
+        </div>
+        <div class="toggle">
+          <span class="tag both">ביחד</span>
+          <input type="checkbox" class="checkbox" aria-label="סמן יום שבוצע">
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="tripmeta">
+          <div class="meta-card"><strong>טווח זמן מומלץ:</strong> 11:00–17:30</div>
+          <div class="meta-card"><strong>נסיעה יומית משוערת:</strong> Fieberbrunn → Itter · כ־35–40 ק״מ · כ־40–50 דק׳ נטו</div>
+          <div class="meta-card"><strong>מלון הלילה:</strong> Kummererhof, Itter</div>
+        </div>
+        <div class="main">
+          <div class="box-title">🔵 התוכנית העיקרית — Salvistabahn / Kleine Salve</div>
+          <div class="box-sub">רכבל נוח מאוד ליום מעבר, עם תצפית פנורמית יפה ותחושת &#x27;נחתנו בטירול&#x27; בלי מאמץ גדול.</div>
+          <div class="btnrow">
+            <a class="btn" href="https://www.google.com/maps/dir/?api=1&origin=All-Suite%20Resort%20Fieberbrunn&destination=Kummererhof%20Itter%20Austria&travelmode=driving&waypoints=Salvistabahn%20Itter" target="_blank" rel="noopener">ניווט למסלול היום</a>
+            <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Salvistabahn%20Itter" target="_blank" rel="noopener">ניווט לאטרקציה</a>
+            <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Kummererhof%20Itter%20Austria" target="_blank" rel="noopener">ניווט למלון</a>
+          </div>
+        </div>
+        <div class="altbox">
+          <div class="box-title">🟡 אופציה חלופית — Hexenwasser אם מגיעים מוקדם</div>
+          <div class="box-sub">אופציה מלאה יותר ליום המעבר, אם נכנסים מוקדם ומתחשק כבר לפתוח חזק את אזור Wilder Kaiser.</div>
+          <div class="btnrow">
+            <a class="btn alt" href="https://www.google.com/maps/dir/?api=1&origin=All-Suite%20Resort%20Fieberbrunn&destination=Kummererhof%20Itter%20Austria&travelmode=driving&waypoints=Hexenwasser%20Soell" target="_blank" rel="noopener">ניווט לאופציה החלופית</a>
+            <a class="btn alt" href="https://www.google.com/maps/search/?api=1&query=Hexenwasser%20Soell" target="_blank" rel="noopener">פתיחת היעד החלופי</a>
+          </div>
+        </div>
+        <div class="stopbox">
+          <div class="box-title">🟣 עצירת דרך מומלצת — Kitzbühel</div>
+          <div class="box-sub">עצירת קפה/גלידה קלאסית בעיר ישנה אלגנטית בדרך בין Fieberbrunn לאזור Itter.</div>
+          <div class="btnrow"><a class="btn stop" href="https://www.google.com/maps/search/?api=1&query=Kitzb%C3%BChel%20Austria" target="_blank" rel="noopener">ניווט לעצירה</a></div>
+        </div>
+        <div class="evening">
+          <div class="box-title">🌙 בילוי ערב</div>
+          <div class="box-sub">מפגש משפחות, קניות קטנות וארוחת ערב משותפת.</div>
+        </div>
+      </div>
+    </div><div class="day" data-family="both" data-id="2026-07-09">
+      <div class="day-head">
+        <div>
+          <h3>ה׳ 9.7 · Hexenwasser Söll</h3>
+          <div class="sub">לינה: Kummererhof, Itter</div>
+        </div>
+        <div class="toggle">
+          <span class="tag both">ביחד</span>
+          <input type="checkbox" class="checkbox" aria-label="סמן יום שבוצע">
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="tripmeta">
+          <div class="meta-card"><strong>טווח זמן מומלץ:</strong> 09:30–17:00</div>
+          <div class="meta-card"><strong>נסיעה יומית משוערת:</strong> Itter ↔ Hexenwasser · כ־20–25 ק״מ · כ־25–35 דק׳ נטו</div>
+          <div class="meta-card"><strong>מלון הלילה:</strong> Kummererhof, Itter</div>
+        </div>
+        <div class="main">
+          <div class="box-title">🔵 התוכנית העיקרית — Hexenwasser Söll</div>
+          <div class="box-sub">יום משפחות מעולה עם תחנות מים, משחקים, מסלולים קלים ורכבל; מתאים לטווח גילאים רחב.</div>
+          <div class="btnrow">
+            <a class="btn" href="https://www.google.com/maps/dir/?api=1&origin=Kummererhof%20Itter%20Austria&destination=Kummererhof%20Itter%20Austria&travelmode=driving&waypoints=Hexenwasser%20Soell" target="_blank" rel="noopener">ניווט למסלול היום</a>
+            <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Hexenwasser%20Soell" target="_blank" rel="noopener">ניווט לאטרקציה</a>
+            <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Kummererhof%20Itter%20Austria" target="_blank" rel="noopener">ניווט למלון</a>
+          </div>
+        </div>
+        <div class="altbox">
+          <div class="box-title">🟡 אופציה חלופית — Ellmi’s Magic World</div>
+          <div class="box-sub">חלופה מעט קלה יותר – פארק הרים צבעוני מעל Ellmau, טוב במיוחד לילדים קטנים ובינוניים.</div>
+          <div class="btnrow">
+            <a class="btn alt" href="https://www.google.com/maps/dir/?api=1&origin=Kummererhof%20Itter%20Austria&destination=Kummererhof%20Itter%20Austria&travelmode=driving&waypoints=Ellmi%27s%20Magic%20World%20Ellmau" target="_blank" rel="noopener">ניווט לאופציה החלופית</a>
+            <a class="btn alt" href="https://www.google.com/maps/search/?api=1&query=Ellmi%27s%20Magic%20World%20Ellmau" target="_blank" rel="noopener">פתיחת היעד החלופי</a>
+          </div>
+        </div>
+        <div class="stopbox">
+          <div class="box-title">🟣 עצירת דרך מומלצת — מרכז Söll</div>
+          <div class="box-sub">קפה, גלידה או עצירה קצרה במרכז העיירה לפני/אחרי העלייה ברכבל.</div>
+          <div class="btnrow"><a class="btn stop" href="https://www.google.com/maps/search/?api=1&query=Soell%20Austria" target="_blank" rel="noopener">ניווט לעצירה</a></div>
+        </div>
+        <div class="evening">
+          <div class="box-title">🌙 בילוי ערב</div>
+          <div class="box-sub">ארוחת ערב ב‑Söll או חזרה שקטה לדירה.</div>
+        </div>
+      </div>
+    </div><div class="day" data-family="both" data-id="2026-07-10">
+      <div class="day-head">
+        <div>
+          <h3>ו׳ 10.7 · Ellmi’s Magic World</h3>
+          <div class="sub">לינה: Kummererhof, Itter</div>
+        </div>
+        <div class="toggle">
+          <span class="tag both">ביחד</span>
+          <input type="checkbox" class="checkbox" aria-label="סמן יום שבוצע">
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="tripmeta">
+          <div class="meta-card"><strong>טווח זמן מומלץ:</strong> 09:30–16:30</div>
+          <div class="meta-card"><strong>נסיעה יומית משוערת:</strong> Itter ↔ Ellmi’s Magic World · כ־25–30 ק״מ · כ־30–40 דק׳ נטו</div>
+          <div class="meta-card"><strong>מלון הלילה:</strong> Kummererhof, Itter</div>
+        </div>
+        <div class="main">
+          <div class="box-title">🔵 התוכנית העיקרית — Ellmi’s Magic World</div>
+          <div class="box-sub">פארק הרים בגובה 1,555 מ׳ עם תחנות משחק, יער קסום, נוף ורכבל נוח לעלייה.</div>
+          <div class="btnrow">
+            <a class="btn" href="https://www.google.com/maps/dir/?api=1&origin=Kummererhof%20Itter%20Austria&destination=Kummererhof%20Itter%20Austria&travelmode=driving&waypoints=Ellmi%27s%20Magic%20World%20Ellmau" target="_blank" rel="noopener">ניווט למסלול היום</a>
+            <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Ellmi%27s%20Magic%20World%20Ellmau" target="_blank" rel="noopener">ניווט לאטרקציה</a>
+            <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Kummererhof%20Itter%20Austria" target="_blank" rel="noopener">ניווט למלון</a>
+          </div>
+        </div>
+        <div class="altbox">
+          <div class="box-title">🟡 אופציה חלופית — Hexenwasser Söll</div>
+          <div class="box-sub">להחליף בין הימים אם מזג האוויר מחייב או אם הילדים יעדיפו יותר מתקני מים ופחות מסלול סיפורי.</div>
+          <div class="btnrow">
+            <a class="btn alt" href="https://www.google.com/maps/dir/?api=1&origin=Kummererhof%20Itter%20Austria&destination=Kummererhof%20Itter%20Austria&travelmode=driving&waypoints=Hexenwasser%20Soell" target="_blank" rel="noopener">ניווט לאופציה החלופית</a>
+            <a class="btn alt" href="https://www.google.com/maps/search/?api=1&query=Hexenwasser%20Soell" target="_blank" rel="noopener">פתיחת היעד החלופי</a>
+          </div>
+        </div>
+        <div class="stopbox">
+          <div class="box-title">🟣 עצירת דרך מומלצת — מרכז Ellmau</div>
+          <div class="box-sub">עצירת גלידה / קפה בכפר מטופח ויפה לפני שחוזרים לדירה.</div>
+          <div class="btnrow"><a class="btn stop" href="https://www.google.com/maps/search/?api=1&query=Ellmau%20Austria" target="_blank" rel="noopener">ניווט לעצירה</a></div>
+        </div>
+        <div class="evening">
+          <div class="box-title">🌙 בילוי ערב</div>
+          <div class="box-sub">ארוחת ערב ב‑Ellmau או ערב רגוע בדירה.</div>
+        </div>
+      </div>
+    </div><div class="day" data-family="both" data-id="2026-07-11">
+      <div class="day-head">
+        <div>
+          <h3>שבת 11.7 · יום רגוע / Kleine Salve</h3>
+          <div class="sub">לינה: Kummererhof, Itter</div>
+        </div>
+        <div class="toggle">
+          <span class="tag both">ביחד</span>
+          <input type="checkbox" class="checkbox" aria-label="סמן יום שבוצע">
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="tripmeta">
+          <div class="meta-card"><strong>טווח זמן מומלץ:</strong> גמיש</div>
+          <div class="meta-card"><strong>נסיעה יומית משוערת:</strong> מקומי / מינימלי</div>
+          <div class="meta-card"><strong>מלון הלילה:</strong> Kummererhof, Itter</div>
+        </div>
+        <div class="main">
+          <div class="box-title">🔵 התוכנית העיקרית — לשומרי שבת – מנוחה; לאחרים – Salvistabahn / Kleine Salve</div>
+          <div class="box-sub">אופציה קלה, קרובה ונוחה מאוד – רכבל קצר, תצפית יפה והליכה קלה סביב הפסגה.</div>
+          <div class="btnrow">
+            <a class="btn" href="https://www.google.com/maps/dir/?api=1&origin=Kummererhof%20Itter%20Austria&destination=Kummererhof%20Itter%20Austria&travelmode=driving&waypoints=Salvistabahn%20Itter" target="_blank" rel="noopener">ניווט למסלול היום</a>
+            <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Salvistabahn%20Itter" target="_blank" rel="noopener">ניווט לאטרקציה</a>
+            <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Kummererhof%20Itter%20Austria" target="_blank" rel="noopener">ניווט למלון</a>
+          </div>
+        </div>
+        <div class="altbox">
+          <div class="box-title">🟡 אופציה חלופית — Hexenwasser או Ellmi’s להשלמה</div>
+          <div class="box-sub">יום גיבוי מצוין אם מזג האוויר הזיז אחד מימי טירול הקודמים.</div>
+          <div class="btnrow">
+            <a class="btn alt" href="https://www.google.com/maps/dir/?api=1&origin=Kummererhof%20Itter%20Austria&destination=Kummererhof%20Itter%20Austria&travelmode=driving&waypoints=Hexenwasser%20Soell" target="_blank" rel="noopener">ניווט לאופציה החלופית</a>
+            <a class="btn alt" href="https://www.google.com/maps/search/?api=1&query=Hexenwasser%20Soell" target="_blank" rel="noopener">פתיחת היעד החלופי</a>
+          </div>
+        </div>
+        <div class="stopbox">
+          <div class="box-title">🟣 עצירת דרך מומלצת — מרכז Itter</div>
+          <div class="box-sub">מאפייה/קפה מקומי קצר אם יוצאים מהדירה לטיול קל.</div>
+          <div class="btnrow"><a class="btn stop" href="https://www.google.com/maps/search/?api=1&query=Itter%20Austria" target="_blank" rel="noopener">ניווט לעצירה</a></div>
+        </div>
+        <div class="evening">
+          <div class="box-title">🌙 בילוי ערב</div>
+          <div class="box-sub">ארוחה בדירה או נסיעה קצרה לעיירה.</div>
+        </div>
+      </div>
+    </div><div class="day" data-family="both" data-id="2026-07-12">
+      <div class="day-head">
+        <div>
+          <h3>א׳ 12.7 · מעבר ל‑Stöcklhof דרך Mittersill ו‑Zell am See</h3>
+          <div class="sub">לינה: Stöcklhof</div>
+        </div>
+        <div class="toggle">
+          <span class="tag both">ביחד</span>
+          <input type="checkbox" class="checkbox" aria-label="סמן יום שבוצע">
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="tripmeta">
+          <div class="meta-card"><strong>טווח זמן מומלץ:</strong> 09:30–18:30</div>
+          <div class="meta-card"><strong>נסיעה יומית משוערת:</strong> Itter → Mittersill → Zell am See → Stöcklhof · כ־110–130 ק״מ · כ־2:00–2:30 ש׳ נטו</div>
+          <div class="meta-card"><strong>מלון הלילה:</strong> Stöcklhof</div>
+        </div>
+        <div class="main">
+          <div class="box-title">🔵 התוכנית העיקרית — National Park Worlds Mittersill + Zell am See</div>
+          <div class="box-sub">עצירה חכמה ליום מעבר: מרכז מבקרים אינטראקטיבי ומקורה, ואז טיילת האגם של Zell am See לקפה/גלידה.</div>
+          <div class="btnrow">
+            <a class="btn" href="https://www.google.com/maps/dir/?api=1&origin=Kummererhof%20Itter%20Austria&destination=St%C3%B6cklhof%20Austria&travelmode=driving&waypoints=National%20Park%20Worlds%20Mittersill%7CEsplanade%20Zell%20am%20See" target="_blank" rel="noopener">ניווט למסלול היום</a>
+            <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=National%20Park%20Worlds%20Mittersill" target="_blank" rel="noopener">ניווט לאטרקציה</a>
+            <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=St%C3%B6cklhof%20Austria" target="_blank" rel="noopener">ניווט למלון</a>
+          </div>
+        </div>
+        <div class="altbox">
+          <div class="box-title">🟡 אופציה חלופית — Zell am See רגוע בלבד</div>
+          <div class="box-sub">אם לא רוצים מוזיאון/מרכז מבקרים – פשוט מגיעים לאגם, עושים טיילת, מרכז וגלידה וממשיכים למלון.</div>
+          <div class="btnrow">
+            <a class="btn alt" href="https://www.google.com/maps/dir/?api=1&origin=Kummererhof%20Itter%20Austria&destination=St%C3%B6cklhof%20Austria&travelmode=driving&waypoints=Esplanade%20Zell%20am%20See" target="_blank" rel="noopener">ניווט לאופציה החלופית</a>
+            <a class="btn alt" href="https://www.google.com/maps/search/?api=1&query=Esplanade%20Zell%20am%20See" target="_blank" rel="noopener">פתיחת היעד החלופי</a>
+          </div>
+        </div>
+        <div class="stopbox">
+          <div class="box-title">🟣 עצירת דרך מומלצת — Pass Thurn / נקודת נוף</div>
+          <div class="box-sub">עצירת דרך קלה ונופית על הציר בין טירול לפינצגאו – טובה למתיחת רגליים וצילום.</div>
+          <div class="btnrow"><a class="btn stop" href="https://www.google.com/maps/search/?api=1&query=Pass%20Thurn%20Austria" target="_blank" rel="noopener">ניווט לעצירה</a></div>
+        </div>
+        <div class="evening">
+          <div class="box-title">🌙 בילוי ערב</div>
+          <div class="box-sub">צ׳ק‑אין, ארוחת ערב קלה ומנוחה.</div>
+        </div>
+      </div>
+    </div><div class="day" data-family="both" data-id="2026-07-13">
+      <div class="day-head">
+        <div>
+          <h3>ב׳ 13.7 · מעבר למונדזה דרך St. Wolfgang / SchafbergBahn</h3>
+          <div class="sub">לינה: das mondsee</div>
+        </div>
+        <div class="toggle">
+          <span class="tag both">ביחד</span>
+          <input type="checkbox" class="checkbox" aria-label="סמן יום שבוצע">
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="tripmeta">
+          <div class="meta-card"><strong>טווח זמן מומלץ:</strong> 09:30–18:30</div>
+          <div class="meta-card"><strong>נסיעה יומית משוערת:</strong> Stöcklhof → St. Wolfgang → Mondsee · כ־150–180 ק״מ · כ־2:30–3:10 ש׳ נטו</div>
+          <div class="meta-card"><strong>מלון הלילה:</strong> das mondsee</div>
+        </div>
+        <div class="main">
+          <div class="box-title">🔵 התוכנית העיקרית — St. Wolfgang + SchafbergBahn</div>
+          <div class="box-sub">עיירת אגם קלאסית ורכבת שיניים נופית לפסגה – יום מעבר שמרגיש כמו אטרקציה מלאה.</div>
+          <div class="btnrow">
+            <a class="btn" href="https://www.google.com/maps/dir/?api=1&origin=St%C3%B6cklhof%20Austria&destination=das%20mondsee%20Austria&travelmode=driving&waypoints=Schafbergbahn%20St.%20Wolfgang" target="_blank" rel="noopener">ניווט למסלול היום</a>
+            <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Schafbergbahn%20St.%20Wolfgang" target="_blank" rel="noopener">ניווט לאטרקציה</a>
+            <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=das%20mondsee%20Austria" target="_blank" rel="noopener">ניווט למלון</a>
+          </div>
+        </div>
+        <div class="altbox">
+          <div class="box-title">🟡 אופציה חלופית — St. Wolfgang בלי עלייה ברכבת</div>
+          <div class="box-sub">חלופה קלה וזולה יותר: שיטוט בעיירה, קפה, טיילת, ואז הגעה מוקדמת יותר למונדזה.</div>
+          <div class="btnrow">
+            <a class="btn alt" href="https://www.google.com/maps/dir/?api=1&origin=St%C3%B6cklhof%20Austria&destination=das%20mondsee%20Austria&travelmode=driving&waypoints=St.%20Wolfgang%20im%20Salzkammergut%20Austria" target="_blank" rel="noopener">ניווט לאופציה החלופית</a>
+            <a class="btn alt" href="https://www.google.com/maps/search/?api=1&query=St.%20Wolfgang%20im%20Salzkammergut%20Austria" target="_blank" rel="noopener">פתיחת היעד החלופי</a>
+          </div>
+        </div>
+        <div class="stopbox">
+          <div class="box-title">🟣 עצירת דרך מומלצת — Bad Ischl</div>
+          <div class="box-sub">עצירת קפה / גלידה מושלמת באמצע הדרך, עם מרכז היסטורי נעים ושקט יותר מהאגמים.</div>
+          <div class="btnrow"><a class="btn stop" href="https://www.google.com/maps/search/?api=1&query=Bad%20Ischl%20Austria" target="_blank" rel="noopener">ניווט לעצירה</a></div>
+        </div>
+        <div class="evening">
+          <div class="box-title">🌙 בילוי ערב</div>
+          <div class="box-sub">טיילת Mondsee, ארוחת ערב ליד האגם וערב רגוע.</div>
+        </div>
+      </div>
+    </div><div class="day" data-family="both" data-id="2026-07-14">
+      <div class="day-head">
+        <div>
+          <h3>ג׳ 14.7 · Mondsee רגוע</h3>
+          <div class="sub">לינה: das mondsee</div>
+        </div>
+        <div class="toggle">
+          <span class="tag both">ביחד</span>
+          <input type="checkbox" class="checkbox" aria-label="סמן יום שבוצע">
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="tripmeta">
+          <div class="meta-card"><strong>טווח זמן מומלץ:</strong> 10:00–17:00</div>
+          <div class="meta-card"><strong>נסיעה יומית משוערת:</strong> מקומי / קצר</div>
+          <div class="meta-card"><strong>מלון הלילה:</strong> das mondsee</div>
+        </div>
+        <div class="main">
+          <div class="box-title">🔵 התוכנית העיקרית — יום אגם ב‑Mondsee</div>
+          <div class="box-sub">רחצה, סירות, הליכה בטיילת, מרכז העיירה וזמן להוריד קצב באמצע הטיול.</div>
+          <div class="btnrow">
+            <a class="btn" href="https://www.google.com/maps/dir/?api=1&origin=das%20mondsee%20Austria&destination=das%20mondsee%20Austria&travelmode=driving&waypoints=Mondsee%20Austria" target="_blank" rel="noopener">ניווט למסלול היום</a>
+            <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Mondsee%20Austria" target="_blank" rel="noopener">ניווט לאטרקציה</a>
+            <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=das%20mondsee%20Austria" target="_blank" rel="noopener">ניווט למלון</a>
+          </div>
+        </div>
+        <div class="altbox">
+          <div class="box-title">🟡 אופציה חלופית — Wolfgangsee / St. Gilgen</div>
+          <div class="box-sub">אם רוצים עוד יום נוף – קופצים לאגם אחר באזור, עם עיירת אגם יפה ואווירה קצת שונה.</div>
+          <div class="btnrow">
+            <a class="btn alt" href="https://www.google.com/maps/dir/?api=1&origin=das%20mondsee%20Austria&destination=das%20mondsee%20Austria&travelmode=driving&waypoints=St.%20Gilgen%20Austria" target="_blank" rel="noopener">ניווט לאופציה החלופית</a>
+            <a class="btn alt" href="https://www.google.com/maps/search/?api=1&query=St.%20Gilgen%20Austria" target="_blank" rel="noopener">פתיחת היעד החלופי</a>
+          </div>
+        </div>
+        <div class="stopbox">
+          <div class="box-title">🟣 עצירת דרך מומלצת — Basilika / Altstadt Mondsee</div>
+          <div class="box-sub">עצירת חובה קטנה במרכז מונדזה – כיכר יפה, בזיליקה, קפה וחנויות מקומיות.</div>
+          <div class="btnrow"><a class="btn stop" href="https://www.google.com/maps/search/?api=1&query=Basilika%20Mondsee" target="_blank" rel="noopener">ניווט לעצירה</a></div>
+        </div>
+        <div class="evening">
+          <div class="box-title">🌙 בילוי ערב</div>
+          <div class="box-sub">מסעדה על האגם / גלידה / ערב חופשי.</div>
+        </div>
+      </div>
+    </div><div class="day" data-family="both" data-id="2026-07-15">
+      <div class="day-head">
+        <div>
+          <h3>ד׳ 15.7 · Fantasiana Strasswalchen</h3>
+          <div class="sub">לינה: das mondsee</div>
+        </div>
+        <div class="toggle">
+          <span class="tag both">ביחד</span>
+          <input type="checkbox" class="checkbox" aria-label="סמן יום שבוצע">
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="tripmeta">
+          <div class="meta-card"><strong>טווח זמן מומלץ:</strong> 09:30–18:00</div>
+          <div class="meta-card"><strong>נסיעה יומית משוערת:</strong> Mondsee ↔ Fantasiana · כ־40–45 ק״מ · כ־40–50 דק׳ נטו</div>
+          <div class="meta-card"><strong>מלון הלילה:</strong> das mondsee</div>
+        </div>
+        <div class="main">
+          <div class="box-title">🔵 התוכנית העיקרית — Fantasiana</div>
+          <div class="box-sub">יום פארק מלא עם אזורי נושא, רכבות, מתקנים משפחתיים ואווירה של פארק שעשועים אמיתי.</div>
+          <div class="btnrow">
+            <a class="btn" href="https://www.google.com/maps/dir/?api=1&origin=das%20mondsee%20Austria&destination=das%20mondsee%20Austria&travelmode=driving&waypoints=FANTASIANA%20Erlebnispark%20Strasswalchen" target="_blank" rel="noopener">ניווט למסלול היום</a>
+            <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=FANTASIANA%20Erlebnispark%20Strasswalchen" target="_blank" rel="noopener">ניווט לאטרקציה</a>
+            <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=das%20mondsee%20Austria" target="_blank" rel="noopener">ניווט למלון</a>
+          </div>
+        </div>
+        <div class="altbox">
+          <div class="box-title">🟡 אופציה חלופית — Mondsee רגוע במקום פארק</div>
+          <div class="box-sub">אם מרגישים שכבר היה מספיק &#x27;פארק&#x27; בטירול – מחליפים ליום אגם, סירות ומנוחה.</div>
+          <div class="btnrow">
+            <a class="btn alt" href="https://www.google.com/maps/dir/?api=1&origin=das%20mondsee%20Austria&destination=das%20mondsee%20Austria&travelmode=driving&waypoints=Mondsee%20Austria" target="_blank" rel="noopener">ניווט לאופציה החלופית</a>
+            <a class="btn alt" href="https://www.google.com/maps/search/?api=1&query=Mondsee%20Austria" target="_blank" rel="noopener">פתיחת היעד החלופי</a>
+          </div>
+        </div>
+        <div class="stopbox">
+          <div class="box-title">🟣 עצירת דרך מומלצת — Strasswalchen</div>
+          <div class="box-sub">קפה קצר או עצירת סופר לפני/אחרי הפארק אם צריך משהו לדרך.</div>
+          <div class="btnrow"><a class="btn stop" href="https://www.google.com/maps/search/?api=1&query=Strasswalchen%20Austria" target="_blank" rel="noopener">ניווט לעצירה</a></div>
+        </div>
+        <div class="evening">
+          <div class="box-title">🌙 בילוי ערב</div>
+          <div class="box-sub">חזרה למונדזה, ארוחת ערב וניקוי כוחות.</div>
+        </div>
+      </div>
+    </div><div class="day" data-family="tamir" data-id="2026-07-16-T">
+      <div class="day-head">
+        <div>
+          <h3>ה׳ 16.7 · יום פיצול — תמיר: קניות + לינה ליד השדה</h3>
+          <div class="sub">לינה: Leonardo Hotel Salzburg Airport</div>
+        </div>
+        <div class="toggle">
+          <span class="tag tamir">תמיר</span>
+          <input type="checkbox" class="checkbox" aria-label="סמן יום שבוצע">
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="tripmeta">
+          <div class="meta-card"><strong>טווח זמן מומלץ:</strong> 10:00–18:00</div>
+          <div class="meta-card"><strong>נסיעה יומית משוערת:</strong> Mondsee → EUROPARK / Outlet → Leonardo · כ־35–50 ק״מ · כ־40–60 דק׳ נטו</div>
+          <div class="meta-card"><strong>מלון הלילה:</strong> Leonardo Hotel Salzburg Airport</div>
+        </div>
+        <div class="main">
+          <div class="box-title">🔵 התוכנית העיקרית — EUROPARK Salzburg</div>
+          <div class="box-sub">מרכז קניות גדול ונוח עם חניה חינם, אוכל והשלמות אחרונות לפני הטיסה.</div>
+          <div class="btnrow">
+            <a class="btn" href="https://www.google.com/maps/dir/?api=1&origin=das%20mondsee%20Austria&destination=Leonardo%20Hotel%20Salzburg%20Airport&travelmode=driving&waypoints=EUROPARK%20Salzburg" target="_blank" rel="noopener">ניווט למסלול היום</a>
+            <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=EUROPARK%20Salzburg" target="_blank" rel="noopener">ניווט לאטרקציה</a>
+            <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Leonardo%20Hotel%20Salzburg%20Airport" target="_blank" rel="noopener">ניווט למלון</a>
+          </div>
+        </div>
+        <div class="altbox">
+          <div class="box-title">🟡 אופציה חלופית — Designer Outlet Salzburg</div>
+          <div class="box-sub">חלופה טובה יותר למי שמחפש מותגים והנחות במקום קניון קלאסי.</div>
+          <div class="btnrow">
+            <a class="btn alt" href="https://www.google.com/maps/dir/?api=1&origin=das%20mondsee%20Austria&destination=Leonardo%20Hotel%20Salzburg%20Airport&travelmode=driving&waypoints=Designer%20Outlet%20Salzburg" target="_blank" rel="noopener">ניווט לאופציה החלופית</a>
+            <a class="btn alt" href="https://www.google.com/maps/search/?api=1&query=Designer%20Outlet%20Salzburg" target="_blank" rel="noopener">פתיחת היעד החלופי</a>
+          </div>
+        </div>
+        <div class="stopbox">
+          <div class="box-title">🟣 עצירת דרך מומלצת — Wals / קפה לפני הצ׳ק‑אין</div>
+          <div class="box-sub">עצירה קצרה לאוכל קל או קפה באזור המלון והשדה, בלי להיכנס לעוד נסיעה.</div>
+          <div class="btnrow"><a class="btn stop" href="https://www.google.com/maps/search/?api=1&query=Wals%20Austria" target="_blank" rel="noopener">ניווט לעצירה</a></div>
+        </div>
+        <div class="evening">
+          <div class="box-title">🌙 בילוי ערב</div>
+          <div class="box-sub">ארוחת ערב קלה, סידור מזוודות ושינה מוקדמת.</div>
+        </div>
+      </div>
+    </div><div class="day" data-family="ayal" data-id="2026-07-16-A">
+      <div class="day-head">
+        <div>
+          <h3>ה׳ 16.7 · יום פיצול — אייל: מעבר ל‑Obertraun + Gosausee</h3>
+          <div class="sub">לינה: Dormio Resort Obertraun</div>
+        </div>
+        <div class="toggle">
+          <span class="tag ayal">אייל</span>
+          <input type="checkbox" class="checkbox" aria-label="סמן יום שבוצע">
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="tripmeta">
+          <div class="meta-card"><strong>טווח זמן מומלץ:</strong> 10:00–18:30</div>
+          <div class="meta-card"><strong>נסיעה יומית משוערת:</strong> Mondsee → Gosausee → Obertraun · כ־95–110 ק״מ · כ־1:50–2:10 ש׳ נטו</div>
+          <div class="meta-card"><strong>מלון הלילה:</strong> Dormio Resort Obertraun</div>
+        </div>
+        <div class="main">
+          <div class="box-title">🔵 התוכנית העיקרית — Gosausee בדרך ל‑Obertraun</div>
+          <div class="box-sub">עצירת טבע יפה וקלה על הדרך, שמוסיפה תוכן ליום מעבר בלי להכביד.</div>
+          <div class="btnrow">
+            <a class="btn" href="https://www.google.com/maps/dir/?api=1&origin=das%20mondsee%20Austria&destination=Dormio%20Resort%20Obertraun&travelmode=driving&waypoints=Gosausee%20Austria" target="_blank" rel="noopener">ניווט למסלול היום</a>
+            <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Gosausee%20Austria" target="_blank" rel="noopener">ניווט לאטרקציה</a>
+            <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Dormio%20Resort%20Obertraun" target="_blank" rel="noopener">ניווט למלון</a>
+          </div>
+        </div>
+        <div class="altbox">
+          <div class="box-title">🟡 אופציה חלופית — Hallstatt קצר בדרך</div>
+          <div class="box-sub">אם Gosausee כבר בוצע והעדיפות היא כפר יפה ותמונות – מחליפים ל‑Hallstatt.</div>
+          <div class="btnrow">
+            <a class="btn alt" href="https://www.google.com/maps/dir/?api=1&origin=das%20mondsee%20Austria&destination=Dormio%20Resort%20Obertraun&travelmode=driving&waypoints=Parking%20P1%20Hallstatt%20Austria" target="_blank" rel="noopener">ניווט לאופציה החלופית</a>
+            <a class="btn alt" href="https://www.google.com/maps/search/?api=1&query=Parking%20P1%20Hallstatt%20Austria" target="_blank" rel="noopener">פתיחת היעד החלופי</a>
+          </div>
+        </div>
+        <div class="stopbox">
+          <div class="box-title">🟣 עצירת דרך מומלצת — Bad Ischl</div>
+          <div class="box-sub">עצירת קפה/גלידה נוחה באמצע הדרך אם לא רוצים להגיע ברצף אחד.</div>
+          <div class="btnrow"><a class="btn stop" href="https://www.google.com/maps/search/?api=1&query=Bad%20Ischl%20Austria" target="_blank" rel="noopener">ניווט לעצירה</a></div>
+        </div>
+        <div class="evening">
+          <div class="box-title">🌙 בילוי ערב</div>
+          <div class="box-sub">בריכה במלון או ארוחת ערב באזור האגם.</div>
+        </div>
+      </div>
+    </div><div class="day" data-family="ayal" data-id="2026-07-17">
+      <div class="day-head">
+        <div>
+          <h3>ו׳ 17.7 · Hallstatt</h3>
+          <div class="sub">לינה: Dormio Resort Obertraun</div>
+        </div>
+        <div class="toggle">
+          <span class="tag ayal">אייל</span>
+          <input type="checkbox" class="checkbox" aria-label="סמן יום שבוצע">
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="tripmeta">
+          <div class="meta-card"><strong>טווח זמן מומלץ:</strong> 09:00–15:00</div>
+          <div class="meta-card"><strong>נסיעה יומית משוערת:</strong> Obertraun ↔ Hallstatt · כ־10–15 ק״מ · כ־15–20 דק׳ נטו</div>
+          <div class="meta-card"><strong>מלון הלילה:</strong> Dormio Resort Obertraun</div>
+        </div>
+        <div class="main">
+          <div class="box-title">🔵 התוכנית העיקרית — Hallstatt</div>
+          <div class="box-sub">כפר אגם מפורסם עם סמטאות יפות, תצפיות וטיילת. הכי טוב לצאת מוקדם לפני העומס.</div>
+          <div class="btnrow">
+            <a class="btn" href="https://www.google.com/maps/dir/?api=1&origin=Dormio%20Resort%20Obertraun&destination=Dormio%20Resort%20Obertraun&travelmode=driving&waypoints=Parking%20P1%20Hallstatt%20Austria" target="_blank" rel="noopener">ניווט למסלול היום</a>
+            <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Parking%20P1%20Hallstatt%20Austria" target="_blank" rel="noopener">ניווט לאטרקציה</a>
+            <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Dormio%20Resort%20Obertraun" target="_blank" rel="noopener">ניווט למלון</a>
+          </div>
+        </div>
+        <div class="altbox">
+          <div class="box-title">🟡 אופציה חלופית — Gosausee</div>
+          <div class="box-sub">חלופה רגועה ופחות עמוסה למי שמעדיף טבע והליכה קלה על פני כפר תיירותי.</div>
+          <div class="btnrow">
+            <a class="btn alt" href="https://www.google.com/maps/dir/?api=1&origin=Dormio%20Resort%20Obertraun&destination=Dormio%20Resort%20Obertraun&travelmode=driving&waypoints=Gosausee%20Austria" target="_blank" rel="noopener">ניווט לאופציה החלופית</a>
+            <a class="btn alt" href="https://www.google.com/maps/search/?api=1&query=Gosausee%20Austria" target="_blank" rel="noopener">פתיחת היעד החלופי</a>
+          </div>
+        </div>
+        <div class="stopbox">
+          <div class="box-title">🟣 עצירת דרך מומלצת — Obertraun Seepromenade</div>
+          <div class="box-sub">עצירת צילום קצרה לפני/אחרי Hallstatt, ממש ליד מקום הלינה.</div>
+          <div class="btnrow"><a class="btn stop" href="https://www.google.com/maps/search/?api=1&query=Obertraun%20Austria" target="_blank" rel="noopener">ניווט לעצירה</a></div>
+        </div>
+        <div class="evening">
+          <div class="box-title">🌙 בילוי ערב</div>
+          <div class="box-sub">ארוחת ערב שקטה ב‑Obertraun / במלון.</div>
+        </div>
+      </div>
+    </div><div class="day" data-family="ayal" data-id="2026-07-18">
+      <div class="day-head">
+        <div>
+          <h3>שבת 18.7 · יום רגוע / Gosausee</h3>
+          <div class="sub">לינה: Dormio Resort Obertraun</div>
+        </div>
+        <div class="toggle">
+          <span class="tag ayal">אייל</span>
+          <input type="checkbox" class="checkbox" aria-label="סמן יום שבוצע">
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="tripmeta">
+          <div class="meta-card"><strong>טווח זמן מומלץ:</strong> גמיש</div>
+          <div class="meta-card"><strong>נסיעה יומית משוערת:</strong> מקומי / קצר</div>
+          <div class="meta-card"><strong>מלון הלילה:</strong> Dormio Resort Obertraun</div>
+        </div>
+        <div class="main">
+          <div class="box-title">🔵 התוכנית העיקרית — לשומרי שבת – מנוחה; לאחרים – Gosausee</div>
+          <div class="box-sub">אחד הימים הקלים והיפים באזור, עם טבע, אגם ונוף אלפיני בלי צורך ביום כבישים.</div>
+          <div class="btnrow">
+            <a class="btn" href="https://www.google.com/maps/dir/?api=1&origin=Dormio%20Resort%20Obertraun&destination=Dormio%20Resort%20Obertraun&travelmode=driving&waypoints=Gosausee%20Austria" target="_blank" rel="noopener">ניווט למסלול היום</a>
+            <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Gosausee%20Austria" target="_blank" rel="noopener">ניווט לאטרקציה</a>
+            <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Dormio%20Resort%20Obertraun" target="_blank" rel="noopener">ניווט למלון</a>
+          </div>
+        </div>
+        <div class="altbox">
+          <div class="box-title">🟡 אופציה חלופית — Bad Ischl</div>
+          <div class="box-sub">חלופה עירונית־רגועה יותר: מדרחוב, קפה, גלידה ומעט קניות במקום יום טבע.</div>
+          <div class="btnrow">
+            <a class="btn alt" href="https://www.google.com/maps/dir/?api=1&origin=Dormio%20Resort%20Obertraun&destination=Dormio%20Resort%20Obertraun&travelmode=driving&waypoints=Bad%20Ischl%20Austria" target="_blank" rel="noopener">ניווט לאופציה החלופית</a>
+            <a class="btn alt" href="https://www.google.com/maps/search/?api=1&query=Bad%20Ischl%20Austria" target="_blank" rel="noopener">פתיחת היעד החלופי</a>
+          </div>
+        </div>
+        <div class="stopbox">
+          <div class="box-title">🟣 עצירת דרך מומלצת — Hallstättersee viewpoint</div>
+          <div class="box-sub">עצירה קלה לצילום או הליכה קצרה ליד המים אם לא יוצאים ליום מלא.</div>
+          <div class="btnrow"><a class="btn stop" href="https://www.google.com/maps/search/?api=1&query=Hallstatter%20See%20Austria" target="_blank" rel="noopener">ניווט לעצירה</a></div>
+        </div>
+        <div class="evening">
+          <div class="box-title">🌙 בילוי ערב</div>
+          <div class="box-sub">ערב רגוע במלון.</div>
+        </div>
+      </div>
+    </div><div class="day" data-family="ayal" data-id="2026-07-19">
+      <div class="day-head">
+        <div>
+          <h3>א׳ 19.7 · St. Wolfgang / SchafbergBahn</h3>
+          <div class="sub">לינה: Dormio Resort Obertraun</div>
+        </div>
+        <div class="toggle">
+          <span class="tag ayal">אייל</span>
+          <input type="checkbox" class="checkbox" aria-label="סמן יום שבוצע">
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="tripmeta">
+          <div class="meta-card"><strong>טווח זמן מומלץ:</strong> 09:00–18:00</div>
+          <div class="meta-card"><strong>נסיעה יומית משוערת:</strong> Obertraun ↔ St. Wolfgang · כ־95–105 ק״מ · כ־1:40–1:55 ש׳ נטו</div>
+          <div class="meta-card"><strong>מלון הלילה:</strong> Dormio Resort Obertraun</div>
+        </div>
+        <div class="main">
+          <div class="box-title">🔵 התוכנית העיקרית — St. Wolfgang + SchafbergBahn</div>
+          <div class="box-sub">עיירת אגם יפה מאוד ורכבת שיניים נופית לפסגה – יום נוף נהדר בלי מסלול קשה.</div>
+          <div class="btnrow">
+            <a class="btn" href="https://www.google.com/maps/dir/?api=1&origin=Dormio%20Resort%20Obertraun&destination=Dormio%20Resort%20Obertraun&travelmode=driving&waypoints=Schafbergbahn%20St.%20Wolfgang" target="_blank" rel="noopener">ניווט למסלול היום</a>
+            <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Schafbergbahn%20St.%20Wolfgang" target="_blank" rel="noopener">ניווט לאטרקציה</a>
+            <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Dormio%20Resort%20Obertraun" target="_blank" rel="noopener">ניווט למלון</a>
+          </div>
+        </div>
+        <div class="altbox">
+          <div class="box-title">🟡 אופציה חלופית — Bad Ischl + St. Wolfgang בלי רכבת</div>
+          <div class="box-sub">חלופה קלה וזולה יותר: יום עיירות, קפה, גלידה ונוף אגם בלי עלייה לפסגה.</div>
+          <div class="btnrow">
+            <a class="btn alt" href="https://www.google.com/maps/dir/?api=1&origin=Dormio%20Resort%20Obertraun&destination=Dormio%20Resort%20Obertraun&travelmode=driving&waypoints=Bad%20Ischl%20Austria%7CSt.%20Wolfgang%20im%20Salzkammergut%20Austria" target="_blank" rel="noopener">ניווט לאופציה החלופית</a>
+            <a class="btn alt" href="https://www.google.com/maps/search/?api=1&query=Bad%20Ischl%20Austria" target="_blank" rel="noopener">פתיחת היעד החלופי</a>
+          </div>
+        </div>
+        <div class="stopbox">
+          <div class="box-title">🟣 עצירת דרך מומלצת — Bad Ischl</div>
+          <div class="box-sub">עצירת דרך קלאסית ונוחה מאוד באמצע המסלול.</div>
+          <div class="btnrow"><a class="btn stop" href="https://www.google.com/maps/search/?api=1&query=Bad%20Ischl%20Austria" target="_blank" rel="noopener">ניווט לעצירה</a></div>
+        </div>
+        <div class="evening">
+          <div class="box-title">🌙 בילוי ערב</div>
+          <div class="box-sub">מסעדה על האגם או חזרה מוקדמת ל‑Dormio.</div>
+        </div>
+      </div>
+    </div><div class="day" data-family="ayal" data-id="2026-07-20">
+      <div class="day-head">
+        <div>
+          <h3>ב׳ 20.7 · מעבר לזלצבורג + קניות</h3>
+          <div class="sub">לינה: Leonardo Hotel Salzburg Airport</div>
+        </div>
+        <div class="toggle">
+          <span class="tag ayal">אייל</span>
+          <input type="checkbox" class="checkbox" aria-label="סמן יום שבוצע">
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="tripmeta">
+          <div class="meta-card"><strong>טווח זמן מומלץ:</strong> 10:00–18:30</div>
+          <div class="meta-card"><strong>נסיעה יומית משוערת:</strong> Obertraun → Salzburg Airport area · כ־80–90 ק״מ · כ־1:15–1:30 ש׳ נטו</div>
+          <div class="meta-card"><strong>מלון הלילה:</strong> Leonardo Hotel Salzburg Airport</div>
+        </div>
+        <div class="main">
+          <div class="box-title">🔵 התוכנית העיקרית — EUROPARK Salzburg</div>
+          <div class="box-sub">קניון גדול ונוח עם הרבה חנויות, חניה חינם ואוכל – מושלם ליום מעבר.</div>
+          <div class="btnrow">
+            <a class="btn" href="https://www.google.com/maps/dir/?api=1&origin=Dormio%20Resort%20Obertraun&destination=Leonardo%20Hotel%20Salzburg%20Airport&travelmode=driving&waypoints=EUROPARK%20Salzburg" target="_blank" rel="noopener">ניווט למסלול היום</a>
+            <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=EUROPARK%20Salzburg" target="_blank" rel="noopener">ניווט לאטרקציה</a>
+            <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Leonardo%20Hotel%20Salzburg%20Airport" target="_blank" rel="noopener">ניווט למלון</a>
+          </div>
+        </div>
+        <div class="altbox">
+          <div class="box-title">🟡 אופציה חלופית — Designer Outlet Salzburg</div>
+          <div class="box-sub">למי שמעדיף מותגים והנחות על פני קניון קלאסי.</div>
+          <div class="btnrow">
+            <a class="btn alt" href="https://www.google.com/maps/dir/?api=1&origin=Dormio%20Resort%20Obertraun&destination=Leonardo%20Hotel%20Salzburg%20Airport&travelmode=driving&waypoints=Designer%20Outlet%20Salzburg" target="_blank" rel="noopener">ניווט לאופציה החלופית</a>
+            <a class="btn alt" href="https://www.google.com/maps/search/?api=1&query=Designer%20Outlet%20Salzburg" target="_blank" rel="noopener">פתיחת היעד החלופי</a>
+          </div>
+        </div>
+        <div class="stopbox">
+          <div class="box-title">🟣 עצירת דרך מומלצת — Mondsee לעצירת קפה</div>
+          <div class="box-sub">אם לא ממהרים, Mondsee היא עצירת דרך נחמדה מאוד גם בדרך חזרה לכיוון זלצבורג.</div>
+          <div class="btnrow"><a class="btn stop" href="https://www.google.com/maps/search/?api=1&query=Mondsee%20Austria" target="_blank" rel="noopener">ניווט לעצירה</a></div>
+        </div>
+        <div class="evening">
+          <div class="box-title">🌙 בילוי ערב</div>
+          <div class="box-sub">צ׳ק‑אין, ארוחת ערב קלה והכנות לימים האחרונים.</div>
+        </div>
+      </div>
+    </div><div class="day" data-family="ayal" data-id="2026-07-21">
+      <div class="day-head">
+        <div>
+          <h3>ג׳ 21.7 · Hellbrunn</h3>
+          <div class="sub">לינה: Leonardo Hotel Salzburg Airport</div>
+        </div>
+        <div class="toggle">
+          <span class="tag ayal">אייל</span>
+          <input type="checkbox" class="checkbox" aria-label="סמן יום שבוצע">
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="tripmeta">
+          <div class="meta-card"><strong>טווח זמן מומלץ:</strong> 10:00–16:00</div>
+          <div class="meta-card"><strong>נסיעה יומית משוערת:</strong> Leonardo ↔ Hellbrunn · כ־10–15 ק״מ · כ־15–25 דק׳ נטו</div>
+          <div class="meta-card"><strong>מלון הלילה:</strong> Leonardo Hotel Salzburg Airport</div>
+        </div>
+        <div class="main">
+          <div class="box-title">🔵 התוכנית העיקרית — Hellbrunn</div>
+          <div class="box-sub">ארמון, גנים ו‑Trick Fountains – ביקור קליל, כיפי ומאוד מתאים ליום האחרון.</div>
+          <div class="btnrow">
+            <a class="btn" href="https://www.google.com/maps/dir/?api=1&origin=Leonardo%20Hotel%20Salzburg%20Airport&destination=Leonardo%20Hotel%20Salzburg%20Airport&travelmode=driving&waypoints=Schloss%20Hellbrunn%20Salzburg" target="_blank" rel="noopener">ניווט למסלול היום</a>
+            <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Schloss%20Hellbrunn%20Salzburg" target="_blank" rel="noopener">ניווט לאטרקציה</a>
+            <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Leonardo%20Hotel%20Salzburg%20Airport" target="_blank" rel="noopener">ניווט למלון</a>
+          </div>
+        </div>
+        <div class="altbox">
+          <div class="box-title">🟡 אופציה חלופית — Salzburg Altstadt / Mirabell</div>
+          <div class="box-sub">אם מתחשק יום עירוני יותר – מרכז זלצבורג, Mirabell, קפה וקצת שיטוט.</div>
+          <div class="btnrow">
+            <a class="btn alt" href="https://www.google.com/maps/dir/?api=1&origin=Leonardo%20Hotel%20Salzburg%20Airport&destination=Leonardo%20Hotel%20Salzburg%20Airport&travelmode=driving&waypoints=Mirabell%20Palace%20Salzburg" target="_blank" rel="noopener">ניווט לאופציה החלופית</a>
+            <a class="btn alt" href="https://www.google.com/maps/search/?api=1&query=Mirabell%20Palace%20Salzburg" target="_blank" rel="noopener">פתיחת היעד החלופי</a>
+          </div>
+        </div>
+        <div class="stopbox">
+          <div class="box-title">🟣 עצירת דרך מומלצת — Leopoldskron</div>
+          <div class="box-sub">תצפית קצרה יפה על הארמון והאגם אם רוצים עצירת צילום בדרך.</div>
+          <div class="btnrow"><a class="btn stop" href="https://www.google.com/maps/search/?api=1&query=Schloss%20Leopoldskron%20Salzburg" target="_blank" rel="noopener">ניווט לעצירה</a></div>
+        </div>
+        <div class="evening">
+          <div class="box-title">🌙 בילוי ערב</div>
+          <div class="box-sub">ארוחת ערב אחרונה ואריזה רגועה.</div>
+        </div>
+      </div>
+    </div><div class="day" data-family="tamir" data-id="2026-07-17-flight">
+      <div class="day-head">
+        <div>
+          <h3>ו׳ 17.7 · טיסה חזרה</h3>
+          <div class="sub">לינה: —</div>
+        </div>
+        <div class="toggle">
+          <span class="tag tamir">תמיר</span>
+          <input type="checkbox" class="checkbox" aria-label="סמן יום שבוצע">
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="tripmeta">
+          <div class="meta-card"><strong>טווח זמן מומלץ:</strong> מוקדם בבוקר</div>
+          <div class="meta-card"><strong>נסיעה יומית משוערת:</strong> Leonardo → שדה התעופה · דקות ספורות</div>
+          <div class="meta-card"><strong>מלון הלילה:</strong> —</div>
+        </div>
+        <div class="main">
+          <div class="box-title">🔵 התוכנית העיקרית — יום טיסה</div>
+          <div class="box-sub">יציאה מוקדמת, החזרת רכב וטיסה. לא מומלץ לקבוע אטרקציה.</div>
+          <div class="btnrow">
+            <a class="btn" href="https://www.google.com/maps/dir/?api=1&origin=Leonardo%20Hotel%20Salzburg%20Airport&destination=Salzburg%20Airport&travelmode=driving" target="_blank" rel="noopener">ניווט למסלול היום</a>
+            <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Salzburg%20Airport" target="_blank" rel="noopener">ניווט לאטרקציה</a>
+            
+          </div>
+        </div>
+        <div class="altbox">
+          <div class="box-title">🟡 אופציה חלופית — אין</div>
+          <div class="box-sub">עדיף להשאיר את הבוקר פשוט וללא התחייבויות.</div>
+          <div class="btnrow">
+            <a class="btn alt" href="https://www.google.com/maps/dir/?api=1&origin=Leonardo%20Hotel%20Salzburg%20Airport&destination=Salzburg%20Airport&travelmode=driving" target="_blank" rel="noopener">ניווט לאופציה החלופית</a>
+            <a class="btn alt" href="https://www.google.com/maps/search/?api=1&query=Salzburg%20Airport" target="_blank" rel="noopener">פתיחת היעד החלופי</a>
+          </div>
+        </div>
+        <div class="stopbox">
+          <div class="box-title">🟣 עצירת דרך מומלצת — אין צורך</div>
+          <div class="box-sub">זה בוקר קצר של יציאה לשדה.</div>
+          <div class="btnrow"><a class="btn stop" href="https://www.google.com/maps/search/?api=1&query=Salzburg%20Airport" target="_blank" rel="noopener">ניווט לעצירה</a></div>
+        </div>
+        <div class="evening">
+          <div class="box-title">🌙 בילוי ערב</div>
+          <div class="box-sub">—</div>
+        </div>
+      </div>
+    </div><div class="day" data-family="ayal" data-id="2026-07-22">
+      <div class="day-head">
+        <div>
+          <h3>ד׳ 22.7 · טיסה חזרה</h3>
+          <div class="sub">לינה: —</div>
+        </div>
+        <div class="toggle">
+          <span class="tag ayal">אייל</span>
+          <input type="checkbox" class="checkbox" aria-label="סמן יום שבוצע">
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="tripmeta">
+          <div class="meta-card"><strong>טווח זמן מומלץ:</strong> מוקדם בבוקר</div>
+          <div class="meta-card"><strong>נסיעה יומית משוערת:</strong> Leonardo → שדה התעופה · דקות ספורות</div>
+          <div class="meta-card"><strong>מלון הלילה:</strong> —</div>
+        </div>
+        <div class="main">
+          <div class="box-title">🔵 התוכנית העיקרית — יום טיסה</div>
+          <div class="box-sub">יציאה מוקדמת, החזרת רכב וטיסה. בלי אטרקציות.</div>
+          <div class="btnrow">
+            <a class="btn" href="https://www.google.com/maps/dir/?api=1&origin=Leonardo%20Hotel%20Salzburg%20Airport&destination=Salzburg%20Airport&travelmode=driving" target="_blank" rel="noopener">ניווט למסלול היום</a>
+            <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Salzburg%20Airport" target="_blank" rel="noopener">ניווט לאטרקציה</a>
+            
+          </div>
+        </div>
+        <div class="altbox">
+          <div class="box-title">🟡 אופציה חלופית — אין</div>
+          <div class="box-sub">עדיף בוקר רגוע וללא תוכניות נוספות.</div>
+          <div class="btnrow">
+            <a class="btn alt" href="https://www.google.com/maps/dir/?api=1&origin=Leonardo%20Hotel%20Salzburg%20Airport&destination=Salzburg%20Airport&travelmode=driving" target="_blank" rel="noopener">ניווט לאופציה החלופית</a>
+            <a class="btn alt" href="https://www.google.com/maps/search/?api=1&query=Salzburg%20Airport" target="_blank" rel="noopener">פתיחת היעד החלופי</a>
+          </div>
+        </div>
+        <div class="stopbox">
+          <div class="box-title">🟣 עצירת דרך מומלצת — אין צורך</div>
+          <div class="box-sub">זה בוקר קצר של יציאה לשדה.</div>
+          <div class="btnrow"><a class="btn stop" href="https://www.google.com/maps/search/?api=1&query=Salzburg%20Airport" target="_blank" rel="noopener">ניווט לעצירה</a></div>
+        </div>
+        <div class="evening">
+          <div class="box-title">🌙 בילוי ערב</div>
+          <div class="box-sub">—</div>
+        </div>
+      </div>
+    </div></div>
+  <div id="emptyState" class="empty-state">אין ימים להצגה במסנן הזה.</div>
+  <div class="footer-note">אם פתחתם דרך אפליקציית הקבצים באייפון ועדיין יש בעיה, פתחו ב‑Safari ובחרו “שיתוף” → “הוסף למסך הבית”.</div>
+</div>
+<script>
+(function(){
+  function safeStorage(){
+    try{
+      var test='__trip_test__';
+      window.localStorage.setItem(test,'1');
+      window.localStorage.removeItem(test);
+      return window.localStorage;
+    }catch(e){
+      var mem={};
+      return {
+        getItem:function(k){ return Object.prototype.hasOwnProperty.call(mem,k) ? mem[k] : null; },
+        setItem:function(k,v){ mem[k]=String(v); },
+        removeItem:function(k){ delete mem[k]; }
+      };
+    }
+  }
+  var storage = safeStorage();
+  function doneKey(id){ return 'austria-trip-done-' + id; }
+  var tabs = document.querySelectorAll('.tab');
+  var days = document.querySelectorAll('.day');
+  var emptyState = document.getElementById('emptyState');
+  days.forEach(function(day){
+    var id = day.getAttribute('data-id');
+    var cb = day.querySelector('.checkbox');
+    if(storage.getItem(doneKey(id)) === '1') cb.checked = true;
+    cb.addEventListener('change', function(){
+      if(cb.checked) storage.setItem(doneKey(id), '1');
+      else storage.removeItem(doneKey(id));
+    });
+  });
+  function applyFilter(filter){
+    var visible = 0;
+    days.forEach(function(day){
+      var fam = day.getAttribute('data-family');
+      var show = filter === 'all' || fam === filter || (filter === 'tamir' && fam === 'both') || (filter === 'ayal' && fam === 'both');
+      day.classList.toggle('hide', !show);
+      if(show) visible++;
+    });
+    emptyState.style.display = visible ? 'none' : 'block';
+  }
+  tabs.forEach(function(tab){
+    tab.addEventListener('click', function(){
+      tabs.forEach(function(t){ t.classList.remove('active'); });
+      tab.classList.add('active');
+      applyFilter(tab.getAttribute('data-filter'));
+    });
+  });
+  applyFilter('all');
+})();
+</script>
+</body>
+</html>
