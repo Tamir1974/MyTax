@@ -90,7 +90,7 @@ input:focus,select:focus{border-color:var(--accent)}
     <button class="btn btn-secondary btn-sm" onclick="exportCSV()">ייצוא CSV</button>
     <button class="btn btn-secondary btn-sm" onclick="openAdd()">+ מקור</button>
     <button class="btn btn-secondary btn-sm" onclick="reloadFromDrive()">&#8635; טען מ-Drive</button>
-    <button class="btn btn-primary" onclick="refreshAll()">&#128260; רענן הכל</button>
+    <button class="btn btn-primary" onclick="refreshAll(null,event)">&#128260; רענן הכל</button>
   </div>
 </header>
 
@@ -358,7 +358,8 @@ function closeRefreshModal() {
   if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
 }
 
-async function refreshAll(srcId) {
+async function refreshAll(srcId, evt) {
+  if (evt) evt.stopPropagation();
   // Check IDs configured
   if (TRIGGER_FILE_ID === 'YOUR_TRIGGER_FILE_ID' || LOG_FILE_ID === 'YOUR_LOG_FILE_ID') {
     alert('נא להגדיר TRIGGER_FILE_ID ו-LOG_FILE_ID ב-index_github.html\n(הרץ setup_drive.py מחדש לקבלת ה-IDs)');
@@ -441,7 +442,7 @@ function table(){
       const tr=document.createElement('tr');tr.className='group-row';tr.dataset.id=s.id;
       const gt=subs.reduce((a,x)=>a+(x.balance||0),0)||s.balance||0;
       const net=subs.reduce((a,sub)=>{const stax=sub.tax_rate!=null?parseFloat(sub.tax_rate):tax;return a+afterTax(sub.balance||0,stax);},0);
-      tr.innerHTML=`<td colspan="2">${s.name}</td><td class="amount-cell">${fmt(gt)}</td><td style="color:var(--muted);font-size:12px">${tax?tax+'%':'—'}</td><td class="amount-cell" style="color:${tax?'#2ecc71':'inherit'}">${fmt(net)}</td><td></td><td class="actions-col"><button class="btn btn-secondary btn-sm" onclick="openEdit('${s.id}')">עריכה</button></td>`;
+      tr.innerHTML=`<td colspan="2">${s.name}</td><td class="amount-cell">${fmt(gt)}</td><td style="color:var(--muted);font-size:12px">${tax?tax+'%':'—'}</td><td class="amount-cell" style="color:${tax?'#2ecc71':'inherit'}">${fmt(net)}</td><td></td><td class="actions-col"><button class="btn btn-secondary btn-sm" onclick="openEdit('${s.id}')">עריכה</button> <button class="btn btn-primary btn-sm" onclick="refreshAll('${s.id}',event)">&#128260;</button></td>`;
       tr.addEventListener('click',e=>{if(!e.target.closest('button'))togGrp(tr);});
       tb.appendChild(tr);
       subs.forEach(sub=>{
@@ -454,7 +455,7 @@ function table(){
     }else{
       const tr=document.createElement('tr');
       const b=s.balance||0;
-      tr.innerHTML=`<td>${s.name}</td><td>${badge(s.type)}</td><td class="amount-cell">${fmt(b)}</td>${fmtTax(b,tax)}<td><span class="updated">${fdate(s.updatedAt)}</span></td><td class="actions-col"><button class="btn btn-secondary btn-sm" onclick="openEdit('${s.id}')">עריכה</button></td>`;
+      tr.innerHTML=`<td>${s.name}</td><td>${badge(s.type)}</td><td class="amount-cell">${fmt(b)}</td>${fmtTax(b,tax)}<td><span class="updated">${fdate(s.updatedAt)}</span></td><td class="actions-col"><button class="btn btn-secondary btn-sm" onclick="openEdit('${s.id}')">עריכה</button> <button class="btn btn-primary btn-sm" onclick="refreshAll('${s.id}',event)">&#128260;</button></td>`;
       tb.appendChild(tr);
     }
   });
