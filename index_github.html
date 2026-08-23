@@ -90,6 +90,7 @@ input:focus,select:focus{border-color:var(--accent)}
     <button class="btn btn-secondary btn-sm" onclick="exportCSV()">ייצוא CSV</button>
     <button class="btn btn-secondary btn-sm" onclick="openAdd()">+ מקור</button>
     <button class="btn btn-secondary btn-sm" onclick="reloadFromDrive()">&#8635; טען מ-Drive</button>
+    <button class="btn btn-primary" onclick="refreshAll()">&#128260; רענן הכל</button>
   </div>
 </header>
 
@@ -114,22 +115,19 @@ input:focus,select:focus{border-color:var(--accent)}
   </div>
 </main>
 
-<!-- Refresh help -->
+<!-- Refresh / live log modal -->
 <div class="overlay" id="refresh-overlay">
   <div class="progress-modal">
-    <h2>&#128260; עדכון יתרות</h2>
+    <h2>&#128260; מרענן יתרות <span class="spin" id="spin" style="display:none"></span></h2>
     <div id="logbox"></div>
-    <div id="pmsg" style="color:#4f8ef7;margin-top:12px">לחץ "טען מ-Drive" לאחר הרצת הסקריפט</div>
-    <div class="setup-box" style="margin-top:14px">
-      <strong style="color:var(--text)">כיצד לעדכן יתרות:</strong><br>
-      1. פתח מסוף (Terminal) במחשב<br>
-      2. הרץ: <code>python refresh_drive.py --server</code><br>
-      3. המתן לסיום — הנתונים יעלו ל-Drive אוטומטית<br>
-      4. לחץ <strong style="color:var(--text)">טען מ-Drive</strong> בדשבורד לרענון התצוגה
+    <div id="pmsg" style="margin-top:10px;min-height:18px;font-size:13px;color:var(--muted)">ממתין לדמון...</div>
+    <div id="daemon-hint" class="setup-box" style="margin-top:12px">
+      <strong style="color:var(--text)">הדמון לא רץ?</strong><br>
+      פתח מסוף והרץ: <code>python daemon_drive.py</code><br>
+      השאר אותו פועל ברקע — כל לחיצה על "רענן הכל" תפעיל Playwright אוטומטית.
     </div>
     <div class="modal-footer">
-      <button class="btn btn-primary" onclick="reloadFromDrive();closeRefreshHelp()">&#8635; טען מ-Drive עכשיו</button>
-      <button class="btn btn-secondary" onclick="closeRefreshHelp()">סגור</button>
+      <button class="btn btn-secondary" onclick="closeRefreshModal()">סגור</button>
     </div>
   </div>
 </div>
@@ -202,11 +200,14 @@ input:focus,select:focus{border-color:var(--accent)}
 
 <script>
 // ══════════════════════════════════════════════════════════════════════════════
-//  ⚙️  CONFIGURE THESE THREE CONSTANTS  (output of setup_drive.py)
+//  ⚙️  CONFIGURE THESE CONSTANTS  (output of setup_drive.py)
+//      GOOGLE_CLIENT_ID = Web application credential
 // ══════════════════════════════════════════════════════════════════════════════
-const GOOGLE_CLIENT_ID = '669719934884-eumc76jmejund3phld6uvqtqtsge4h65.apps.googleusercontent.com';      // from credentials.json
-const CONFIG_FILE_ID   = '1m2D3BcO3I3LRvkkBBC3iCBLN6ikrAyLW'; // from drive_ids.json
-const DATA_FILE_ID     = '1hqupyCp_Cu_WVaD-PU_tBq546QPc1T6E';   // from drive_ids.json
+const GOOGLE_CLIENT_ID = '669719934884-eumc76jmejund3phld6uvqtqtsge4h65.apps.googleusercontent.com';
+const CONFIG_FILE_ID   = '1m2D3BcO3I3LRvkkBBC3iCBLN6ikrAyLW';
+const DATA_FILE_ID     = '1hqupyCp_Cu_WVaD-PU_tBq546QPc1T6E';
+  const TRIGGER_FILE_ID  = '1ZeNd4hvtsOZsex-5oIk9wQVpIQnzUFgT';
+  const LOG_FILE_ID      = '1YPIQzynh0Af2nuoF1kCzJuAE6v_9ZcKw';
 // ══════════════════════════════════════════════════════════════════════════════
 
 const SCOPES   = 'https://www.googleapis.com/auth/drive.file';
@@ -348,10 +349,76 @@ async function reloadFromDrive() {
   }
 }
 
-// ── Refresh help modal ───────────────────────────────────────────────────────
+// ── Refresh via daemon (Drive trigger + log polling) ─────────────────────────
 
-function showRefreshHelp() { document.getElementById('refresh-overlay').classList.add('active'); }
-function closeRefreshHelp(){ document.getElementById('refresh-overlay').classList.remove('active'); }
+let pollTimer = null;
+
+function closeRefreshModal() {
+  document.getElementById('refresh-overlay').classList.remove('active');
+  if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+}
+
+async function refreshAll(srcId) {
+  // Check IDs configured
+  if (TRIGGER_FILE_ID === 'YOUR_TRIGGER_FILE_ID' || LOG_FILE_ID === 'YOUR_LOG_FILE_ID') {
+    alert('נא להגדיר TRIGGER_FILE_ID ו-LOG_FILE_ID ב-index_github.html\n(הרץ setup_drive.py מחדש לקבלת ה-IDs)');
+    return;
+  }
+
+  // Open modal
+  document.getElementById('refresh-overlay').classList.add('active');
+  document.getElementById('logbox').textContent = '';
+  document.getElementById('pmsg').textContent   = 'שולח טריגר ל-daemon...';
+  document.getElementById('spin').style.display = 'inline-block';
+  document.getElementById('daemon-hint').style.display = 'none';
+
+  // Write trigger to Drive
+  try {
+    await driveWriteJSON(TRIGGER_FILE_ID, {
+      triggered: true,
+      source_id: srcId || null,
+      ts: new Date().toISOString(),
+    });
+  } catch(e) {
+    document.getElementById('pmsg').textContent = 'שגיאה בכתיבת טריגר: ' + e.message;
+    document.getElementById('spin').style.display = 'none';
+    return;
+  }
+
+  document.getElementById('pmsg').textContent = 'ממתין לדמון לקלוט את הטריגר...';
+
+  // Poll log every 2 seconds
+  if (pollTimer) clearInterval(pollTimer);
+  let noPickupCount = 0;
+  pollTimer = setInterval(async () => {
+    try {
+      const s = await driveReadJSON(LOG_FILE_ID);
+      const box = document.getElementById('logbox');
+      box.textContent = (s.log || []).join('\n');
+      box.scrollTop   = box.scrollHeight;
+      document.getElementById('pmsg').textContent = s.message || '';
+
+      if (s.status === 'running') {
+        noPickupCount = 0;
+        document.getElementById('daemon-hint').style.display = 'none';
+      } else if (s.status === 'done' || s.status === 'error') {
+        clearInterval(pollTimer); pollTimer = null;
+        document.getElementById('spin').style.display = 'none';
+        if (s.status === 'done') { await loadAll(); }
+      } else {
+        // idle — daemon hasn't picked up yet
+        noPickupCount++;
+        if (noPickupCount >= 6) {   // ~12s with no pickup
+          document.getElementById('daemon-hint').style.display = 'block';
+          document.getElementById('pmsg').textContent = 'הדמון לא מגיב — האם הוא רץ?';
+          document.getElementById('spin').style.display = 'none';
+        }
+      }
+    } catch(e) {
+      console.warn('poll log error:', e);
+    }
+  }, 2000);
+}
 
 // ── Table ────────────────────────────────────────────────────────────────────
 
