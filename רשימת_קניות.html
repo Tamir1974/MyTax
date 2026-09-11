@@ -328,6 +328,74 @@
   }
   .btn-delete:hover { color: #e74c3c; }
 
+  /* ---- Sync settings ---- */
+  .sync-section {
+    padding: 14px 20px;
+    background: #f9f9f9;
+    border-bottom: 1px solid #eee;
+  }
+  .sync-section summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: #555;
+    font-size: 0.9rem;
+    user-select: none;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .sync-section summary::after {
+    content: '▼';
+    font-size: 0.7rem;
+    transition: transform 0.2s;
+    margin-right: auto;
+  }
+  .sync-section[open] summary::after { transform: rotate(180deg); }
+  .sync-section input[type="text"] {
+    width: 100%;
+    margin-top: 10px;
+    padding: 9px 12px;
+    border: 1.5px solid #ddd;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-family: inherit;
+    direction: ltr;
+    transition: border-color 0.2s;
+  }
+  .sync-section input[type="text"]:focus { outline: none; border-color: #4285f4; }
+  .sync-hint { font-size: 0.78rem; color: #999; margin-top: 6px; }
+  .btn-sync {
+    margin-top: 10px;
+    background: #4285f4;
+    color: white;
+    border: none;
+    padding: 9px 18px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-left: 8px;
+  }
+  .btn-sync:hover { background: #3367d6; }
+  .sync-status {
+    font-size: 0.78rem;
+    margin-top: 8px;
+  }
+  .sync-dot {
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #ccc;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  .sync-dot.ok { background: #25d366; }
+  .sync-dot.err { background: #e74c3c; }
+  .sync-dot.busy { background: #f4a42b; animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
   /* ---- Sections (done/pending) ---- */
   .section-header {
     padding: 8px 20px 4px;
@@ -351,6 +419,18 @@
   </header>
 
   <div class="main-card">
+    <!-- Google Sync Settings -->
+    <details class="sync-section" id="syncDetails">
+      <summary>☁️ סנכרון Google</summary>
+      <input type="text" id="syncUrl" placeholder="הדבק כאן את ה-URL של Apps Script..." autocomplete="off" autocorrect="off" spellcheck="false">
+      <div class="sync-hint">לאחר הגדרת Apps Script, הדבק כאן את ה-Deployment URL</div>
+      <div>
+        <button class="btn-sync" onclick="saveUrl()">💾 שמור URL</button>
+        <button class="btn-sync" style="background:#34a853" onclick="syncNow()">🔄 סנכרן עכשיו</button>
+      </div>
+      <div class="sync-status" id="syncStatus"><span class="sync-dot" id="syncDot"></span><span id="syncMsg">לא מוגדר</span></div>
+    </details>
+
     <!-- WhatsApp Import -->
     <details class="import-section" id="importDetails">
       <summary>📲 ייבוא מוואטסאפ</summary>
@@ -400,11 +480,65 @@
 
 <script>
   let items = JSON.parse(localStorage.getItem('grocery_items') || '[]');
-  // Ensure all IDs are strings (fix for old data with numeric IDs)
   items = items.map(i => ({ ...i, id: String(i.id) }));
+
+  let syncUrl = localStorage.getItem('grocery_sync_url') || '';
+  if (syncUrl) document.getElementById('syncUrl').value = syncUrl;
+  updateSyncStatus();
 
   function save() {
     localStorage.setItem('grocery_items', JSON.stringify(items));
+    if (syncUrl) pushToCloud();
+  }
+
+  // ---- Cloud sync ----
+  function setSyncDot(state, msg) {
+    const dot = document.getElementById('syncDot');
+    dot.className = 'sync-dot ' + state;
+    document.getElementById('syncMsg').textContent = msg;
+  }
+
+  function updateSyncStatus() {
+    if (!syncUrl) { setSyncDot('', 'לא מוגדר'); return; }
+    setSyncDot('ok', 'URL שמור — מסנכרן אוטומטית');
+  }
+
+  function saveUrl() {
+    syncUrl = document.getElementById('syncUrl').value.trim();
+    localStorage.setItem('grocery_sync_url', syncUrl);
+    updateSyncStatus();
+    if (syncUrl) { showToast('URL נשמר', 'success'); syncNow(); }
+  }
+
+  function pushToCloud() {
+    if (!syncUrl) return;
+    fetch(syncUrl, {
+      method: 'POST',
+      body: JSON.stringify(items),
+      headers: { 'Content-Type': 'text/plain' }
+    }).then(() => setSyncDot('ok', 'סונכרן ✓'))
+      .catch(() => setSyncDot('err', 'שגיאת סנכרון'));
+  }
+
+  function syncNow() {
+    if (!syncUrl) { showToast('הגדר URL תחילה', 'error'); return; }
+    setSyncDot('busy', 'טוען...');
+    fetch(syncUrl)
+      .then(r => r.json())
+      .then(data => {
+        if (Array.isArray(data) && data.length > 0) {
+          items = data.map(i => ({ ...i, id: String(i.id) }));
+          localStorage.setItem('grocery_items', JSON.stringify(items));
+          render();
+          setSyncDot('ok', 'סונכרן ✓');
+          showToast('הרשימה עודכנה מהענן', 'success');
+        } else {
+          // Cloud is empty — push local data up
+          pushToCloud();
+          setSyncDot('ok', 'סונכרן ✓');
+        }
+      })
+      .catch(() => { setSyncDot('err', 'שגיאה — בדוק URL'); showToast('שגיאת חיבור לענן', 'error'); });
   }
 
   function updateProgress() {
@@ -572,6 +706,7 @@
 
   // Init
   render();
+  if (syncUrl) syncNow();
 </script>
 </body>
 </html>
