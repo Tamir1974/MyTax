@@ -482,7 +482,8 @@
   let items = JSON.parse(localStorage.getItem('grocery_items') || '[]');
   items = items.map(i => ({ ...i, id: String(i.id) }));
 
-  let syncUrl = localStorage.getItem('grocery_sync_url') || '';
+  const DEFAULT_SYNC_URL = 'https://script.google.com/macros/s/AKfycbyyWwfdUP92Gf2TNBHT7yww_-m2Kat1g6vAkCptBdz5jd3ermF3WzypzKtJTCeu-4Vf/exec';
+  let syncUrl = localStorage.getItem('grocery_sync_url') || DEFAULT_SYNC_URL;
   if (syncUrl) document.getElementById('syncUrl').value = syncUrl;
   updateSyncStatus();
 
