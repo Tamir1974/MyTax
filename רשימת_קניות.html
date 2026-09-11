@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🛒 רשימת קניות</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f0f4f8;
+    min-height: 100vh;
+    padding: 20px;
+    direction: rtl;
+  }
+
+  .app {
+    max-width: 520px;
+    margin: 0 auto;
+  }
+
+  header {
+    background: #25d366;
+    color: white;
+    border-radius: 16px 16px 0 0;
+    padding: 20px 24px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+
+  header h1 { font-size: 1.4rem; font-weight: 700; }
+  header span { font-size: 1.8rem; }
+
+  .progress-bar-wrap {
+    background: rgba(255,255,255,0.3);
+    border-radius: 8px;
+    height: 6px;
+    margin-top: 10px;
+    overflow: hidden;
+    width: 100%;
+  }
+  .progress-bar {
+    background: white;
+    height: 100%;
+    border-radius: 8px;
+    transition: width 0.3s ease;
+  }
+
+  .progress-text {
+    font-size: 0.8rem;
+    margin-top: 4px;
+    opacity: 0.9;
+  }
+
+  .main-card {
+    background: white;
+    border-radius: 0 0 16px 16px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    overflow: hidden;
+  }
+
+  /* ---- WhatsApp Import ---- */
+  .import-section {
+    padding: 16px 20px;
+    background: #f9f9f9;
+    border-bottom: 1px solid #eee;
+  }
+
+  .import-section summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: #555;
+    font-size: 0.9rem;
+    user-select: none;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .import-section summary::after {
+    content: '▼';
+    font-size: 0.7rem;
+    transition: transform 0.2s;
+    margin-right: auto;
+  }
+
+  .import-section[open] summary::after { transform: rotate(180deg); }
+
+  .import-section textarea {
+    width: 100%;
+    margin-top: 12px;
+    padding: 10px;
+    border: 1.5px solid #ddd;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    resize: vertical;
+    min-height: 90px;
+    font-family: inherit;
+    direction: rtl;
+    transition: border-color 0.2s;
+  }
+
+  .import-section textarea:focus {
+    outline: none;
+    border-color: #25d366;
+  }
+
+  .import-hint {
+    font-size: 0.78rem;
+    color: #999;
+    margin-top: 6px;
+  }
+
+  .btn-import {
+    margin-top: 10px;
+    background: #25d366;
+    color: white;
+    border: none;
+    padding: 9px 18px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-import:hover { background: #1ebe5a; }
+
+  /* ---- Add item ---- */
+  .add-section {
+    padding: 14px 20px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    gap: 8px;
+  }
+
+  .add-section input {
+    flex: 1;
+    padding: 9px 12px;
+    border: 1.5px solid #ddd;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    direction: rtl;
+    transition: border-color 0.2s;
+  }
+  .add-section input:focus { outline: none; border-color: #25d366; }
+
+  .btn-add {
+    background: #25d366;
+    color: white;
+    border: none;
+    padding: 9px 16px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    font-weight: 700;
+    transition: background 0.2s;
+  }
+  .btn-add:hover { background: #1ebe5a; }
+
+  /* ---- Actions bar ---- */
+  .actions-bar {
+    padding: 10px 20px;
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    border-bottom: 1px solid #eee;
+    flex-wrap: wrap;
+  }
+
+  .btn-sm {
+    font-size: 0.78rem;
+    padding: 5px 12px;
+    border-radius: 6px;
+    border: 1.5px solid;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 600;
+    transition: all 0.15s;
+  }
+
+  .btn-check-all { border-color: #25d366; color: #25d366; background: white; }
+  .btn-check-all:hover { background: #f0fdf4; }
+  .btn-uncheck { border-color: #aaa; color: #555; background: white; }
+  .btn-uncheck:hover { background: #f0f0f0; }
+
+  .btn-clear { border-color: #e74c3c; color: #e74c3c; background: white; }
+  .btn-clear:hover { background: #fdf0ef; }
+
+  /* ---- Custom confirm modal ---- */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-box {
+    background: white;
+    border-radius: 14px;
+    padding: 24px 28px;
+    max-width: 320px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  }
+  .modal-box p { font-size: 1rem; margin-bottom: 20px; color: #333; }
+  .modal-btns { display: flex; gap: 10px; justify-content: center; }
+  .modal-btns button {
+    padding: 9px 22px;
+    border-radius: 8px;
+    border: none;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .modal-ok { background: #e74c3c; color: white; }
+  .modal-ok:hover { background: #c0392b; }
+  .modal-cancel { background: #eee; color: #555; }
+  .modal-cancel:hover { background: #ddd; }
+
+  /* ---- Toast ---- */
+  .toast {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: #333;
+    color: white;
+    padding: 11px 20px;
+    border-radius: 24px;
+    font-size: 0.9rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s, transform 0.25s;
+    z-index: 2000;
+    white-space: nowrap;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  .toast.success { background: #25d366; }
+  .toast.error   { background: #e74c3c; }
+
+  /* ---- List ---- */
+  .list-section {
+    padding: 8px 0 20px;
+    min-height: 60px;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #bbb;
+    font-size: 0.95rem;
+  }
+  .empty-state .icon { font-size: 2.5rem; display: block; margin-bottom: 8px; }
+
+  .item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 20px;
+    border-bottom: 1px solid #f5f5f5;
+    transition: background 0.15s;
+    animation: fadeIn 0.2s ease;
+  }
+  .item:hover { background: #fafafa; }
+  .item:last-child { border-bottom: none; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .item input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: #25d366;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .item-text {
+    flex: 1;
+    font-size: 1rem;
+    line-height: 1.4;
+    cursor: pointer;
+    word-break: break-word;
+  }
+
+  .item.checked .item-text {
+    text-decoration: line-through;
+    color: #bbb;
+  }
+
+  .item-qty {
+    font-size: 0.8rem;
+    color: #888;
+    background: #f0f0f0;
+    border-radius: 10px;
+    padding: 2px 8px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .item.checked .item-qty { opacity: 0.5; }
+
+  .btn-delete {
+    background: none;
+    border: none;
+    color: #ccc;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 2px 4px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    transition: color 0.15s;
+  }
+  .btn-delete:hover { color: #e74c3c; }
+
+  /* ---- Sections (done/pending) ---- */
+  .section-header {
+    padding: 8px 20px 4px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #aaa;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <span>🛒</span>
+    <div style="flex:1">
+      <h1>רשימת קניות</h1>
+      <div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
+      <div class="progress-text" id="progressText">0 מתוך 0 פריטים</div>
+    </div>
+  </header>
+
+  <div class="main-card">
+    <!-- WhatsApp Import -->
+    <details class="import-section" id="importDetails">
+      <summary>📲 ייבוא מוואטסאפ</summary>
+      <textarea id="waInput" placeholder="הדבק כאן את הרשימה מהוואטסאפ...
+
+לדוגמה:
+- חלב
+- לחם 2
+* ביצים
+• גבינה צהובה
+תפוחים 3 יח
+שמן זית"></textarea>
+      <div class="import-hint">כל שורה תהפוך לפריט. תומך בפסיקים, מקפים, כוכביות ונקודות.</div>
+      <button class="btn-import" onclick="importFromWhatsApp()">✅ ייבא רשימה</button>
+    </details>
+
+    <!-- Add item -->
+    <div class="add-section">
+      <input type="text" id="newItem" placeholder="הוסף פריט..." onkeydown="if(event.key==='Enter') addItem()">
+      <button class="btn-add" onclick="addItem()" title="הוסף">+</button>
+    </div>
+
+    <!-- Actions -->
+    <div class="actions-bar" id="actionsBar" style="display:none">
+      <button class="btn-sm btn-check-all" onclick="checkAll()">✅ סמן הכל</button>
+      <button class="btn-sm btn-uncheck" onclick="uncheckAll()">🔄 בטל סימונים</button>
+      <button class="btn-sm btn-clear" onclick="clearChecked()">🗑 מחק שנאספו</button>
+    </div>
+
+    <!-- List -->
+    <div class="list-section" id="listSection"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Custom confirm dialog -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal-box">
+    <p id="confirmMsg"></p>
+    <div class="modal-btns">
+      <button class="modal-ok" id="confirmOk">מחק</button>
+      <button class="modal-cancel" id="confirmCancel">ביטול</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  let items = JSON.parse(localStorage.getItem('grocery_items') || '[]');
+  // Ensure all IDs are strings (fix for old data with numeric IDs)
+  items = items.map(i => ({ ...i, id: String(i.id) }));
+
+  function save() {
+    localStorage.setItem('grocery_items', JSON.stringify(items));
+  }
+
+  function updateProgress() {
+    const total = items.length;
+    const done = items.filter(i => i.checked).length;
+    const pct = total ? Math.round(done / total * 100) : 0;
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.getElementById('progressText').textContent = `${done} מתוך ${total} פריטים`;
+    document.getElementById('actionsBar').style.display = total > 0 ? 'flex' : 'none';
+  }
+
+  function render() {
+    const section = document.getElementById('listSection');
+    const pending = items.filter(i => !i.checked);
+    const done    = items.filter(i => i.checked);
+
+    if (items.length === 0) {
+      section.innerHTML = `<div class="empty-state"><span class="icon">🛒</span>הרשימה ריקה<br>הוסף פריטים או ייבא מוואטסאפ</div>`;
+      updateProgress();
+      return;
+    }
+
+    let html = '';
+    if (pending.length > 0) {
+      html += `<div class="section-header">לאסוף (${pending.length})</div>`;
+      pending.forEach(item => { html += renderItem(item); });
+    }
+    if (done.length > 0) {
+      html += `<div class="section-header">נאספו (${done.length})</div>`;
+      done.forEach(item => { html += renderItem(item); });
+    }
+    section.innerHTML = html;
+    updateProgress();
+  }
+
+  function renderItem(item) {
+    const checkedClass = item.checked ? ' checked' : '';
+    const qtyHtml = item.qty ? `<span class="item-qty">${escHtml(item.qty)}</span>` : '';
+    return `<div class="item${checkedClass}" id="item-${item.id}">
+      <input type="checkbox" ${item.checked ? 'checked' : ''} onchange="toggleItem('${item.id}')">
+      <span class="item-text" onclick="toggleItem('${item.id}')">${escHtml(item.name)}</span>
+      ${qtyHtml}
+      <button class="btn-delete" onclick="deleteItem('${item.id}')" title="מחק">✕</button>
+    </div>`;
+  }
+
+  function escHtml(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function toggleItem(id) {
+    const item = items.find(i => i.id === id);
+    if (item) { item.checked = !item.checked; save(); render(); }
+  }
+
+  function deleteItem(id) {
+    items = items.filter(i => i.id !== id);
+    save(); render();
+  }
+
+  function addItem() {
+    const input = document.getElementById('newItem');
+    const raw = input.value.trim();
+    if (!raw) return;
+    const parsed = parseLine(raw);
+    if (!parsed) return;
+    items.unshift({ id: String(Date.now()), ...parsed, checked: false });
+    save(); render();
+    input.value = '';
+    input.focus();
+  }
+
+  function parseLine(line) {
+    // Strip leading bullets/dashes/numbers
+    line = line.replace(/^[\s\-\*•\–\—\d\.]+/, '').trim();
+    if (!line) return null;
+
+    // Extract trailing quantity patterns like "x2", "2 יח", "2 ק"ג", "2"
+    let name = line, qty = '';
+    const qtyMatch = line.match(/[\s\(]*([\d½¼¾]+\s*(?:יח(?:ידות)?|ק"ג|קג|גרם|ג'|ליטר|ל'|מ"ל|מל|חבילות?|כוסות?|כף|כפות|יח|x|X)?)\s*\)?$/i);
+    if (qtyMatch) {
+      qty = qtyMatch[1].trim();
+      name = line.slice(0, line.lastIndexOf(qtyMatch[0])).trim();
+      if (!name) { name = line; qty = ''; }
+    }
+    // Also handle "2 חלב" format (number then name)
+    const frontNum = line.match(/^([\d½]+)\s+(.+)$/);
+    if (!qty && frontNum) {
+      qty = frontNum[1];
+      name = frontNum[2];
+    }
+    return { name: name || line, qty };
+  }
+
+  function importFromWhatsApp() {
+    const text = document.getElementById('waInput').value.trim();
+    if (!text) return;
+    const lines = text.split('\n');
+    let added = 0;
+    lines.forEach(line => {
+      // Skip lines that look like WhatsApp metadata (timestamps, sender names)
+      if (/^\[?\d{1,2}[\/\.\:]\d{1,2}/.test(line)) return; // date/time lines
+      if (/^\d{1,2}:\d{2}/.test(line)) return;
+      const parsed = parseLine(line.trim());
+      if (!parsed || parsed.name.length < 1) return;
+      // Avoid duplicates
+      const exists = items.some(i => i.name.trim() === parsed.name.trim());
+      if (!exists) {
+        items.push({ id: String(Date.now()) + added, ...parsed, checked: false });
+        added++;
+      }
+    });
+    save(); render();
+    if (added > 0) {
+      document.getElementById('waInput').value = '';
+      document.getElementById('importDetails').removeAttribute('open');
+      showToast(`נוספו ${added} פריטים לרשימה`, 'success');
+    } else {
+      showToast('לא נמצאו פריטים חדשים להוסיף', 'error');
+    }
+  }
+
+  function checkAll() {
+    items.forEach(i => i.checked = true);
+    save(); render();
+  }
+
+  function uncheckAll() {
+    items.forEach(i => i.checked = false);
+    save(); render();
+  }
+
+  let toastTimer;
+  function showToast(msg, type = '') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast' + (type ? ' ' + type : '');
+    clearTimeout(toastTimer);
+    requestAnimationFrame(() => {
+      t.classList.add('show');
+      toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+    });
+  }
+
+  function showConfirm(msg, onOk) {
+    const modal = document.getElementById('confirmModal');
+    document.getElementById('confirmMsg').textContent = msg;
+    modal.classList.add('open');
+    const ok = document.getElementById('confirmOk');
+    const cancel = document.getElementById('confirmCancel');
+    const close = () => { modal.classList.remove('open'); ok.onclick = null; cancel.onclick = null; };
+    ok.onclick = () => { close(); onOk(); };
+    cancel.onclick = close;
+    modal.onclick = (e) => { if (e.target === modal) close(); };
+  }
+
+  function clearChecked() {
+    const count = items.filter(i => i.checked).length;
+    if (count === 0) return;
+    showConfirm(`למחוק ${count} פריטים שנאספו?`, () => {
+      items = items.filter(i => !i.checked);
+      save(); render();
+    });
+  }
+
+  // Init
+  render();
+</script>
+</body>
+</html>
