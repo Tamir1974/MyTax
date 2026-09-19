@@ -62,7 +62,7 @@
       <button data-day="optional">אופציות ואוכל</button>
     </div>
     <div class="legend" id="legend"></div>
-    <div class="notice"><b>הסידור בנוי לפי קרבה ושעות פתיחה.</b> Prague Little Venice הוא השייט שנבחר למסלול. טירת פראג ומצודת פראג הן אותו אתר. גן החיות הוסר לפי בקשתכם.</div>
+    <div class="notice"><b>המסלולים עודכנו לפי שלושת מסלולי Google Maps ששלחתם.</b> יום 3 הוא יום הליכה ארוך עם עלייה למגדל פטרין; המלון מסומן בכל יום כנקודת היציאה.</div>
     <div id="itinerary"></div>
     <div class="sources">
       מקורות שימושיים: <a href="https://www.jewishmuseum.cz/en/info/visit/opening-hours/" target="_blank">המוזיאון היהודי</a> ·
@@ -86,48 +86,59 @@ const categories = {
 const dayColors={1:'#2463eb',2:'#14956f',3:'#d23f91',4:'#667085',optional:'#9aa1ad'};
 const places=[
  {id:'hotel',name:'Milosrdnych Apartments',cat:'hotel',day:[1,2,3,4],seq:0,lat:50.0916671,lng:14.4211359,time:'לינה',note:'נקודת ההתחלה והסיום של המסלולים',addr:'U Milosrdných 849/6'},
- {id:'golden',name:'Golden Egg – Old Town',cat:'food',day:[1],seq:1,lat:50.08593,lng:14.42455,time:'12:30',note:'ארוחת צהריים לאחר השארת המזוודות',addr:'Ovocný trh 11'},
- {id:'jewish',name:'הרובע היהודי',cat:'history',day:[1],seq:2,lat:50.09012,lng:14.41852,time:'13:30–16:15',note:'בתי הכנסת ובית הקברות. חובה ביום חמישי: סגור בשבת ובראשון 27.9',addr:'Josefov'},
- {id:'idiom',name:'מגדל הספרים האינסופי – Idiom',cat:'art',day:[1],seq:3,lat:50.08717,lng:14.41667,time:'16:20–16:40',note:'בתוך הספרייה העירונית; תחנה קצרה בדרך',addr:'Mariánské náměstí 1'},
- {id:'oldtown',name:'העיר העתיקה והשעון האסטרונומי',cat:'history',day:[1],seq:4,lat:50.08703,lng:14.42078,time:'16:45–17:20',note:'כיכר העיר העתיקה, השעון וכנסיית טין',addr:'Staroměstské náměstí'},
- {id:'havel',name:'Havels Market',cat:'market',day:[1],seq:5,lat:50.08474,lng:14.42272,time:'17:25–17:50',note:'שוק קטן למזכרות, פירות ודוכנים',addr:'Havelská 13'},
- {id:'chocoMuseum',name:'Choco-Story – מוזיאון השוקולד',cat:'attraction',day:[1],seq:6,lat:50.08706,lng:14.42412,time:'18:00–19:00',note:'הביקור הרגיל קצר; אפשר להזמין סדנה מראש',addr:'Celetná 10'},
- {id:'pasta',name:'Pasta Fresca',cat:'food',day:[1],seq:7,lat:50.08715,lng:14.42455,time:'19:30',note:'מומלץ להזמין שולחן',addr:'Celetná 11'},
- {id:'uprince',name:'Terasa U Prince',cat:'food',day:[1],seq:8,lat:50.08700,lng:14.42043,time:'21:00 אופציונלי',note:'משקה או קינוח עם תצפית; להזמין מראש',addr:'Staroměstské náměstí 29'},
+ {id:'trdelnik',name:'Trdelník & Coffee – Josefov',cat:'food',day:[1],seq:1,lat:50.09002,lng:14.41816,time:'צהריים',note:'תחנת האוכל הראשונה אחרי היציאה מהמלון',addr:'U Starého hřbitova 42/2'},
+ {id:'oldnew',name:'בית הכנסת אלטנוישול',cat:'history',day:[1],seq:2,lat:50.09018,lng:14.41863,time:'צהריים',note:'בית הכנסת העתיק ברובע היהודי',addr:'Červená 110/1'},
+ {id:'cemetery',name:'בית הקברות היהודי העתיק',cat:'history',day:[1],seq:3,lat:50.08966,lng:14.41763,time:'צהריים',note:'כניסה במסגרת אתרי המוזיאון היהודי',addr:'Široká 3'},
+ {id:'maisel',name:'המוזיאון היהודי – בית הכנסת מייזל',cat:'history',day:[1],seq:4,lat:50.08919,lng:14.41811,time:'אחה״צ',note:'תצוגה על תולדות יהודי בוהמיה ומורביה',addr:'Maiselova 10'},
+ {id:'spanish',name:'בית הכנסת הספרדי',cat:'history',day:[1],seq:5,lat:50.09019,lng:14.42078,time:'אחה״צ',note:'אחד המבנים המרשימים ברובע היהודי',addr:'Vězeňská 1'},
+ {id:'oldtown',name:'העיר העתיקה',cat:'history',day:[1],seq:6,lat:50.08712,lng:14.42067,time:'אחה״צ',note:'כיכר העיר העתיקה והרחובות הסמוכים',addr:'Staroměstské náměstí'},
+ {id:'clock',name:'השעון האסטרונומי',cat:'history',day:[1],seq:7,lat:50.08699,lng:14.42076,time:'אחה״צ',note:'בחזית בית העירייה הישן',addr:'Staroměstské náměstí 1'},
+ {id:'chocoMuseum',name:'Choco-Story – מוזיאון השוקולד',cat:'attraction',day:[1],seq:8,lat:50.08706,lng:14.42412,time:'אחה״צ',note:'מוזיאון השוקולד; אפשר להזמין סדנה מראש',addr:'Celetná 10'},
+ {id:'pasta',name:'Pasta Fresca',cat:'food',day:[1],seq:9,lat:50.08715,lng:14.42455,time:'ערב',note:'סיום המסלול; מומלץ להזמין שולחן',addr:'Celetná 11'},
 
- {id:'castle',name:'מצודת פראג',cat:'history',day:[2],seq:1,lat:50.09093,lng:14.40055,time:'09:00–11:45',note:'קתדרלת ויטוס, סמטת הזהב והחצרות. צפויים עומסים בגלל תכשיטי הכתר',addr:'Prague Castle'},
- {id:'waldstein',name:'Waldstein Gardens',cat:'history',day:[2],seq:2,lat:50.08980,lng:14.40648,time:'12:00–12:40',note:'כניסה חופשית; פתוח בשישי עד 19:00',addr:'Letenská, Malá Strana'},
- {id:'mala',name:'מאלה סטרנה',cat:'history',day:[2],seq:3,lat:50.08725,lng:14.40427,time:'12:45–13:30',note:'כיכר מאלה סטרנה והרחובות ההיסטוריים',addr:'Malostranské náměstí'},
- {id:'lennon',name:'קיר ג׳ון לנון',cat:'art',day:[2],seq:4,lat:50.08621,lng:14.40680,time:'13:35–13:55',note:'עצירת צילום קצרה',addr:'Velkopřevorské náměstí'},
- {id:'venice',name:'Prague Little Venice – שייט בנהר',cat:'attraction',day:[2],seq:5,lat:50.08634,lng:14.41325,time:'14:15–15:00',note:'שייט של 45 דקות מתחת לגשר קארל; יוצא כל 10 דקות',addr:'Křižovnické náměstí 3'},
- {id:'charles',name:'גשר קארל',cat:'history',day:[2],seq:6,lat:50.08648,lng:14.41145,time:'15:05–15:35',note:'חוצים חזרה לכיוון העיר העתיקה',addr:'Karlův most'},
- {id:'chococafe',name:'Choco Café',cat:'food',day:[2],seq:7,lat:50.08516,lng:14.41543,time:'15:40–16:20',note:'עצירת קפה ושוקולד לאחר הגשר',addr:'Liliová 250/4'},
- {id:'losteria',name:'L’Osteria Národní',cat:'food',day:[2],seq:8,lat:50.08163,lng:14.41680,time:'18:30',note:'ארוחת ערב; מומלץ להזמין שולחן',addr:'Národní 135/14'},
- {id:'kafka',name:'הראש המסתובב של קפקא + Quadrio',cat:'art',day:[2],seq:9,lat:50.08155,lng:14.42028,time:'19:50–20:05',note:'להגיע לפני שעה עגולה; הקניון צמוד',addr:'Spálená 2121/22'},
- {id:'levels',name:'LEVELS Prague',cat:'attraction',day:[2],seq:10,lat:50.08125,lng:14.41823,time:'20:10–22:00',note:'ארקייד, מכוניות מתנגשות, מיני גולף ועוד',addr:'Máj, Národní 63/26'},
- {id:'heroes',name:'Heroes Park',cat:'attraction',day:[2],seq:11,lat:50.08132,lng:14.41830,time:'בתוך אותו בניין',note:'קומה 7 של Máj; פתוח עד 21:00 ולכן להתחיל בו לפני LEVELS',addr:'Máj, Národní 63/26'},
+ {id:'harryExpo',name:'Harry Potter: The Exhibition',cat:'attraction',day:[2],seq:1,lat:50.12899,lng:14.51456,time:'בוקר',note:'כרטיס לזמן מוגדר חובה; להגיע 10–15 דקות לפני',addr:'PVA EXPO Letňany, Hall 6'},
+ {id:'mizlala',name:'Mizlala',cat:'food',day:[2],seq:2,lat:50.08615,lng:14.43443,time:'צהריים',note:'ארוחה לאחר החזרה ממתחם התערוכה',addr:'Hybernská 26'},
+ {id:'charmbar',name:'The Original Prague Charm Bar',cat:'food',day:[2],seq:3,lat:50.08469,lng:14.42704,time:'אחה״צ',note:'עצירת משקה בדרך לאזור הקניות',addr:'Na Příkopě, Prague 1'},
+ {id:'newyorker',name:'New Yorker',cat:'market',day:[2],seq:4,lat:50.08395,lng:14.42518,time:'אחה״צ',note:'קניות ברחוב Na Příkopě',addr:'Na Příkopě 388/1'},
+ {id:'heroes',name:'Heroes Park',cat:'attraction',day:[2],seq:5,lat:50.08132,lng:14.41830,time:'אחה״צ',note:'פארק חוויות בקומה העליונה של Máj',addr:'Máj, Národní 63/26'},
+ {id:'sephora',name:'Sephora – Václavské náměstí',cat:'market',day:[2],seq:6,lat:50.08261,lng:14.42558,time:'אחה״צ',note:'תחנת קניות בשדרת ואצלב',addr:'Václavské náměstí'},
+ {id:'primark',name:'Primark',cat:'market',day:[2],seq:7,lat:50.08167,lng:14.42645,time:'אחה״צ',note:'קניות בבניין The Flow',addr:'Václavské náměstí 47'},
+ {id:'kafka',name:'הראש המסתובב של קפקא',cat:'art',day:[2],seq:8,lat:50.08155,lng:14.42028,time:'ערב',note:'הפסל המסתובב ליד קניון Quadrio',addr:'Spálená 2121/22'},
+ {id:'ippa',name:'IPPA Café – Jungmannova',cat:'food',day:[2],seq:9,lat:50.08215,lng:14.42113,time:'ערב',note:'סיום המסלול בקונדיטוריה ובית קפה',addr:'Jungmannova 30/21'},
 
- {id:'naplavka',name:'שוק האיכרים Náplavka',cat:'market',day:[3],seq:1,lat:50.07176,lng:14.41215,time:'08:00–08:45',note:'שוק שבת על הנהר, 08:00–14:00. אפשר לאכול כאן ארוחת בוקר',addr:'Rašínovo nábřeží'},
- {id:'dancing',name:'הבית הרוקד',cat:'art',day:[3],seq:2,lat:50.07552,lng:14.41417,time:'08:50–09:10',note:'עצירת צילום מבחוץ לפני הנסיעה לתערוכה',addr:'Jiráskovo náměstí 1981/6'},
- {id:'harryExpo',name:'Harry Potter: The Exhibition',cat:'attraction',day:[3],seq:3,lat:50.12899,lng:14.51456,time:'10:00–12:00',note:'כרטיס לזמן מוגדר חובה; להגיע 10–15 דקות לפני',addr:'PVA EXPO Letňany, Hall 6'},
- {id:'museum',name:'המוזיאון הלאומי',cat:'history',day:[3],seq:4,lat:50.07905,lng:14.43093,time:'13:00–15:00',note:'הבניין ההיסטורי והתצוגות המרכזיות',addr:'Václavské náměstí 68'},
- {id:'wenceslas',name:'שדרת ואצלב',cat:'history',day:[3],seq:5,lat:50.08155,lng:14.42633,time:'15:00–15:30',note:'הליכה מהמוזיאון לכיוון Můstek',addr:'Václavské náměstí'},
- {id:'chloe',name:'Café Chloé',cat:'food',day:[3],seq:6,lat:50.08509,lng:14.43179,time:'15:40–16:20',note:'קפה צבעוני וצילומים',addr:'Senovážné náměstí 981/21'},
- {id:'signal',name:'Signal Space',cat:'attraction',day:[3],seq:7,lat:50.08453,lng:14.42218,time:'16:40–18:00',note:'אמנות דיגיטלית ואשליות; נפתח מחדש ב־26.9. להזמין שעה מראש',addr:'Rytířská 10'},
+ {id:'petrin',name:'מגדל פטרין',cat:'attraction',day:[3],seq:1,lat:50.08353,lng:14.39514,time:'בוקר',note:'תצפית פנורמית; הדרך כוללת עלייה משמעותית',addr:'Petřínské sady 633'},
+ {id:'castle',name:'מצודת פראג',cat:'history',day:[3],seq:2,lat:50.09093,lng:14.40055,time:'בוקר',note:'קתדרלת ויטוס, החצרות וסמטת הזהב',addr:'Prague Castle'},
+ {id:'lennon',name:'קיר ג׳ון לנון',cat:'art',day:[3],seq:3,lat:50.08621,lng:14.40680,time:'צהריים',note:'עצירת צילום קצרה במאלה סטרנה',addr:'Velkopřevorské náměstí'},
+ {id:'charles',name:'גשר קארל',cat:'history',day:[3],seq:4,lat:50.08648,lng:14.41145,time:'צהריים',note:'חציית הגשר לכיוון העיר העתיקה',addr:'Karlův most'},
+ {id:'lehka',name:'Lehká Hlava – מסעדה צמחונית',cat:'food',day:[3],seq:5,lat:50.08454,lng:14.41639,time:'צהריים',note:'מסעדה צמחונית; מומלץ להזמין מקום',addr:'Boršov 2/280'},
+ {id:'vapiano',name:'Vapiano – OC Quadrio',cat:'food',day:[3],seq:6,lat:50.08166,lng:14.42055,time:'אחה״צ',note:'תחנת אוכל נוספת במתחם Quadrio',addr:'Spálená 2121/22'},
+ {id:'signal',name:'Signal Space Digital Art Gallery',cat:'attraction',day:[3],seq:7,lat:50.08453,lng:14.42218,time:'אחה״צ',note:'אמנות דיגיטלית ואשליות; מומלץ להזמין שעה מראש',addr:'Rytířská 10'},
+ {id:'idiom',name:'מגדל הספרים האינסופי – Idiom',cat:'art',day:[3],seq:8,lat:50.08717,lng:14.41667,time:'אחה״צ',note:'בתוך הספרייה העירונית; תחנה קצרה',addr:'Mariánské náměstí 1'},
+ {id:'rio',name:'RIO AÇAÍ & Smoothie Bar',cat:'food',day:[3],seq:9,lat:50.08840,lng:14.41765,time:'ערב',note:'סיום המסלול ליד הרובע היהודי',addr:'Kaprova 14/1'},
 
  {id:'airport',name:'נמל התעופה של פראג – טרמינל 1',cat:'transport',day:[4],seq:1,lat:50.10610,lng:14.26670,time:'10:15 יציאה מהדירה',note:'לטיסה ב־14:00; מומלץ Uber Van או שני רכבים',addr:'Václav Havel Airport, Terminal 1'},
 
- {id:'magicbar',name:'Magická Sova – בר קוסמים',cat:'food',day:['optional'],seq:1,lat:50.07585,lng:14.44495,time:'אופציונלי',note:'בהשראת עולם הקוסמים; כניסה מגיל 12 בלבד וקיימות מדרגות תלולות',addr:'Slezská 981/57'},
- {id:'blackulus',name:'CukrCafé Blackulus',cat:'food',day:['optional'],seq:2,lat:50.07400,lng:14.42912,time:'חלופה משפחתית',note:'בית קפה קסום המתאים יותר אם הילד מתחת לגיל 12',addr:'Sokolská 33'},
- {id:'ippa',name:'IPPA Café – Jungmannova',cat:'food',day:['optional'],seq:3,lat:50.08215,lng:14.42113,time:'אופציונלי',note:'קונדיטוריה וקפה במרכז, קרוב לוואצלב',addr:'Jungmannova 30/21'},
- {id:'avoid',name:'(A)VOID Café',cat:'food',day:['optional'],seq:4,lat:50.07461,lng:14.41319,time:'אופציונלי',note:'על גדת הנהר מתחת לבית הרוקד; נפתח בשבת ב־11:00',addr:'Rašínovo nábřeží'},
- {id:'palladium',name:'Palladium',cat:'market',day:['optional'],seq:5,lat:50.08818,lng:14.42958,time:'אופציונלי',note:'קניון מרכזי אם נשאר זמן או אם יורד גשם',addr:'náměstí Republiky 1'}
+ {id:'golden',name:'Golden Egg – Old Town',cat:'food',day:['optional'],seq:1,lat:50.08593,lng:14.42455,time:'אופציונלי',note:'ארוחת בוקר או צהריים בעיר העתיקה',addr:'Ovocný trh 11'},
+ {id:'havel',name:'Havels Market',cat:'market',day:['optional'],seq:2,lat:50.08474,lng:14.42272,time:'אופציונלי',note:'שוק קטן למזכרות, פירות ודוכנים',addr:'Havelská 13'},
+ {id:'uprince',name:'Terasa U Prince',cat:'food',day:['optional'],seq:3,lat:50.08700,lng:14.42043,time:'אופציונלי',note:'משקה או קינוח עם תצפית; להזמין מראש',addr:'Staroměstské náměstí 29'},
+ {id:'waldstein',name:'Waldstein Gardens',cat:'history',day:['optional'],seq:4,lat:50.08980,lng:14.40648,time:'אופציונלי',note:'גנים היסטוריים במאלה סטרנה',addr:'Letenská, Malá Strana'},
+ {id:'venice',name:'Prague Little Venice – שייט בנהר',cat:'attraction',day:['optional'],seq:5,lat:50.08634,lng:14.41325,time:'אופציונלי',note:'שייט קצר מתחת לגשר קארל',addr:'Křižovnické náměstí 3'},
+ {id:'chococafe',name:'Choco Café',cat:'food',day:['optional'],seq:6,lat:50.08516,lng:14.41543,time:'אופציונלי',note:'קפה ושוקולד ליד גשר קארל',addr:'Liliová 250/4'},
+ {id:'losteria',name:'L’Osteria Národní',cat:'food',day:['optional'],seq:7,lat:50.08163,lng:14.41680,time:'אופציונלי',note:'מסעדה איטלקית; מומלץ להזמין',addr:'Národní 135/14'},
+ {id:'levels',name:'LEVELS Prague',cat:'attraction',day:['optional'],seq:8,lat:50.08125,lng:14.41823,time:'אופציונלי',note:'ארקייד, מכוניות מתנגשות ומיני גולף',addr:'Máj, Národní 63/26'},
+ {id:'naplavka',name:'שוק האיכרים Náplavka',cat:'market',day:['optional'],seq:9,lat:50.07176,lng:14.41215,time:'אופציונלי',note:'שוק שבת על גדת הנהר',addr:'Rašínovo nábřeží'},
+ {id:'dancing',name:'הבית הרוקד',cat:'art',day:['optional'],seq:10,lat:50.07552,lng:14.41417,time:'אופציונלי',note:'נקודת צילום ליד הנהר',addr:'Jiráskovo náměstí 1981/6'},
+ {id:'museum',name:'המוזיאון הלאומי',cat:'history',day:['optional'],seq:11,lat:50.07905,lng:14.43093,time:'אופציונלי',note:'הבניין ההיסטורי והתצוגות המרכזיות',addr:'Václavské náměstí 68'},
+ {id:'magicbar',name:'Magická Sova – בר קוסמים',cat:'food',day:['optional'],seq:12,lat:50.07585,lng:14.44495,time:'אופציונלי',note:'בהשראת עולם הקוסמים; כניסה מגיל 12 בלבד',addr:'Slezská 981/57'},
+ {id:'blackulus',name:'CukrCafé Blackulus',cat:'food',day:['optional'],seq:13,lat:50.07400,lng:14.42912,time:'אופציונלי',note:'בית קפה קסום המתאים למשפחה',addr:'Sokolská 33'},
+ {id:'avoid',name:'(A)VOID Café',cat:'food',day:['optional'],seq:14,lat:50.07461,lng:14.41319,time:'אופציונלי',note:'בית קפה על גדת הנהר',addr:'Rašínovo nábřeží'},
+ {id:'palladium',name:'Palladium',cat:'market',day:['optional'],seq:15,lat:50.08818,lng:14.42958,time:'אופציונלי',note:'קניון מרכזי אם נשאר זמן או אם יורד גשם',addr:'náměstí Republiky 1'}
 ];
 
 const dayMeta={
-  1:{title:'חמישי 24.9 · הגעה, יהדות והעיר העתיקה',map:'https://www.google.com/maps/dir/?api=1&origin=Milosrdnych+Apartments,+Prague&destination=Pasta+Fresca,+Prague&waypoints=Golden+Egg+Old+Town%7CJewish+Museum+in+Prague%7CMunicipal+Library+Prague%7COld+Town+Square%7CHavelske+trziste%7CChoco-Story+Prague&travelmode=walking'},
-  2:{title:'שישי 25.9 · המצודה, מאלה סטרנה ובילוי',map:'https://www.google.com/maps/dir/?api=1&origin=Prague+Castle&destination=LEVELS+Prague&waypoints=Wallenstein+Garden%7CMala+Strana%7CLennon+Wall%7CPrague+Venice%7CCharles+Bridge%7CL%27Osteria+Narodni%7CFranz+Kafka+Rotating+Head&travelmode=walking'},
-  3:{title:'שבת 26.9 · שוק, הארי פוטר ומוזיאונים',map:'https://www.google.com/maps/dir/?api=1&origin=Naplavka+Farmers+Market&destination=Signal+Space+Prague&waypoints=Dancing+House%7CPVA+EXPO+PRAGUE%7CNational+Museum+Prague%7CWenceslas+Square%7CCafe+Chloe+Prague&travelmode=driving'},
+  1:{title:'חמישי 24.9 · הרובע היהודי והעיר העתיקה',map:'https://maps.app.goo.gl/BP7RdGqEDxfhh6nF9'},
+  2:{title:'שישי 25.9 · הארי פוטר, אוכל וקניות',map:'https://maps.app.goo.gl/ZE15vW3S6Szy9UsUA'},
+  3:{title:'שבת 26.9 · פטרין, המצודה והעיר העתיקה',map:'https://maps.app.goo.gl/j6kT1hiSz9HhdmDV6'},
   4:{title:'ראשון 27.9 · חזרה',map:'https://www.google.com/maps/dir/?api=1&origin=Milosrdnych+Apartments,+Prague&destination=Vaclav+Havel+Airport+Terminal+1&travelmode=driving'},
   optional:{title:'אופציות אוכל וקניות',map:'https://www.google.com/maps/search/?api=1&query=Prague'}
 };
@@ -156,7 +167,8 @@ function render(selected='all'){
  });
  const days=selected==='all'?[1,2,3,4]:([1,2,3,4].map(String).includes(String(selected))?[Number(selected)]:[]);
  days.forEach(d=>{
-   const pts=places.filter(p=>p.day.includes(d)&&p.seq>0).sort((a,b)=>a.seq-b.seq).map(p=>[p.lat,p.lng]);
+   const start=places.find(p=>p.id==='hotel');
+   const pts=[[start.lat,start.lng],...places.filter(p=>p.day.includes(d)&&p.seq>0).sort((a,b)=>a.seq-b.seq).map(p=>[p.lat,p.lng])];
    if(pts.length>1)L.polyline(pts,{color:dayColors[d],weight:4,opacity:.75,dashArray:d===4?'8 8':null}).addTo(routeLayer);
  });
  if(bounds.length)map.fitBounds(bounds,{padding:[35,35],maxZoom:selected==='all'?13:15});
