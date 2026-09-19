@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>פראג למשפחת לוי | 24–27.9.2026</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <style>
+    :root { --ink:#172033; --muted:#657085; --paper:#f5f6fa; --card:#fff; --line:#e5e7ee; --accent:#2f5bea; }
+    * { box-sizing:border-box; }
+    html,body { height:100%; margin:0; font-family:Arial,"Noto Sans Hebrew",sans-serif; color:var(--ink); background:var(--paper); }
+    .app { height:100%; display:grid; grid-template-columns:390px 1fr; direction:ltr; }
+    aside { direction:rtl; overflow:auto; background:var(--card); border-right:1px solid var(--line); padding:18px; z-index:500; }
+    #map { height:100%; width:100%; }
+    h1 { font-size:23px; margin:0 0 5px; }
+    .subtitle { color:var(--muted); font-size:14px; margin-bottom:14px; line-height:1.45; }
+    .filters { display:flex; gap:7px; flex-wrap:wrap; margin:10px 0 13px; }
+    button,.map-link { border:1px solid var(--line); background:#fff; color:var(--ink); border-radius:999px; padding:8px 12px; font-weight:700; cursor:pointer; text-decoration:none; font-size:13px; }
+    button.active { background:var(--ink); color:#fff; border-color:var(--ink); }
+    .legend { display:flex; flex-wrap:wrap; gap:6px 11px; padding:10px 0 13px; border-bottom:1px solid var(--line); font-size:12px; color:#465066; }
+    .legend span { display:flex; align-items:center; gap:5px; }
+    .dot { width:10px; height:10px; border-radius:50%; display:inline-block; }
+    .notice { margin:12px 0; background:#fff7df; border:1px solid #f0d88d; border-radius:12px; padding:10px 12px; font-size:13px; line-height:1.5; }
+    .day { margin:14px 0 18px; }
+    .day h2 { font-size:17px; margin:0 0 8px; display:flex; align-items:center; justify-content:space-between; }
+    .day-route { display:inline-block; margin:4px 0 9px; color:#204acb; font-size:12px; text-decoration:none; font-weight:bold; }
+    .stop { display:grid; grid-template-columns:48px 24px 1fr; gap:7px; align-items:start; padding:7px 0; border-bottom:1px dashed #e7e9ef; font-size:13px; }
+    .time { color:#5f6a7c; font-weight:bold; direction:ltr; text-align:left; }
+    .num { width:23px; height:23px; border-radius:50%; color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:bold; }
+    .stop b { display:block; margin-bottom:2px; }
+    .stop small { color:var(--muted); line-height:1.35; display:block; }
+    .optional { opacity:.78; }
+    .leaflet-popup-content { direction:rtl; text-align:right; min-width:210px; line-height:1.5; }
+    .leaflet-popup-content h3 { margin:0 0 5px; font-size:15px; }
+    .leaflet-popup-content p { margin:4px 0; }
+    .leaflet-popup-content a { color:#2452cf; font-weight:bold; }
+    .marker { width:28px; height:28px; border-radius:50% 50% 50% 0; transform:rotate(-45deg); border:2px solid #fff; box-shadow:0 1px 5px #0005; display:flex; align-items:center; justify-content:center; }
+    .marker span { transform:rotate(45deg); color:#fff; font-weight:800; font-size:11px; }
+    .sources { font-size:11px; color:var(--muted); line-height:1.55; border-top:1px solid var(--line); padding-top:10px; }
+    .sources a { color:#536078; }
+    @media (max-width:820px) {
+      .app { grid-template-columns:1fr; grid-template-rows:52vh auto; }
+      #map { grid-row:1; }
+      aside { grid-row:2; border-right:0; border-top:1px solid var(--line); }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <aside>
+    <h1>פראג למשפחת לוי</h1>
+    <div class="subtitle">24–27 בספטמבר 2026 · 5 מבוגרים וילד<br>Milosrdnych Apartments, U Milosrdných 849/6</div>
+    <div class="filters" id="dayFilters">
+      <button class="active" data-day="all">הכול</button>
+      <button data-day="1">חמישי 24.9</button>
+      <button data-day="2">שישי 25.9</button>
+      <button data-day="3">שבת 26.9</button>
+      <button data-day="4">ראשון 27.9</button>
+      <button data-day="optional">אופציות ואוכל</button>
+    </div>
+    <div class="legend" id="legend"></div>
+    <div class="notice"><b>הסידור בנוי לפי קרבה ושעות פתיחה.</b> Prague Little Venice הוא השייט שנבחר למסלול. טירת פראג ומצודת פראג הן אותו אתר. גן החיות הוסר לפי בקשתכם.</div>
+    <div id="itinerary"></div>
+    <div class="sources">
+      מקורות שימושיים: <a href="https://www.jewishmuseum.cz/en/info/visit/opening-hours/" target="_blank">המוזיאון היהודי</a> ·
+      <a href="https://www.hrad.cz/en/prague-castle-for-visitors/opening-hours" target="_blank">מצודת פראג</a> ·
+      <a href="https://harrypotterexhibition.com/locations/prague/" target="_blank">Harry Potter Exhibition</a> ·
+      <a href="https://www.signalspace.com/visit-us" target="_blank">Signal Space</a> ·
+      <a href="https://www.prague-venice.cz/en/listky" target="_blank">Prague Venice</a> ·
+      <a href="https://www.farmarsketrziste.cz/en/trh/naplavka" target="_blank">שוק Náplavka</a>.
+    </div>
+  </aside>
+  <div id="map"></div>
+</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const categories = {
+  hotel:{label:'לינה',color:'#34495e'}, history:{label:'אתר היסטורי',color:'#c0392b'},
+  attraction:{label:'אטרקציה / חוויה',color:'#8e44ad'}, food:{label:'אוכל וקפה',color:'#e67e22'},
+  market:{label:'שוק / קניות',color:'#168f82'}, art:{label:'אמנות / נקודת עניין',color:'#2878b8'},
+  transport:{label:'תחבורה',color:'#667085'}
+};
+const dayColors={1:'#2463eb',2:'#14956f',3:'#d23f91',4:'#667085',optional:'#9aa1ad'};
+const places=[
+ {id:'hotel',name:'Milosrdnych Apartments',cat:'hotel',day:[1,2,3,4],seq:0,lat:50.09186,lng:14.41880,time:'לינה',note:'נקודת ההתחלה והסיום של המסלולים',addr:'U Milosrdných 849/6'},
+ {id:'golden',name:'Golden Egg – Old Town',cat:'food',day:[1],seq:1,lat:50.08593,lng:14.42455,time:'12:30',note:'ארוחת צהריים לאחר השארת המזוודות',addr:'Ovocný trh 11'},
+ {id:'jewish',name:'הרובע היהודי',cat:'history',day:[1],seq:2,lat:50.09012,lng:14.41852,time:'13:30–16:15',note:'בתי הכנסת ובית הקברות. חובה ביום חמישי: סגור בשבת ובראשון 27.9',addr:'Josefov'},
+ {id:'idiom',name:'מגדל הספרים האינסופי – Idiom',cat:'art',day:[1],seq:3,lat:50.08717,lng:14.41667,time:'16:20–16:40',note:'בתוך הספרייה העירונית; תחנה קצרה בדרך',addr:'Mariánské náměstí 1'},
+ {id:'oldtown',name:'העיר העתיקה והשעון האסטרונומי',cat:'history',day:[1],seq:4,lat:50.08703,lng:14.42078,time:'16:45–17:20',note:'כיכר העיר העתיקה, השעון וכנסיית טין',addr:'Staroměstské náměstí'},
+ {id:'havel',name:'Havels Market',cat:'market',day:[1],seq:5,lat:50.08474,lng:14.42272,time:'17:25–17:50',note:'שוק קטן למזכרות, פירות ודוכנים',addr:'Havelská 13'},
+ {id:'chocoMuseum',name:'Choco-Story – מוזיאון השוקולד',cat:'attraction',day:[1],seq:6,lat:50.08706,lng:14.42412,time:'18:00–19:00',note:'הביקור הרגיל קצר; אפשר להזמין סדנה מראש',addr:'Celetná 10'},
+ {id:'pasta',name:'Pasta Fresca',cat:'food',day:[1],seq:7,lat:50.08715,lng:14.42455,time:'19:30',note:'מומלץ להזמין שולחן',addr:'Celetná 11'},
+ {id:'uprince',name:'Terasa U Prince',cat:'food',day:[1],seq:8,lat:50.08700,lng:14.42043,time:'21:00 אופציונלי',note:'משקה או קינוח עם תצפית; להזמין מראש',addr:'Staroměstské náměstí 29'},
+
+ {id:'castle',name:'מצודת פראג',cat:'history',day:[2],seq:1,lat:50.09093,lng:14.40055,time:'09:00–11:45',note:'קתדרלת ויטוס, סמטת הזהב והחצרות. צפויים עומסים בגלל תכשיטי הכתר',addr:'Prague Castle'},
+ {id:'waldstein',name:'Waldstein Gardens',cat:'history',day:[2],seq:2,lat:50.08980,lng:14.40648,time:'12:00–12:40',note:'כניסה חופשית; פתוח בשישי עד 19:00',addr:'Letenská, Malá Strana'},
+ {id:'mala',name:'מאלה סטרנה',cat:'history',day:[2],seq:3,lat:50.08725,lng:14.40427,time:'12:45–13:30',note:'כיכר מאלה סטרנה והרחובות ההיסטוריים',addr:'Malostranské náměstí'},
+ {id:'lennon',name:'קיר ג׳ון לנון',cat:'art',day:[2],seq:4,lat:50.08621,lng:14.40680,time:'13:35–13:55',note:'עצירת צילום קצרה',addr:'Velkopřevorské náměstí'},
+ {id:'venice',name:'Prague Little Venice – שייט בנהר',cat:'attraction',day:[2],seq:5,lat:50.08634,lng:14.41325,time:'14:15–15:00',note:'שייט של 45 דקות מתחת לגשר קארל; יוצא כל 10 דקות',addr:'Křižovnické náměstí 3'},
+ {id:'charles',name:'גשר קארל',cat:'history',day:[2],seq:6,lat:50.08648,lng:14.41145,time:'15:05–15:35',note:'חוצים חזרה לכיוון העיר העתיקה',addr:'Karlův most'},
+ {id:'chococafe',name:'Choco Café',cat:'food',day:[2],seq:7,lat:50.08516,lng:14.41543,time:'15:40–16:20',note:'עצירת קפה ושוקולד לאחר הגשר',addr:'Liliová 250/4'},
+ {id:'losteria',name:'L’Osteria Národní',cat:'food',day:[2],seq:8,lat:50.08163,lng:14.41680,time:'18:30',note:'ארוחת ערב; מומלץ להזמין שולחן',addr:'Národní 135/14'},
+ {id:'kafka',name:'הראש המסתובב של קפקא + Quadrio',cat:'art',day:[2],seq:9,lat:50.08155,lng:14.42028,time:'19:50–20:05',note:'להגיע לפני שעה עגולה; הקניון צמוד',addr:'Spálená 2121/22'},
+ {id:'levels',name:'LEVELS Prague',cat:'attraction',day:[2],seq:10,lat:50.08125,lng:14.41823,time:'20:10–22:00',note:'ארקייד, מכוניות מתנגשות, מיני גולף ועוד',addr:'Máj, Národní 63/26'},
+ {id:'heroes',name:'Heroes Park',cat:'attraction',day:[2],seq:11,lat:50.08132,lng:14.41830,time:'בתוך אותו בניין',note:'קומה 7 של Máj; פתוח עד 21:00 ולכן להתחיל בו לפני LEVELS',addr:'Máj, Národní 63/26'},
+
+ {id:'naplavka',name:'שוק האיכרים Náplavka',cat:'market',day:[3],seq:1,lat:50.07176,lng:14.41215,time:'08:00–08:45',note:'שוק שבת על הנהר, 08:00–14:00. אפשר לאכול כאן ארוחת בוקר',addr:'Rašínovo nábřeží'},
+ {id:'dancing',name:'הבית הרוקד',cat:'art',day:[3],seq:2,lat:50.07552,lng:14.41417,time:'08:50–09:10',note:'עצירת צילום מבחוץ לפני הנסיעה לתערוכה',addr:'Jiráskovo náměstí 1981/6'},
+ {id:'harryExpo',name:'Harry Potter: The Exhibition',cat:'attraction',day:[3],seq:3,lat:50.12899,lng:14.51456,time:'10:00–12:00',note:'כרטיס לזמן מוגדר חובה; להגיע 10–15 דקות לפני',addr:'PVA EXPO Letňany, Hall 6'},
+ {id:'museum',name:'המוזיאון הלאומי',cat:'history',day:[3],seq:4,lat:50.07905,lng:14.43093,time:'13:00–15:00',note:'הבניין ההיסטורי והתצוגות המרכזיות',addr:'Václavské náměstí 68'},
+ {id:'wenceslas',name:'שדרת ואצלב',cat:'history',day:[3],seq:5,lat:50.08155,lng:14.42633,time:'15:00–15:30',note:'הליכה מהמוזיאון לכיוון Můstek',addr:'Václavské náměstí'},
+ {id:'chloe',name:'Café Chloé',cat:'food',day:[3],seq:6,lat:50.08509,lng:14.43179,time:'15:40–16:20',note:'קפה צבעוני וצילומים',addr:'Senovážné náměstí 981/21'},
+ {id:'signal',name:'Signal Space',cat:'attraction',day:[3],seq:7,lat:50.08453,lng:14.42218,time:'16:40–18:00',note:'אמנות דיגיטלית ואשליות; נפתח מחדש ב־26.9. להזמין שעה מראש',addr:'Rytířská 10'},
+
+ {id:'airport',name:'נמל התעופה של פראג – טרמינל 1',cat:'transport',day:[4],seq:1,lat:50.10610,lng:14.26670,time:'10:15 יציאה מהדירה',note:'לטיסה ב־14:00; מומלץ Uber Van או שני רכבים',addr:'Václav Havel Airport, Terminal 1'},
+
+ {id:'magicbar',name:'Magická Sova – בר קוסמים',cat:'food',day:['optional'],seq:1,lat:50.07585,lng:14.44495,time:'אופציונלי',note:'בהשראת עולם הקוסמים; כניסה מגיל 12 בלבד וקיימות מדרגות תלולות',addr:'Slezská 981/57'},
+ {id:'blackulus',name:'CukrCafé Blackulus',cat:'food',day:['optional'],seq:2,lat:50.07400,lng:14.42912,time:'חלופה משפחתית',note:'בית קפה קסום המתאים יותר אם הילד מתחת לגיל 12',addr:'Sokolská 33'},
+ {id:'ippa',name:'IPPA Café – Jungmannova',cat:'food',day:['optional'],seq:3,lat:50.08215,lng:14.42113,time:'אופציונלי',note:'קונדיטוריה וקפה במרכז, קרוב לוואצלב',addr:'Jungmannova 30/21'},
+ {id:'avoid',name:'(A)VOID Café',cat:'food',day:['optional'],seq:4,lat:50.07461,lng:14.41319,time:'אופציונלי',note:'על גדת הנהר מתחת לבית הרוקד; נפתח בשבת ב־11:00',addr:'Rašínovo nábřeží'},
+ {id:'palladium',name:'Palladium',cat:'market',day:['optional'],seq:5,lat:50.08818,lng:14.42958,time:'אופציונלי',note:'קניון מרכזי אם נשאר זמן או אם יורד גשם',addr:'náměstí Republiky 1'}
+];
+
+const dayMeta={
+  1:{title:'חמישי 24.9 · הגעה, יהדות והעיר העתיקה',map:'https://www.google.com/maps/dir/?api=1&origin=Milosrdnych+Apartments,+Prague&destination=Pasta+Fresca,+Prague&waypoints=Golden+Egg+Old+Town%7CJewish+Museum+in+Prague%7CMunicipal+Library+Prague%7COld+Town+Square%7CHavelske+trziste%7CChoco-Story+Prague&travelmode=walking'},
+  2:{title:'שישי 25.9 · המצודה, מאלה סטרנה ובילוי',map:'https://www.google.com/maps/dir/?api=1&origin=Prague+Castle&destination=LEVELS+Prague&waypoints=Wallenstein+Garden%7CMala+Strana%7CLennon+Wall%7CPrague+Venice%7CCharles+Bridge%7CL%27Osteria+Narodni%7CFranz+Kafka+Rotating+Head&travelmode=walking'},
+  3:{title:'שבת 26.9 · שוק, הארי פוטר ומוזיאונים',map:'https://www.google.com/maps/dir/?api=1&origin=Naplavka+Farmers+Market&destination=Signal+Space+Prague&waypoints=Dancing+House%7CPVA+EXPO+PRAGUE%7CNational+Museum+Prague%7CWenceslas+Square%7CCafe+Chloe+Prague&travelmode=driving'},
+  4:{title:'ראשון 27.9 · חזרה',map:'https://www.google.com/maps/dir/?api=1&origin=Milosrdnych+Apartments,+Prague&destination=Vaclav+Havel+Airport+Terminal+1&travelmode=driving'},
+  optional:{title:'אופציות אוכל וקניות',map:'https://www.google.com/maps/search/?api=1&query=Prague'}
+};
+
+const map=L.map('map',{zoomControl:true}).setView([50.087,14.422],14);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap contributors'}).addTo(map);
+const markerLayer=L.layerGroup().addTo(map), routeLayer=L.layerGroup().addTo(map);
+
+function iconFor(p){
+ const c=categories[p.cat].color, n=p.seq===0?'⌂':(p.day[0]==='optional'?'★':p.seq);
+ return L.divIcon({className:'',html:`<div class="marker" style="background:${c}"><span>${n}</span></div>`,iconSize:[30,30],iconAnchor:[15,29],popupAnchor:[0,-27]});
+}
+function googleSearch(p){return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(p.name+' '+p.addr+' Prague');}
+function popup(p){return `<h3>${p.name}</h3><p><b>${p.time}</b><br>${p.note}</p><p>${p.addr}</p><a target="_blank" href="${googleSearch(p)}">פתיחה ב‑Google Maps</a>`;}
+
+function render(selected='all'){
+ markerLayer.clearLayers(); routeLayer.clearLayers();
+ const visible=places.filter(p=>selected==='all'||p.day.map(String).includes(String(selected)));
+ const bounds=[];
+ visible.forEach(p=>{L.marker([p.lat,p.lng],{icon:iconFor(p)}).bindPopup(popup(p)).addTo(markerLayer);bounds.push([p.lat,p.lng]);});
+ const days=selected==='all'?[1,2,3,4]:([1,2,3,4].map(String).includes(String(selected))?[Number(selected)]:[]);
+ days.forEach(d=>{
+   const pts=places.filter(p=>p.day.includes(d)&&p.seq>0).sort((a,b)=>a.seq-b.seq).map(p=>[p.lat,p.lng]);
+   if(pts.length>1)L.polyline(pts,{color:dayColors[d],weight:4,opacity:.75,dashArray:d===4?'8 8':null}).addTo(routeLayer);
+ });
+ if(bounds.length)map.fitBounds(bounds,{padding:[35,35],maxZoom:selected==='all'?13:15});
+ renderItinerary(selected);
+}
+function renderItinerary(selected){
+ const root=document.getElementById('itinerary'); root.innerHTML='';
+ const keys=selected==='all'?[1,2,3,4,'optional']:[selected];
+ keys.forEach(key=>{
+   const ps=places.filter(p=>p.day.map(String).includes(String(key))&&p.seq>0).sort((a,b)=>a.seq-b.seq);
+   if(!ps.length)return;
+   const sec=document.createElement('section');sec.className='day';
+   sec.innerHTML=`<h2><span>${dayMeta[key].title}</span></h2><a class="day-route" target="_blank" href="${dayMeta[key].map}">פתיחת המסלול ב‑Google Maps ↗</a>`;
+   ps.forEach(p=>{
+     const row=document.createElement('div');row.className='stop '+(key==='optional'?'optional':'');
+     row.innerHTML=`<div class="time">${p.time}</div><div class="num" style="background:${categories[p.cat].color}">${key==='optional'?'★':p.seq}</div><div><b>${p.name}</b><small>${p.note}</small></div>`;
+     row.onclick=()=>{map.setView([p.lat,p.lng],16); [...markerLayer.getLayers()].find(m=>m.getLatLng().lat===p.lat)?.openPopup();};
+     row.style.cursor='pointer';sec.appendChild(row);
+   });root.appendChild(sec);
+ });
+}
+document.querySelectorAll('#dayFilters button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#dayFilters button').forEach(x=>x.classList.remove('active'));b.classList.add('active');render(b.dataset.day);});
+const legend=document.getElementById('legend');Object.values(categories).forEach(c=>legend.insertAdjacentHTML('beforeend',`<span><i class="dot" style="background:${c.color}"></i>${c.label}</span>`));
+render();
+</script>
+</body>
+</html>
