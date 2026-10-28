@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מילומניה - לימוד אנגלית ועברית</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Canvas Confetti for celebrations -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Google Fonts: Rubik & Heebo -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Rubik', sans-serif;
+            background: linear-gradient(135deg, #f0f7ff 0%, #e0f2fe 50%, #fdf4ff 100%);
+            min-height: 100vh;
+        }
+        .font-english {
+            font-family: 'Fredoka', 'Rubik', sans-serif;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-10px); }
+            40%, 80% { transform: translateX(10px); }
+        }
+        .animate-shake {
+            animation: shake 0.45s ease-in-out;
+        }
+        @keyframes pop {
+            0% { transform: scale(0.92); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-pop {
+            animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .pulse-subtle {
+            animation: pulseSoft 2s infinite;
+        }
+        @keyframes pulseSoft {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.04); }
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased flex flex-col min-h-screen">
+
+    <!-- Top Navigation Bar -->
+    <header class="w-full bg-white/90 backdrop-blur-md shadow-sm border-b border-indigo-100 sticky top-0 z-40">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-3 space-x-reverse cursor-pointer" onclick="goToHome()">
+                <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white text-2xl shadow-md transform hover:rotate-6 transition">
+                    🌟
+                </div>
+                <div>
+                    <h1 class="text-xl font-extrabold bg-gradient-to-l from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                        מילומניה!
+                    </h1>
+                    <p class="text-xs text-slate-500 font-medium">לומדים אנגלית בכיף ובקלות</p>
+                </div>
+            </div>
+
+            <!-- Stats & Quick Actions -->
+            <div class="flex items-center gap-2 sm:gap-4">
+                <div class="flex items-center bg-amber-50 text-amber-700 px-3 py-1.5 rounded-full border border-amber-200 shadow-sm text-sm font-bold">
+                    <span class="ml-1 text-base">⭐</span>
+                    <span id="scoreDisplay">0</span>
+                    <span class="mr-1 text-xs text-amber-600 font-normal">נק׳</span>
+                </div>
+
+                <div class="flex items-center bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-full border border-emerald-200 shadow-sm text-sm font-bold">
+                    <span class="ml-1 text-base">🔥</span>
+                    <span id="streakDisplay">0</span>
+                    <span class="mr-1 text-xs text-emerald-600 font-normal">ברצף</span>
+                </div>
+
+                <button onclick="openAdminModal()" class="p-2 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition flex items-center gap-1.5 text-sm font-bold border border-slate-200" title="ניהול מילים ומאגר">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <span class="hidden sm:inline">ניהול מילים</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-1 max-w-4xl w-full mx-auto p-4 sm:p-6 flex flex-col justify-center">
+
+        <!-- VIEW 1: MODE SELECTOR (Home Screen) -->
+        <section id="viewModeSelect" class="animate-pop text-center space-y-8 my-auto">
+            <div class="space-y-3">
+                <span class="inline-block bg-indigo-100 text-indigo-700 text-sm font-bold px-4 py-1.5 rounded-full border border-indigo-200">
+                    בוחרים מצב משחק 🎮
+                </span>
+                <h2 class="text-3xl sm:text-4xl font-black text-slate-800">
+                    במה תרצו להתאמן היום?
+                </h2>
+                <p class="text-slate-600 max-w-md mx-auto text-base">
+                    לכל שאלה יש 2 ניסיונות לקלוע בול. מוכנים לאתגר?
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
+                <!-- Mode 1 Card -->
+                <button onclick="startPractice(1)" class="group relative bg-white p-7 rounded-3xl shadow-lg hover:shadow-2xl border-2 border-indigo-100 hover:border-indigo-400 text-right transition-all transform hover:-translate-y-1 duration-200 flex flex-col justify-between overflow-hidden">
+                    <div class="absolute -left-6 -bottom-6 w-28 h-28 bg-indigo-50 rounded-full group-hover:scale-125 transition duration-300 pointer-events-none"></div>
+                    <div>
+                        <div class="w-16 h-16 rounded-2xl bg-indigo-500/10 text-indigo-600 flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition">
+                            🎧
+                        </div>
+                        <div class="inline-block text-xs font-bold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-md mb-2">מצב 1: בחירה מרובה</div>
+                        <h3 class="text-xl font-black text-slate-800 mb-2 group-hover:text-indigo-600 transition">
+                            האזן באנגלית ובחר בעברית
+                        </h3>
+                        <p class="text-sm text-slate-500 leading-relaxed">
+                            שומעים את המילה המדוברת באנגלית ובוחרים את התרגום המדויק מתוך 4 אפשרויות.
+                        </p>
+                    </div>
+                    <div class="mt-6 flex items-center justify-between text-indigo-600 font-bold text-sm">
+                        <span>התחל אימון</span>
+                        <span class="text-xl group-hover:-translate-x-1 transition">←</span>
+                    </div>
+                </button>
+
+                <!-- Mode 2 Card -->
+                <button onclick="startPractice(2)" class="group relative bg-white p-7 rounded-3xl shadow-lg hover:shadow-2xl border-2 border-purple-100 hover:border-purple-400 text-right transition-all transform hover:-translate-y-1 duration-200 flex flex-col justify-between overflow-hidden">
+                    <div class="absolute -left-6 -bottom-6 w-28 h-28 bg-purple-50 rounded-full group-hover:scale-125 transition duration-300 pointer-events-none"></div>
+                    <div>
+                        <div class="w-16 h-16 rounded-2xl bg-purple-500/10 text-purple-600 flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition">
+                            ✍️
+                        </div>
+                        <div class="inline-block text-xs font-bold text-purple-600 bg-purple-50 px-2.5 py-1 rounded-md mb-2">מצב 2: איות וכתיבה</div>
+                        <h3 class="text-xl font-black text-slate-800 mb-2 group-hover:text-purple-600 transition">
+                            האזן בעברית וכתוב באנגלית
+                        </h3>
+                        <p class="text-sm text-slate-500 leading-relaxed">
+                            שומעים מילה בעברית (עם הצגתה) ומקלידים את המילה המתאימה באנגלית.
+                        </p>
+                    </div>
+                    <div class="mt-6 flex items-center justify-between text-purple-600 font-bold text-sm">
+                        <span>התחל אימון</span>
+                        <span class="text-xl group-hover:-translate-x-1 transition">←</span>
+                    </div>
+                </button>
+            </div>
+
+            <!-- Vocabulary count card -->
+            <div class="inline-flex items-center gap-2 bg-white/70 backdrop-blur px-4 py-2 rounded-xl text-xs text-slate-500 border border-slate-200">
+                <span>📚 במאגר יש כעת:</span>
+                <span id="homeWordCount" class="font-extrabold text-indigo-600">0</span>
+                <span>מילים פעילות</span>
+            </div>
+        </section>
+
+        <!-- VIEW 2: PRACTICE ACTIVE VIEW -->
+        <section id="viewPractice" class="hidden animate-pop flex-col max-w-xl mx-auto w-full">
+            
+            <!-- Question Top Header -->
+            <div class="flex items-center justify-between mb-4">
+                <button onclick="confirmExitPractice()" class="text-xs sm:text-sm font-bold text-slate-500 hover:text-slate-800 flex items-center gap-1 bg-white px-3 py-1.5 rounded-xl border border-slate-200 hover:bg-slate-50 transition">
+                    <span>חזרה לתפריט</span>
+                </button>
+
+                <div class="flex items-center gap-2 text-xs font-bold text-slate-600">
+                    <span id="modeBadgeTitle" class="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full">מצב 1</span>
+                    <span id="questionCounter" class="bg-white px-3 py-1 rounded-full border border-slate-200 shadow-sm">שאלה 1/10</span>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="w-full bg-slate-200/80 rounded-full h-2.5 mb-6 overflow-hidden shadow-inner">
+                <div id="progressBar" class="bg-gradient-to-l from-indigo-500 to-purple-500 h-2.5 rounded-full transition-all duration-300" style="width: 10%"></div>
+            </div>
+
+            <!-- Main Question Card -->
+            <div id="quizCard" class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-100 flex flex-col items-center relative transition-all duration-200">
+
+                <!-- Mode 1 Prompt UI (Listen EN -> Choose HE) -->
+                <div id="mode1Header" class="text-center w-full space-y-4">
+                    <span class="text-xs font-extrabold tracking-wider uppercase text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-100 inline-block">
+                        קראו, האזינו ובחרו את הפירוש הנכון בעברית
+                    </span>
+
+                    <div class="py-3 flex flex-col items-center justify-center space-y-3">
+                        <!-- Prominent English Word Display -->
+                        <div class="bg-indigo-50/70 border-2 border-indigo-100 rounded-3xl px-8 py-4 shadow-inner flex flex-col sm:flex-row items-center justify-center gap-4">
+                            <span id="mode1EnglishWordDisplay" dir="ltr" class="font-english text-4xl sm:text-5xl font-black text-indigo-900 tracking-wide select-all">
+                                --
+                            </span>
+                            <button id="btnPlaySoundEn" onclick="playCurrentWordAudio()" class="w-13 h-13 p-3 rounded-2xl bg-gradient-to-tr from-indigo-500 to-purple-600 text-white shadow-md hover:shadow-lg hover:scale-105 active:scale-95 transition-all flex items-center justify-center group focus:outline-none" title="השמע מילה באנגלית">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 transform group-hover:scale-110 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                                </svg>
+                            </button>
+                        </div>
+                        <span class="text-xs text-slate-400 font-medium">לחצו על הרמקול לשמיעת ההגייה שוב 🔊</span>
+                    </div>
+
+                    <!-- Options Grid (Hebrew) -->
+                    <div id="optionsContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-2 w-full">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Mode 2 Prompt UI (Listen HE -> Type EN) -->
+                <div id="mode2Header" class="hidden text-center w-full space-y-4">
+                    <span class="text-xs font-extrabold tracking-wider uppercase text-purple-600 bg-purple-50 px-3 py-1 rounded-full border border-purple-100 inline-block">
+                        האזן בעברית והקלד באנגלית
+                    </span>
+
+                    <!-- Hebrew Word Display & Audio -->
+                    <div class="py-3 flex flex-col items-center space-y-3">
+                        <div class="text-3xl sm:text-4xl font-extrabold text-slate-800 tracking-wide" id="hebrewPromptWord">
+                            --
+                        </div>
+
+                        <button id="btnPlaySoundHe" onclick="playCurrentWordAudio()" class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-purple-100 text-purple-700 hover:bg-purple-200 transition font-bold text-sm shadow-sm" title="השמע מילה בעברית">
+                            <span>🔊 השמע מילה בעברית</span>
+                        </button>
+                    </div>
+
+                    <!-- English Input Form -->
+                    <form id="spellingForm" onsubmit="handleSpellingSubmit(event)" class="w-full max-w-sm mx-auto space-y-3">
+                        <div class="relative">
+                            <input 
+                                type="text" 
+                                id="englishInput" 
+                                dir="ltr" 
+                                class="font-english w-full text-center text-2xl font-bold py-3.5 px-4 rounded-2xl border-2 border-slate-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100 outline-none transition uppercase shadow-sm"
+                                placeholder="type in English..."
+                                autocomplete="off"
+                                autocorrect="off"
+                                autocapitalize="off"
+                                spellcheck="false"
+                            >
+                        </div>
+                        <button type="submit" id="btnSubmitSpelling" class="w-full py-3.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold text-base rounded-2xl shadow-lg hover:shadow-xl transition active:scale-98">
+                            בדיקת תשובה ✓
+                        </button>
+                    </form>
+
+                    <!-- Prominent Reveal Box for Mode 2 When Failed 2 Attempts -->
+                    <div id="mode2RevealBox" class="hidden mt-4 w-full bg-amber-50/90 border-2 border-amber-300 rounded-3xl p-5 text-center animate-pop shadow-md space-y-3">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 bg-amber-200/70 text-amber-900 text-xs font-black rounded-full">
+                            <span>💡 התשובה הנכונה:</span>
+                        </div>
+                        <div class="flex flex-col items-center justify-center gap-2">
+                            <span id="revealedCorrectEnglish" dir="ltr" class="font-english text-4xl sm:text-5xl font-black text-emerald-600 tracking-wider">
+                                --
+                            </span>
+                            <div id="revealedUserMistake" class="text-xs text-rose-500 font-semibold hidden">
+                                תשובתך: <span id="revealedWrongText" class="line-through decoration-rose-500"></span>
+                            </div>
+                        </div>
+                        <button onclick="speakText(sessionQuestions[currentIndex].english, 'en-US')" class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow transition">
+                            <span>🔊 השמע שוב באנגלית</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Attempts & Feedback Status Box -->
+                <div id="feedbackBanner" class="mt-6 w-full text-center min-h-[48px] flex items-center justify-center px-4 py-2 rounded-2xl transition">
+                    <div id="attemptPills" class="flex items-center gap-2 text-xs font-bold text-slate-400">
+                        <span>ניסיונות לשאלה:</span>
+                        <span id="pill1" class="w-5 h-5 rounded-full bg-slate-200 flex items-center justify-center text-slate-600 text-xs">1</span>
+                        <span id="pill2" class="w-5 h-5 rounded-full bg-slate-200 flex items-center justify-center text-slate-600 text-xs">2</span>
+                    </div>
+                    <div id="feedbackMessage" class="hidden text-sm sm:text-base font-bold"></div>
+                </div>
+
+                <!-- Next Question Button -->
+                <div id="nextButtonArea" class="hidden mt-4 w-full">
+                    <button onclick="nextQuestion()" class="w-full py-3.5 bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-lg rounded-2xl shadow-lg transition flex items-center justify-center gap-2">
+                        <span>המשך לשאלה הבאה</span>
+                        <span>←</span>
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- Helpful audio note for speech api -->
+            <p id="ttsNote" class="text-center text-xs text-slate-400 mt-4">
+                💡 מופעל באמצעות מנוע הדיבור של הדפדפן. וודאו שהרמקולים או האוזניות דולקים.
+            </p>
+        </section>
+
+        <!-- VIEW 3: PRACTICE SUMMARY -->
+        <section id="viewSummary" class="hidden animate-pop text-center space-y-6 max-w-lg mx-auto bg-white p-8 rounded-3xl shadow-xl border border-slate-100">
+            <div class="w-20 h-20 mx-auto rounded-3xl bg-amber-100 text-amber-600 flex items-center justify-center text-4xl shadow-inner">
+                🏆
+            </div>
+            
+            <div class="space-y-2">
+                <h2 class="text-3xl font-black text-slate-800">כל הכבוד! סיימת את האימון!</h2>
+                <p class="text-slate-500 text-sm">הנה הסיכום של מה שהשגת:</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 my-6">
+                <div class="bg-indigo-50 border border-indigo-100 p-4 rounded-2xl">
+                    <span class="block text-2xl font-black text-indigo-700" id="summaryScore">0</span>
+                    <span class="text-xs text-indigo-600 font-bold">תשובות נכונות</span>
+                </div>
+                <div class="bg-purple-50 border border-purple-100 p-4 rounded-2xl">
+                    <span class="block text-2xl font-black text-purple-700" id="summaryAccuracy">0%</span>
+                    <span class="text-xs text-purple-600 font-bold">דיוק כללי</span>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                <button onclick="restartCurrentPractice()" class="flex-1 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-2xl shadow-md transition">
+                    תרגל שוב 🔄
+                </button>
+                <button onclick="goToHome()" class="flex-1 py-3.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-2xl transition">
+                    לתפריט הראשי 🏠
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ADMIN MODAL: VOCABULARY MANAGER -->
+    <div id="adminModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white w-full max-w-2xl rounded-3xl shadow-2xl border border-slate-100 flex flex-col max-h-[90vh] overflow-hidden animate-pop">
+            
+            <!-- Modal Header -->
+            <div class="px-6 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <span class="text-2xl">⚙️</span>
+                    <div>
+                        <h3 class="text-lg font-black text-slate-800">ניהול מאגר המילים (Admin)</h3>
+                        <p class="text-xs text-slate-500">הוספה, עריכה או מחיקה של מילים. השינויים נשמרים בדפדפן.</p>
+                    </div>
+                </div>
+                <button onclick="closeAdminModal()" class="w-9 h-9 rounded-xl bg-slate-200/80 hover:bg-slate-300 text-slate-700 font-bold flex items-center justify-center transition">
+                    ✕
+                </button>
+            </div>
+
+            <!-- Add New Word Form -->
+            <div class="p-5 bg-indigo-50/50 border-b border-indigo-100">
+                <form id="addWordForm" onsubmit="handleAddNewWord(event)" class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end">
+                    <div class="sm:col-span-5">
+                        <label class="block text-xs font-bold text-slate-700 mb-1">מילה באנגלית (English):</label>
+                        <input 
+                            type="text" 
+                            id="newEnglishWord" 
+                            dir="ltr"
+                            placeholder="e.g. guitar" 
+                            required
+                            class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm font-english font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                        >
+                    </div>
+                    <div class="sm:col-span-5">
+                        <label class="block text-xs font-bold text-slate-700 mb-1">תרגום בעברית (Hebrew):</label>
+                        <input 
+                            type="text" 
+                            id="newHebrewWord" 
+                            placeholder="לדוגמה: גיטרה" 
+                            required
+                            class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                        >
+                    </div>
+                    <div class="sm:col-span-2">
+                        <button type="submit" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold rounded-xl shadow transition">
+                            + הוסף
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Words List Table -->
+            <div class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-2">
+                <div class="flex items-center justify-between text-xs font-bold text-slate-500 mb-2 px-2">
+                    <span>רשימת מילים קיימות (<span id="adminListCount">0</span>)</span>
+                    <button onclick="restoreDefaultWords()" class="text-rose-600 hover:text-rose-800 underline">
+                        שחזר לרשימת ברירת המחדל המקורית
+                    </button>
+                </div>
+
+                <div id="adminWordsContainer" class="space-y-2">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="px-6 py-3.5 bg-slate-50 border-t border-slate-200 flex justify-between items-center text-xs">
+                <span class="text-slate-500">השינויים מתעדכנים מיידית במבחנים.</span>
+                <button onclick="closeAdminModal()" class="px-5 py-2 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-xl transition">
+                    סגור ושמור
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Feedback Sounds (Web Audio API Synthesizer - No external audio files needed) -->
+    <script>
+        // Audio synthesis for fun sound effects (Win / Try Again)
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSound(type) {
+            try {
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                if (type === 'success') {
+                    // Happy chord arpeggio
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, now); // C5
+                    osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
+                    osc.frequency.setValueAtTime(783.99, now + 0.2); // G5
+                    osc.frequency.setValueAtTime(1046.50, now + 0.3); // C6
+                    gain.gain.setValueAtTime(0.3, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.55);
+                    osc.start(now);
+                    osc.stop(now + 0.6);
+                } else if (type === 'warning') {
+                    // Gentle boing/warning
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(320, now);
+                    osc.frequency.exponentialRampToValueAtTime(180, now + 0.25);
+                    gain.gain.setValueAtTime(0.3, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.28);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                } else if (type === 'fail') {
+                    // Revealed fail chord
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, now);
+                    osc.frequency.linearRampToValueAtTime(160, now + 0.35);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+                    osc.start(now);
+                    osc.stop(now + 0.42);
+                }
+            } catch (e) {
+                console.warn('Audio effects not initialized yet:', e);
+            }
+        }
+
+        /* -------------------------------------------------------------
+           DEFAULT VOCABULARY LIST (Requested by User)
+        ------------------------------------------------------------- */
+        const DEFAULT_WORDS = [
+            { english: 'rabbit', hebrew: 'ארנב' },
+            { english: 'desk', hebrew: 'שולחן כתיבה' },
+            { english: 'sun', hebrew: 'שמש' },
+            { english: 'star', hebrew: 'כוכב' },
+            { english: 'foot', hebrew: 'כף רגל' },
+            { english: 'hand', hebrew: 'יד' },
+            { english: 'lemon', hebrew: 'לימון' },
+            { english: 'apple', hebrew: 'תפוח' },
+            { english: 'duck', hebrew: 'ברווז' },
+            { english: 'ball', hebrew: 'כדור' },
+            { english: 'tall', hebrew: 'גבוה' },
+            { english: 'girl', hebrew: 'ילדה' },
+            { english: 'boy', hebrew: 'ילד' },
+            { english: 'pen', hebrew: 'עט' },
+            { english: 'king', hebrew: 'מלך' },
+            { english: 'grandma', hebrew: 'סבתא' },
+            { english: 'grandpa', hebrew: 'סבא' },
+            { english: 'umbrella', hebrew: 'מטרייה' },
+            { english: 'swim', hebrew: 'לשחות' },
+            { english: 'small', hebrew: 'קטן' },
+            { english: 'run', hebrew: 'לרוץ' },
+            { english: 'jump', hebrew: 'לקפוץ' },
+            { english: 'happy', hebrew: 'שמח' },
+            { english: 'he', hebrew: 'הוא' },
+            { english: 'she', hebrew: 'היא' }
+        ];
+
+        const STORAGE_KEY = 'milon_custom_vocabulary_v1';
+        let vocabulary = [];
+
+        // Application State
+        let currentMode = 1; // 1: Listen EN -> Pick HE, 2: Listen HE -> Type EN
+        let sessionQuestions = [];
+        let currentIndex = 0;
+        let attemptsLeft = 2;
+        let userScore = 0;
+        let currentStreak = 0;
+        let isQuestionAnswered = false;
+
+        // Initialize Vocabulary from LocalStorage or Defaults
+        function initVocabulary() {
+            try {
+                const stored = localStorage.getItem(STORAGE_KEY);
+                if (stored) {
+                    vocabulary = JSON.parse(stored);
+                } else {
+                    vocabulary = JSON.parse(JSON.stringify(DEFAULT_WORDS));
+                    saveVocabulary();
+                }
+            } catch (err) {
+                console.error('Error loading stored vocabulary:', err);
+                vocabulary = JSON.parse(JSON.stringify(DEFAULT_WORDS));
+            }
+            updateWordCountUI();
+        }
+
+        function saveVocabulary() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(vocabulary));
+            } catch (e) {
+                console.error('Failed to save to localStorage', e);
+            }
+            updateWordCountUI();
+        }
+
+        function updateWordCountUI() {
+            document.getElementById('homeWordCount').textContent = vocabulary.length;
+            document.getElementById('adminListCount').textContent = vocabulary.length;
+        }
+
+        /* -------------------------------------------------------------
+           TEXT TO SPEECH (Web Speech API)
+        ------------------------------------------------------------- */
+        let availableVoices = [];
+        function loadVoices() {
+            if ('speechSynthesis' in window) {
+                availableVoices = window.speechSynthesis.getVoices();
+            }
+        }
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.onvoiceschanged = loadVoices;
+            loadVoices();
+        }
+
+        function speakText(text, lang = 'en-US') {
+            if (!('speechSynthesis' in window)) {
+                return;
+            }
+            window.speechSynthesis.cancel(); // Stop any pending speech
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = lang;
+            utterance.rate = 0.9; // Slightly slower for crisp clarity
+
+            // Find best matching voice
+            if (availableVoices.length > 0) {
+                const targetLang = lang.toLowerCase();
+                const matchedVoice = availableVoices.find(v => v.lang.toLowerCase().startsWith(targetLang) || v.lang.toLowerCase().replace('_', '-').startsWith(targetLang));
+                if (matchedVoice) {
+                    utterance.voice = matchedVoice;
+                }
+            }
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function playCurrentWordAudio() {
+            if (!sessionQuestions[currentIndex]) return;
+            const currentItem = sessionQuestions[currentIndex];
+            if (currentMode === 1) {
+                speakText(currentItem.english, 'en-US');
+            } else {
+                speakText(currentItem.hebrew, 'he-IL');
+            }
+        }
+
+        /* -------------------------------------------------------------
+           GAME LOGIC & PRACTICE CONTROLS
+        ------------------------------------------------------------- */
+        function shuffle(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function startPractice(mode) {
+            if (vocabulary.length < 4) {
+                showSimpleToast('יש להוסיף לפחות 4 מילים במאגר כדי להתחיל לתרגל.');
+                return;
+            }
+            currentMode = mode;
+            currentIndex = 0;
+            userScore = 0;
+            currentStreak = 0;
+            updateStatsUI();
+
+            // Shuffle full vocabulary for session (take up to 15 questions per round)
+            sessionQuestions = shuffle(vocabulary).slice(0, Math.min(vocabulary.length, 15));
+
+            // Set UI headers
+            document.getElementById('viewModeSelect').classList.add('hidden');
+            document.getElementById('viewSummary').classList.add('hidden');
+            document.getElementById('viewPractice').classList.remove('hidden');
+
+            const badge = document.getElementById('modeBadgeTitle');
+            if (mode === 1) {
+                badge.textContent = 'מצב 1: האזן באנגלית ובחר בעברית';
+                badge.className = 'bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-xs font-bold';
+            } else {
+                badge.textContent = 'מצב 2: האזן בעברית וכתוב באנגלית';
+                badge.className = 'bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-bold';
+            }
+
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            isQuestionAnswered = false;
+            attemptsLeft = 2;
+
+            const total = sessionQuestions.length;
+            document.getElementById('questionCounter').textContent = `שאלה ${currentIndex + 1} מתוך ${total}`;
+            const progressPercent = ((currentIndex + 1) / total) * 100;
+            document.getElementById('progressBar').style.width = `${progressPercent}%`;
+
+            // Reset attempts visual pills
+            updateAttemptPills();
+            hideFeedback();
+            document.getElementById('nextButtonArea').classList.add('hidden');
+
+            const current = sessionQuestions[currentIndex];
+
+            if (currentMode === 1) {
+                // Setup Mode 1 UI
+                document.getElementById('mode1Header').classList.remove('hidden');
+                document.getElementById('mode2Header').classList.add('hidden');
+
+                // Display English word prominently
+                document.getElementById('mode1EnglishWordDisplay').textContent = current.english;
+
+                // Generate 4 options: 1 correct + 3 distinct distractors
+                const otherOptions = vocabulary.filter(w => w.english !== current.english);
+                const shuffledOthers = shuffle(otherOptions).slice(0, 3);
+                const options = shuffle([current, ...shuffledOthers]);
+
+                const container = document.getElementById('optionsContainer');
+                container.innerHTML = '';
+
+                options.forEach((opt, idx) => {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'option-btn w-full p-4 text-center rounded-2xl border-2 border-slate-200 bg-white hover:bg-indigo-50/70 hover:border-indigo-300 active:scale-98 transition text-lg sm:text-xl font-bold text-slate-700 shadow-sm flex items-center justify-center';
+                    btn.dataset.english = opt.english;
+                    btn.dataset.hebrew = opt.hebrew;
+                    btn.textContent = opt.hebrew;
+                    btn.onclick = () => handleChoiceSelection(opt, btn);
+                    container.appendChild(btn);
+                });
+
+                // Auto speak English word on first display
+                setTimeout(() => {
+                    speakText(current.english, 'en-US');
+                }, 300);
+
+            } else {
+                // Setup Mode 2 UI
+                document.getElementById('mode1Header').classList.add('hidden');
+                document.getElementById('mode2Header').classList.remove('hidden');
+                document.getElementById('mode2RevealBox').classList.add('hidden');
+
+                document.getElementById('hebrewPromptWord').textContent = current.hebrew;
+                const input = document.getElementById('englishInput');
+                input.value = '';
+                input.disabled = false;
+                input.className = 'font-english w-full text-center text-2xl font-bold py-3.5 px-4 rounded-2xl border-2 border-slate-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100 outline-none transition uppercase shadow-sm';
+                document.getElementById('btnSubmitSpelling').disabled = false;
+                document.getElementById('btnSubmitSpelling').classList.remove('opacity-50', 'pointer-events-none');
+
+                setTimeout(() => {
+                    speakText(current.hebrew, 'he-IL');
+                    input.focus();
+                }, 300);
+            }
+        }
+
+        function updateAttemptPills() {
+            const p1 = document.getElementById('pill1');
+            const p2 = document.getElementById('pill2');
+            p1.className = 'w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold transition ' + 
+                (attemptsLeft <= 1 ? 'bg-amber-400 text-white' : 'bg-slate-200 text-slate-600');
+            p2.className = 'w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold transition ' + 
+                (attemptsLeft < 1 ? 'bg-rose-500 text-white' : 'bg-slate-200 text-slate-600');
+        }
+
+        /* Mode 1 Choice Handler */
+        function handleChoiceSelection(selectedOption, buttonElement) {
+            if (isQuestionAnswered) return;
+
+            const current = sessionQuestions[currentIndex];
+            const isCorrect = selectedOption.english.trim().toLowerCase() === current.english.trim().toLowerCase();
+
+            if (isCorrect) {
+                // Correct!
+                markAnswerCorrect(buttonElement);
+            } else {
+                // Incorrect
+                attemptsLeft--;
+                updateAttemptPills();
+
+                if (attemptsLeft === 1) {
+                    // First failure: give one more try
+                    buttonElement.classList.add('bg-rose-50', 'border-rose-300', 'text-rose-600');
+                    buttonElement.disabled = true; // Disable this wrong pick
+                    triggerShake();
+                    playSound('warning');
+                    showFeedback('נסה שוב! נותר לך עוד ניסיון אחד ⚠️', 'warning');
+                } else {
+                    // Second failure: reveal correct
+                    triggerShake();
+                    playSound('fail');
+                    revealMode1CorrectAnswer(current);
+                }
+            }
+        }
+
+        /* Mode 2 Spelling Handler */
+        function handleSpellingSubmit(e) {
+            e.preventDefault();
+            if (isQuestionAnswered) return;
+
+            const input = document.getElementById('englishInput');
+            const userText = input.value.trim().toLowerCase();
+            const current = sessionQuestions[currentIndex];
+            const expectedText = current.english.trim().toLowerCase();
+
+            if (!userText) {
+                showFeedback('אנא הקלד מילה באנגלית!', 'warning');
+                input.focus();
+                return;
+            }
+
+            if (userText === expectedText) {
+                // Correct
+                markAnswerCorrect(input);
+            } else {
+                attemptsLeft--;
+                updateAttemptPills();
+
+                if (attemptsLeft === 1) {
+                    // First failure
+                    triggerShake();
+                    playSound('warning');
+                    input.classList.remove('focus:border-purple-500');
+                    input.classList.add('border-rose-400', 'bg-rose-50');
+                    showFeedback('לא מדויק! נסה שוב, נותר לך עוד ניסיון אחד ✍️', 'warning');
+                    input.select();
+                } else {
+                    // Second failure: reveal
+                    triggerShake();
+                    playSound('fail');
+                    revealMode2CorrectAnswer(current);
+                }
+            }
+        }
+
+        /* Success handling */
+        function markAnswerCorrect(targetElement) {
+            isQuestionAnswered = true;
+            userScore += 10;
+            currentStreak++;
+            updateStatsUI();
+
+            playSound('success');
+            fireCelebrationConfetti();
+
+            if (currentMode === 1 && targetElement) {
+                targetElement.classList.remove('hover:bg-indigo-50/70', 'border-slate-200');
+                targetElement.classList.add('bg-emerald-500', 'text-white', 'border-emerald-600', 'shadow-lg');
+                disableAllOptions();
+            } else if (currentMode === 2) {
+                const input = document.getElementById('englishInput');
+                input.classList.remove('border-slate-200', 'border-rose-400', 'bg-rose-50');
+                input.classList.add('bg-emerald-50', 'border-emerald-500', 'text-emerald-700');
+                input.disabled = true;
+                document.getElementById('btnSubmitSpelling').classList.add('opacity-50', 'pointer-events-none');
+            }
+
+            showFeedback('מצוין! תשובה נכונה! 🎉', 'success');
+            document.getElementById('nextButtonArea').classList.remove('hidden');
+        }
+
+        /* Failure & Reveal Logic */
+        function revealMode1CorrectAnswer(current) {
+            isQuestionAnswered = true;
+            currentStreak = 0;
+            updateStatsUI();
+            disableAllOptions();
+
+            // Highlight the true answer button
+            const buttons = document.querySelectorAll('.option-btn');
+            buttons.forEach(btn => {
+                if (btn.dataset.english.toLowerCase() === current.english.toLowerCase()) {
+                    btn.classList.remove('border-slate-200');
+                    btn.classList.add('bg-emerald-100', 'border-emerald-500', 'text-emerald-800', 'font-black');
+                }
+            });
+
+            showFeedback(`התשובה הנכונה היא: "${current.hebrew}" (${current.english})`, 'reveal');
+            document.getElementById('nextButtonArea').classList.remove('hidden');
+        }
+
+        function revealMode2CorrectAnswer(current) {
+            isQuestionAnswered = true;
+            currentStreak = 0;
+            updateStatsUI();
+
+            const input = document.getElementById('englishInput');
+            const wrongAttempt = input.value.trim();
+            input.disabled = true;
+            input.classList.remove('border-rose-400', 'bg-rose-50');
+            input.classList.add('bg-slate-100', 'border-slate-300', 'text-slate-400');
+            document.getElementById('btnSubmitSpelling').classList.add('opacity-50', 'pointer-events-none');
+
+            // Show prominent reveal box
+            const revealBox = document.getElementById('mode2RevealBox');
+            const revealedCorrectEnglish = document.getElementById('revealedCorrectEnglish');
+            const revealedUserMistake = document.getElementById('revealedUserMistake');
+            const revealedWrongText = document.getElementById('revealedWrongText');
+
+            revealedCorrectEnglish.textContent = current.english;
+            if (wrongAttempt) {
+                revealedWrongText.textContent = wrongAttempt;
+                revealedUserMistake.classList.remove('hidden');
+            } else {
+                revealedUserMistake.classList.add('hidden');
+            }
+            revealBox.classList.remove('hidden');
+
+            showFeedback(`שימו לב לתשובה הנכונה למטה והאזינו להגייה 🎧`, 'reveal');
+            document.getElementById('nextButtonArea').classList.remove('hidden');
+
+            // Automatically pronounce the correct English answer clearly
+            setTimeout(() => {
+                speakText(current.english, 'en-US');
+            }, 350);
+        }
+
+        function disableAllOptions() {
+            const buttons = document.querySelectorAll('.option-btn');
+            buttons.forEach(b => {
+                b.disabled = true;
+                b.classList.remove('hover:bg-indigo-50/70', 'hover:border-indigo-300');
+            });
+        }
+
+        function nextQuestion() {
+            if (currentIndex + 1 < sessionQuestions.length) {
+                currentIndex++;
+                renderQuestion();
+            } else {
+                finishPractice();
+            }
+        }
+
+        function finishPractice() {
+            document.getElementById('viewPractice').classList.add('hidden');
+            document.getElementById('viewSummary').classList.remove('hidden');
+
+            const total = sessionQuestions.length;
+            const correctCount = Math.round(userScore / 10);
+            const accuracy = Math.round((correctCount / total) * 100);
+
+            document.getElementById('summaryScore').textContent = `${correctCount} מתוך ${total}`;
+            document.getElementById('summaryAccuracy').textContent = `${accuracy}%`;
+
+            if (accuracy >= 70) {
+                fireCelebrationConfetti();
+                playSound('success');
+            }
+        }
+
+        function restartCurrentPractice() {
+            startPractice(currentMode);
+        }
+
+        function goToHome() {
+            document.getElementById('viewPractice').classList.add('hidden');
+            document.getElementById('viewSummary').classList.add('hidden');
+            document.getElementById('viewModeSelect').classList.remove('hidden');
+            updateWordCountUI();
+        }
+
+        function confirmExitPractice() {
+            if (confirmModalRequired()) {
+                goToHome();
+            }
+        }
+
+        function confirmModalRequired() {
+            return window.confirm ? window.confirm('האם לחזור לתפריט הראשי? ההתקדמות באימון הנוכחי תיעצר.') : true;
+        }
+
+        /* -------------------------------------------------------------
+           UI FEEDBACK & ANIMATIONS
+        ------------------------------------------------------------- */
+        function showFeedback(text, type) {
+            const container = document.getElementById('feedbackBanner');
+            const pills = document.getElementById('attemptPills');
+            const msg = document.getElementById('feedbackMessage');
+
+            pills.classList.add('hidden');
+            msg.classList.remove('hidden');
+            msg.textContent = text;
+
+            if (type === 'success') {
+                container.className = 'mt-6 w-full text-center px-4 py-3 rounded-2xl bg-emerald-100 text-emerald-800 border border-emerald-300 animate-pop font-bold';
+            } else if (type === 'warning') {
+                container.className = 'mt-6 w-full text-center px-4 py-3 rounded-2xl bg-amber-100 text-amber-800 border border-amber-300 animate-pop font-bold';
+            } else if (type === 'reveal') {
+                container.className = 'mt-6 w-full text-center px-4 py-3 rounded-2xl bg-slate-100 text-slate-800 border border-slate-300 animate-pop font-bold';
+            }
+        }
+
+        function hideFeedback() {
+            const container = document.getElementById('feedbackBanner');
+            const pills = document.getElementById('attemptPills');
+            const msg = document.getElementById('feedbackMessage');
+
+            pills.classList.remove('hidden');
+            msg.classList.add('hidden');
+            container.className = 'mt-6 w-full text-center min-h-[48px] flex items-center justify-center px-4 py-2 rounded-2xl';
+        }
+
+        function triggerShake() {
+            const card = document.getElementById('quizCard');
+            card.classList.remove('animate-shake');
+            void card.offsetWidth; // trigger reflow
+            card.classList.add('animate-shake');
+        }
+
+        function updateStatsUI() {
+            document.getElementById('scoreDisplay').textContent = userScore;
+            document.getElementById('streakDisplay').textContent = currentStreak;
+        }
+
+        function fireCelebrationConfetti() {
+            try {
+                if (typeof confetti === 'function') {
+                    confetti({
+                        particleCount: 70,
+                        spread: 60,
+                        origin: { y: 0.65 }
+                    });
+                }
+            } catch (e) {
+                // graceful ignore if confetti script was blocked
+            }
+        }
+
+        /* -------------------------------------------------------------
+           ADMIN VOCABULARY MANAGEMENT
+        ------------------------------------------------------------- */
+        function openAdminModal() {
+            renderAdminWordList();
+            document.getElementById('adminModal').classList.remove('hidden');
+        }
+
+        function closeAdminModal() {
+            document.getElementById('adminModal').classList.add('hidden');
+            updateWordCountUI();
+        }
+
+        function renderAdminWordList() {
+            const container = document.getElementById('adminWordsContainer');
+            container.innerHTML = '';
+            document.getElementById('adminListCount').textContent = vocabulary.length;
+
+            if (vocabulary.length === 0) {
+                container.innerHTML = `<div class="p-4 text-center text-slate-400 text-sm">אין מילים במאגר כרגע. אנא הוסף מילה חדשה או שחזר לברירת מחדל.</div>`;
+                return;
+            }
+
+            vocabulary.forEach((item, index) => {
+                const row = document.createElement('div');
+                row.className = 'flex items-center justify-between bg-slate-50 hover:bg-slate-100/80 p-3 rounded-xl border border-slate-200 transition';
+                
+                row.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <span class="w-7 h-7 rounded-lg bg-indigo-100 text-indigo-700 text-xs font-bold flex items-center justify-center">
+                            ${index + 1}
+                        </span>
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:gap-4">
+                            <span class="font-english font-bold text-slate-900 tracking-wide">${item.english}</span>
+                            <span class="text-xs text-slate-400 hidden sm:inline">↔</span>
+                            <span class="font-bold text-indigo-900 text-sm">${item.hebrew}</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <button onclick="speakText('${item.english}', 'en-US')" class="p-1.5 text-slate-500 hover:text-indigo-600 rounded-lg hover:bg-white transition" title="השמע אנגלית">
+                            🔊
+                        </button>
+                        <button onclick="speakText('${item.hebrew}', 'he-IL')" class="p-1.5 text-slate-500 hover:text-purple-600 rounded-lg hover:bg-white transition text-xs font-bold" title="השמע עברית">
+                            עב
+                        </button>
+                        <button onclick="deleteWord(${index})" class="p-1.5 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition" title="מחק מילה">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function handleAddNewWord(e) {
+            e.preventDefault();
+            const enInput = document.getElementById('newEnglishWord');
+            const heInput = document.getElementById('newHebrewWord');
+
+            const english = enInput.value.trim().toLowerCase();
+            const hebrew = heInput.value.trim();
+
+            if (!english || !hebrew) return;
+
+            // Check if already exists
+            const existing = vocabulary.find(w => w.english.toLowerCase() === english);
+            if (existing) {
+                alert(`המילה "${english}" כבר קיימת במאגר (תרגום: ${existing.hebrew}).`);
+                return;
+            }
+
+            vocabulary.unshift({ english, hebrew });
+            saveVocabulary();
+            renderAdminWordList();
+
+            enInput.value = '';
+            heInput.value = '';
+            enInput.focus();
+        }
+
+        function deleteWord(index) {
+            if (vocabulary.length <= 4) {
+                alert('מומלץ להשאיר לפחות 4 מילים במאגר לצורך פעילות המבחן.');
+            }
+            vocabulary.splice(index, 1);
+            saveVocabulary();
+            renderAdminWordList();
+        }
+
+        function restoreDefaultWords() {
+            if (confirm('האם ברצונך לאפס את המאגר לרשימת המילים המקורית (25 מילים)?')) {
+                vocabulary = JSON.parse(JSON.stringify(DEFAULT_WORDS));
+                saveVocabulary();
+                renderAdminWordList();
+            }
+        }
+
+        function showSimpleToast(message) {
+            alert(message);
+        }
+
+        // Initialize application when DOM is ready
+        window.onload = function() {
+            initVocabulary();
+        };
+    </script>
+</body>
+</html>
