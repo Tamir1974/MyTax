@@ -132,7 +132,7 @@
                             האזן באנגלית ובחר בעברית
                         </h3>
                         <p class="text-sm text-slate-500 leading-relaxed">
-                            שומעים את המילה המדוברת באנגלית ובוחרים את התרגום המדויק מתוך 4 אפשרויות.
+                            שומעים וקוראים את המילה המדוברת באנגלית ובוחרים את התרגום המדויק מתוך 4 אפשרויות.
                         </p>
                     </div>
                     <div class="mt-6 flex items-center justify-between text-indigo-600 font-bold text-sm">
@@ -157,6 +157,48 @@
                         </p>
                     </div>
                     <div class="mt-6 flex items-center justify-between text-purple-600 font-bold text-sm">
+                        <span>התחל אימון</span>
+                        <span class="text-xl group-hover:-translate-x-1 transition">←</span>
+                    </div>
+                </button>
+
+                <!-- Mode 3 Card: Numbers 1-12 -->
+                <button onclick="startPractice(3)" class="group relative bg-white p-7 rounded-3xl shadow-lg hover:shadow-2xl border-2 border-emerald-100 hover:border-emerald-400 text-right transition-all transform hover:-translate-y-1 duration-200 flex flex-col justify-between overflow-hidden">
+                    <div class="absolute -left-6 -bottom-6 w-28 h-28 bg-emerald-50 rounded-full group-hover:scale-125 transition duration-300 pointer-events-none"></div>
+                    <div>
+                        <div class="w-16 h-16 rounded-2xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition">
+                            🔢
+                        </div>
+                        <div class="inline-block text-xs font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-md mb-2">מצב 3: מספרים עד 12</div>
+                        <h3 class="text-xl font-black text-slate-800 mb-2 group-hover:text-emerald-600 transition">
+                            קרא מספר באנגלית והתאם לספרה
+                        </h3>
+                        <p class="text-sm text-slate-500 leading-relaxed">
+                            רואים ושומעים את שם המספר באנגלית (למשל Seven) ובוחרים את הספרה הנכונה (1–12).
+                        </p>
+                    </div>
+                    <div class="mt-6 flex items-center justify-between text-emerald-600 font-bold text-sm">
+                        <span>התחל אימון</span>
+                        <span class="text-xl group-hover:-translate-x-1 transition">←</span>
+                    </div>
+                </button>
+
+                <!-- Mode 4 Card: Colors -->
+                <button onclick="startPractice(4)" class="group relative bg-white p-7 rounded-3xl shadow-lg hover:shadow-2xl border-2 border-amber-100 hover:border-amber-400 text-right transition-all transform hover:-translate-y-1 duration-200 flex flex-col justify-between overflow-hidden">
+                    <div class="absolute -left-6 -bottom-6 w-28 h-28 bg-amber-50 rounded-full group-hover:scale-125 transition duration-300 pointer-events-none"></div>
+                    <div>
+                        <div class="w-16 h-16 rounded-2xl bg-amber-500/10 text-amber-600 flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition">
+                            🎨
+                        </div>
+                        <div class="inline-block text-xs font-bold text-amber-600 bg-amber-50 px-2.5 py-1 rounded-md mb-2">מצב 4: צבעים</div>
+                        <h3 class="text-xl font-black text-slate-800 mb-2 group-hover:text-amber-600 transition">
+                            קרא צבע באנגלית והתאם לפירוש
+                        </h3>
+                        <p class="text-sm text-slate-500 leading-relaxed">
+                            קוראים ושומעים את שם הצבע (Red, Blue, Green...) ובוחרים את הפירוש והצבע המתאים.
+                        </p>
+                    </div>
+                    <div class="mt-6 flex items-center justify-between text-amber-600 font-bold text-sm">
                         <span>התחל אימון</span>
                         <span class="text-xl group-hover:-translate-x-1 transition">←</span>
                     </div>
@@ -551,6 +593,34 @@
             loadVoices();
         }
 
+        /* -------------------------------------------------------------
+           STATIC DATASETS: NUMBERS (1-12) & COLORS
+        ------------------------------------------------------------- */
+        const NUMBERS_DATA = [
+            { english: 'one', display: '1', hebrew: 'אחת' },
+            { english: 'two', display: '2', hebrew: 'שתיים' },
+            { english: 'three', display: '3', hebrew: 'שלוש' },
+            { english: 'four', display: '4', hebrew: 'ארבע' },
+            { english: 'five', display: '5', hebrew: 'חמש' },
+            { english: 'six', display: '6', hebrew: 'שש' },
+            { english: 'seven', display: '7', hebrew: 'שבע' },
+            { english: 'eight', display: '8', hebrew: 'שמונה' },
+            { english: 'nine', display: '9', hebrew: 'תשע' },
+            { english: 'ten', display: '10', hebrew: 'עשר' },
+            { english: 'eleven', display: '11', hebrew: 'אחת עשרה' },
+            { english: 'twelve', display: '12', hebrew: 'שתים עשרה' }
+        ];
+
+        const COLORS_DATA = [
+            { english: 'red', hebrew: 'אדום', hex: '#ef4444' },
+            { english: 'blue', hebrew: 'כחול', hex: '#3b82f6' },
+            { english: 'green', hebrew: 'ירוק', hex: '#22c55e' },
+            { english: 'orange', hebrew: 'כתום', hex: '#f97316' },
+            { english: 'black', hebrew: 'שחור', hex: '#0f172a' },
+            { english: 'white', hebrew: 'לבן', hex: '#ffffff', border: true },
+            { english: 'yellow', hebrew: 'צהוב', hex: '#eab308' }
+        ];
+
         function speakText(text, lang = 'en-US') {
             if (!('speechSynthesis' in window)) {
                 return;
@@ -575,10 +645,11 @@
         function playCurrentWordAudio() {
             if (!sessionQuestions[currentIndex]) return;
             const currentItem = sessionQuestions[currentIndex];
-            if (currentMode === 1) {
-                speakText(currentItem.english, 'en-US');
-            } else {
+            if (currentMode === 2) {
                 speakText(currentItem.hebrew, 'he-IL');
+            } else {
+                // Modes 1, 3, 4 all speak in English
+                speakText(currentItem.english, 'en-US');
             }
         }
 
@@ -595,7 +666,7 @@
         }
 
         function startPractice(mode) {
-            if (vocabulary.length < 4) {
+            if (mode <= 2 && vocabulary.length < 4) {
                 showSimpleToast('יש להוסיף לפחות 4 מילים במאגר כדי להתחיל לתרגל.');
                 return;
             }
@@ -605,8 +676,14 @@
             currentStreak = 0;
             updateStatsUI();
 
-            // Shuffle full vocabulary for session (take up to 15 questions per round)
-            sessionQuestions = shuffle(vocabulary).slice(0, Math.min(vocabulary.length, 15));
+            // Select dataset according to chosen mode
+            if (mode === 1 || mode === 2) {
+                sessionQuestions = shuffle(vocabulary).slice(0, Math.min(vocabulary.length, 15));
+            } else if (mode === 3) {
+                sessionQuestions = shuffle(NUMBERS_DATA);
+            } else if (mode === 4) {
+                sessionQuestions = shuffle(COLORS_DATA);
+            }
 
             // Set UI headers
             document.getElementById('viewModeSelect').classList.add('hidden');
@@ -617,9 +694,15 @@
             if (mode === 1) {
                 badge.textContent = 'מצב 1: האזן באנגלית ובחר בעברית';
                 badge.className = 'bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-xs font-bold';
-            } else {
+            } else if (mode === 2) {
                 badge.textContent = 'מצב 2: האזן בעברית וכתוב באנגלית';
                 badge.className = 'bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-bold';
+            } else if (mode === 3) {
+                badge.textContent = 'מצב 3: מספרים עד 12';
+                badge.className = 'bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold';
+            } else if (mode === 4) {
+                badge.textContent = 'מצב 4: צבעים בעברית ואנגלית';
+                badge.className = 'bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-xs font-bold';
             }
 
             renderQuestion();
@@ -641,29 +724,52 @@
 
             const current = sessionQuestions[currentIndex];
 
-            if (currentMode === 1) {
-                // Setup Mode 1 UI
+            if (currentMode === 1 || currentMode === 3 || currentMode === 4) {
+                // Choice selection modes (1, 3, 4)
                 document.getElementById('mode1Header').classList.remove('hidden');
                 document.getElementById('mode2Header').classList.add('hidden');
 
                 // Display English word prominently
                 document.getElementById('mode1EnglishWordDisplay').textContent = current.english;
 
-                // Generate 4 options: 1 correct + 3 distinct distractors
-                const otherOptions = vocabulary.filter(w => w.english !== current.english);
+                // Pick distractors dataset
+                let sourceData = vocabulary;
+                if (currentMode === 3) sourceData = NUMBERS_DATA;
+                if (currentMode === 4) sourceData = COLORS_DATA;
+
+                const otherOptions = sourceData.filter(w => w.english !== current.english);
                 const shuffledOthers = shuffle(otherOptions).slice(0, 3);
                 const options = shuffle([current, ...shuffledOthers]);
 
                 const container = document.getElementById('optionsContainer');
                 container.innerHTML = '';
 
-                options.forEach((opt, idx) => {
+                options.forEach((opt) => {
                     const btn = document.createElement('button');
                     btn.type = 'button';
-                    btn.className = 'option-btn w-full p-4 text-center rounded-2xl border-2 border-slate-200 bg-white hover:bg-indigo-50/70 hover:border-indigo-300 active:scale-98 transition text-lg sm:text-xl font-bold text-slate-700 shadow-sm flex items-center justify-center';
                     btn.dataset.english = opt.english;
-                    btn.dataset.hebrew = opt.hebrew;
-                    btn.textContent = opt.hebrew;
+
+                    if (currentMode === 3) {
+                        // Numbers mode: show big digital digit with Hebrew subtext
+                        btn.className = 'option-btn w-full p-4 text-center rounded-2xl border-2 border-slate-200 bg-white hover:bg-emerald-50 hover:border-emerald-300 active:scale-98 transition shadow-sm flex flex-col items-center justify-center gap-1';
+                        btn.innerHTML = `
+                            <span class="text-3xl sm:text-4xl font-black text-slate-800">${opt.display}</span>
+                            <span class="text-xs text-slate-400 font-semibold">${opt.hebrew}</span>
+                        `;
+                    } else if (currentMode === 4) {
+                        // Colors mode: show color indicator swatch + Hebrew label
+                        btn.className = 'option-btn w-full p-4 text-center rounded-2xl border-2 border-slate-200 bg-white hover:bg-amber-50 hover:border-amber-300 active:scale-98 transition shadow-sm flex items-center justify-center gap-3';
+                        const borderStyle = opt.border ? 'border border-slate-300' : '';
+                        btn.innerHTML = `
+                            <span class="w-6 h-6 rounded-full inline-block shadow-sm ${borderStyle}" style="background-color: ${opt.hex};"></span>
+                            <span class="text-lg sm:text-xl font-bold text-slate-800">${opt.hebrew}</span>
+                        `;
+                    } else {
+                        // Mode 1: Hebrew word
+                        btn.className = 'option-btn w-full p-4 text-center rounded-2xl border-2 border-slate-200 bg-white hover:bg-indigo-50/70 hover:border-indigo-300 active:scale-98 transition text-lg sm:text-xl font-bold text-slate-700 shadow-sm flex items-center justify-center';
+                        btn.textContent = opt.hebrew;
+                    }
+
                     btn.onclick = () => handleChoiceSelection(opt, btn);
                     container.appendChild(btn);
                 });
@@ -703,7 +809,7 @@
                 (attemptsLeft < 1 ? 'bg-rose-500 text-white' : 'bg-slate-200 text-slate-600');
         }
 
-        /* Mode 1 Choice Handler */
+        /* Mode 1, 3, 4 Choice Handler */
         function handleChoiceSelection(selectedOption, buttonElement) {
             if (isQuestionAnswered) return;
 
@@ -729,7 +835,7 @@
                     // Second failure: reveal correct
                     triggerShake();
                     playSound('fail');
-                    revealMode1CorrectAnswer(current);
+                    revealChoiceCorrectAnswer(current);
                 }
             }
         }
@@ -784,8 +890,8 @@
             playSound('success');
             fireCelebrationConfetti();
 
-            if (currentMode === 1 && targetElement) {
-                targetElement.classList.remove('hover:bg-indigo-50/70', 'border-slate-200');
+            if (currentMode !== 2 && targetElement) {
+                targetElement.classList.remove('hover:bg-indigo-50/70', 'border-slate-200', 'hover:bg-emerald-50', 'hover:bg-amber-50');
                 targetElement.classList.add('bg-emerald-500', 'text-white', 'border-emerald-600', 'shadow-lg');
                 disableAllOptions();
             } else if (currentMode === 2) {
@@ -801,7 +907,7 @@
         }
 
         /* Failure & Reveal Logic */
-        function revealMode1CorrectAnswer(current) {
+        function revealChoiceCorrectAnswer(current) {
             isQuestionAnswered = true;
             currentStreak = 0;
             updateStatsUI();
@@ -811,13 +917,19 @@
             const buttons = document.querySelectorAll('.option-btn');
             buttons.forEach(btn => {
                 if (btn.dataset.english.toLowerCase() === current.english.toLowerCase()) {
-                    btn.classList.remove('border-slate-200');
+                    btn.classList.remove('border-slate-200', 'bg-white');
                     btn.classList.add('bg-emerald-100', 'border-emerald-500', 'text-emerald-800', 'font-black');
                 }
             });
 
-            showFeedback(`התשובה הנכונה היא: "${current.hebrew}" (${current.english})`, 'reveal');
+            const answerText = current.display ? `${current.display} (${current.english})` : `"${current.hebrew}" (${current.english})`;
+            showFeedback(`התשובה הנכונה היא: ${answerText}`, 'reveal');
             document.getElementById('nextButtonArea').classList.remove('hidden');
+
+            // Pronounce English word again
+            setTimeout(() => {
+                speakText(current.english, 'en-US');
+            }, 300);
         }
 
         function revealMode2CorrectAnswer(current) {
