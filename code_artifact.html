@@ -146,14 +146,14 @@
                     <div class="absolute -left-6 -bottom-6 w-28 h-28 bg-purple-50 rounded-full group-hover:scale-125 transition duration-300 pointer-events-none"></div>
                     <div>
                         <div class="w-16 h-16 rounded-2xl bg-purple-500/10 text-purple-600 flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition">
-                            ✍️
+                            🗣️
                         </div>
-                        <div class="inline-block text-xs font-bold text-purple-600 bg-purple-50 px-2.5 py-1 rounded-md mb-2">מצב 2: איות וכתיבה</div>
+                        <div class="inline-block text-xs font-bold text-purple-600 bg-purple-50 px-2.5 py-1 rounded-md mb-2">מצב 2: בחירה באנגלית</div>
                         <h3 class="text-xl font-black text-slate-800 mb-2 group-hover:text-purple-600 transition">
-                            האזן בעברית וכתוב באנגלית
+                            האזן בעברית ובחר באנגלית
                         </h3>
                         <p class="text-sm text-slate-500 leading-relaxed">
-                            שומעים מילה בעברית (עם הצגתה) ומקלידים את המילה המתאימה באנגלית.
+                            רואים ושומעים את המילה בעברית, ובוחרים מתוך 4 מילים באנגלית עם השמעה קולית של כל בחירה.
                         </p>
                     </div>
                     <div class="mt-6 flex items-center justify-between text-purple-600 font-bold text-sm">
@@ -263,59 +263,30 @@
                     </div>
                 </div>
 
-                <!-- Mode 2 Prompt UI (Listen HE -> Type EN) -->
+                <!-- Mode 2 Prompt UI (Listen HE -> Choose EN) -->
                 <div id="mode2Header" class="hidden text-center w-full space-y-4">
                     <span class="text-xs font-extrabold tracking-wider uppercase text-purple-600 bg-purple-50 px-3 py-1 rounded-full border border-purple-100 inline-block">
-                        האזן בעברית והקלד באנגלית
+                        האזינו בעברית ובחרו את המילה הנכונה באנגלית
                     </span>
 
                     <!-- Hebrew Word Display & Audio -->
                     <div class="py-3 flex flex-col items-center space-y-3">
-                        <div class="text-3xl sm:text-4xl font-extrabold text-slate-800 tracking-wide" id="hebrewPromptWord">
-                            --
-                        </div>
-
-                        <button id="btnPlaySoundHe" onclick="playCurrentWordAudio()" class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-purple-100 text-purple-700 hover:bg-purple-200 transition font-bold text-sm shadow-sm" title="השמע מילה בעברית">
-                            <span>🔊 השמע מילה בעברית</span>
-                        </button>
-                    </div>
-
-                    <!-- English Input Form -->
-                    <form id="spellingForm" onsubmit="handleSpellingSubmit(event)" class="w-full max-w-sm mx-auto space-y-3">
-                        <div class="relative">
-                            <input 
-                                type="text" 
-                                id="englishInput" 
-                                dir="ltr" 
-                                class="font-english w-full text-center text-2xl font-bold py-3.5 px-4 rounded-2xl border-2 border-slate-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100 outline-none transition uppercase shadow-sm"
-                                placeholder="type in English..."
-                                autocomplete="off"
-                                autocorrect="off"
-                                autocapitalize="off"
-                                spellcheck="false"
-                            >
-                        </div>
-                        <button type="submit" id="btnSubmitSpelling" class="w-full py-3.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold text-base rounded-2xl shadow-lg hover:shadow-xl transition active:scale-98">
-                            בדיקת תשובה ✓
-                        </button>
-                    </form>
-
-                    <!-- Prominent Reveal Box for Mode 2 When Failed 2 Attempts -->
-                    <div id="mode2RevealBox" class="hidden mt-4 w-full bg-amber-50/90 border-2 border-amber-300 rounded-3xl p-5 text-center animate-pop shadow-md space-y-3">
-                        <div class="inline-flex items-center gap-2 px-3 py-1 bg-amber-200/70 text-amber-900 text-xs font-black rounded-full">
-                            <span>💡 התשובה הנכונה:</span>
-                        </div>
-                        <div class="flex flex-col items-center justify-center gap-2">
-                            <span id="revealedCorrectEnglish" dir="ltr" class="font-english text-4xl sm:text-5xl font-black text-emerald-600 tracking-wider">
+                        <div class="bg-purple-50/70 border-2 border-purple-100 rounded-3xl px-8 py-4 shadow-inner flex flex-col sm:flex-row items-center justify-center gap-4">
+                            <span class="text-3xl sm:text-4xl font-extrabold text-purple-900 tracking-wide select-all" id="hebrewPromptWord">
                                 --
                             </span>
-                            <div id="revealedUserMistake" class="text-xs text-rose-500 font-semibold hidden">
-                                תשובתך: <span id="revealedWrongText" class="line-through decoration-rose-500"></span>
-                            </div>
+                            <button id="btnPlaySoundHe" onclick="playCurrentWordAudio()" class="w-12 h-12 p-2.5 rounded-2xl bg-gradient-to-tr from-purple-500 to-indigo-600 text-white shadow-md hover:scale-105 active:scale-95 transition flex items-center justify-center group focus:outline-none" title="השמע מילה בעברית">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 transform group-hover:scale-110 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                                </svg>
+                            </button>
                         </div>
-                        <button onclick="speakText(sessionQuestions[currentIndex].english, 'en-US')" class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow transition">
-                            <span>🔊 השמע שוב באנגלית</span>
-                        </button>
+                        <span class="text-xs text-slate-400 font-medium">לחיצה על כל אפשרות תשמיע את המילה באנגלית 🔊</span>
+                    </div>
+
+                    <!-- 4 English Options Grid for Mode 2 -->
+                    <div id="mode2OptionsContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-2 w-full">
+                        <!-- Populated by JS -->
                     </div>
                 </div>
 
@@ -618,7 +589,8 @@
             { english: 'orange', hebrew: 'כתום', hex: '#f97316' },
             { english: 'black', hebrew: 'שחור', hex: '#0f172a' },
             { english: 'white', hebrew: 'לבן', hex: '#ffffff', border: true },
-            { english: 'yellow', hebrew: 'צהוב', hex: '#eab308' }
+            { english: 'yellow', hebrew: 'צהוב', hex: '#eab308' },
+            { english: 'gray', hebrew: 'אפור', hex: '#808080' }
         ];
 
         function speakText(text, lang = 'en-US') {
@@ -695,7 +667,7 @@
                 badge.textContent = 'מצב 1: האזן באנגלית ובחר בעברית';
                 badge.className = 'bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-xs font-bold';
             } else if (mode === 2) {
-                badge.textContent = 'מצב 2: האזן בעברית וכתוב באנגלית';
+                badge.textContent = 'מצב 2: האזן בעברית ובחר באנגלית';
                 badge.className = 'bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-bold';
             } else if (mode === 3) {
                 badge.textContent = 'מצב 3: מספרים עד 12';
@@ -780,22 +752,36 @@
                 }, 300);
 
             } else {
-                // Setup Mode 2 UI
+                // Setup Mode 2 UI (Listen Hebrew -> Pick from 4 English options)
                 document.getElementById('mode1Header').classList.add('hidden');
                 document.getElementById('mode2Header').classList.remove('hidden');
-                document.getElementById('mode2RevealBox').classList.add('hidden');
 
                 document.getElementById('hebrewPromptWord').textContent = current.hebrew;
-                const input = document.getElementById('englishInput');
-                input.value = '';
-                input.disabled = false;
-                input.className = 'font-english w-full text-center text-2xl font-bold py-3.5 px-4 rounded-2xl border-2 border-slate-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100 outline-none transition uppercase shadow-sm';
-                document.getElementById('btnSubmitSpelling').disabled = false;
-                document.getElementById('btnSubmitSpelling').classList.remove('opacity-50', 'pointer-events-none');
 
+                const otherOptions = vocabulary.filter(w => w.english !== current.english);
+                const shuffledOthers = shuffle(otherOptions).slice(0, 3);
+                const options = shuffle([current, ...shuffledOthers]);
+
+                const container = document.getElementById('mode2OptionsContainer');
+                container.innerHTML = '';
+
+                options.forEach((opt) => {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.dataset.english = opt.english;
+                    btn.className = 'mode2-option-btn font-english w-full p-4 text-center rounded-2xl border-2 border-slate-200 bg-white hover:bg-purple-50/70 hover:border-purple-300 active:scale-98 transition text-xl sm:text-2xl font-bold text-slate-800 shadow-sm flex items-center justify-center gap-2';
+                    btn.innerHTML = `
+                        <span dir="ltr">${opt.english}</span>
+                        <span class="text-xs text-purple-400">🔊</span>
+                    `;
+
+                    btn.onclick = () => handleMode2ChoiceSelection(opt, btn);
+                    container.appendChild(btn);
+                });
+
+                // Auto speak Hebrew prompt
                 setTimeout(() => {
                     speakText(current.hebrew, 'he-IL');
-                    input.focus();
                 }, 300);
             }
         }
@@ -840,42 +826,34 @@
             }
         }
 
-        /* Mode 2 Spelling Handler */
-        function handleSpellingSubmit(e) {
-            e.preventDefault();
+        /* Mode 2 Choice Handler: speaks selected English option immediately */
+        function handleMode2ChoiceSelection(selectedOption, buttonElement) {
             if (isQuestionAnswered) return;
 
-            const input = document.getElementById('englishInput');
-            const userText = input.value.trim().toLowerCase();
+            // Pronounce selected English word right away
+            speakText(selectedOption.english, 'en-US');
+
             const current = sessionQuestions[currentIndex];
-            const expectedText = current.english.trim().toLowerCase();
+            const isCorrect = selectedOption.english.trim().toLowerCase() === current.english.trim().toLowerCase();
 
-            if (!userText) {
-                showFeedback('אנא הקלד מילה באנגלית!', 'warning');
-                input.focus();
-                return;
-            }
-
-            if (userText === expectedText) {
-                // Correct
-                markAnswerCorrect(input);
+            if (isCorrect) {
+                markAnswerCorrect(buttonElement);
             } else {
                 attemptsLeft--;
                 updateAttemptPills();
 
                 if (attemptsLeft === 1) {
-                    // First failure
+                    // First failure: mark this button as wrong and allow another attempt
+                    buttonElement.classList.add('bg-rose-50', 'border-rose-300', 'text-rose-600');
+                    buttonElement.disabled = true;
                     triggerShake();
                     playSound('warning');
-                    input.classList.remove('focus:border-purple-500');
-                    input.classList.add('border-rose-400', 'bg-rose-50');
-                    showFeedback('לא מדויק! נסה שוב, נותר לך עוד ניסיון אחד ✍️', 'warning');
-                    input.select();
+                    showFeedback('נסה שוב! נותר לך עוד ניסיון אחד ⚠️', 'warning');
                 } else {
-                    // Second failure: reveal
+                    // Second failure: reveal correct answer
                     triggerShake();
                     playSound('fail');
-                    revealMode2CorrectAnswer(current);
+                    revealMode2ChoiceCorrectAnswer(current);
                 }
             }
         }
@@ -890,17 +868,11 @@
             playSound('success');
             fireCelebrationConfetti();
 
-            if (currentMode !== 2 && targetElement) {
-                targetElement.classList.remove('hover:bg-indigo-50/70', 'border-slate-200', 'hover:bg-emerald-50', 'hover:bg-amber-50');
+            if (targetElement) {
+                targetElement.classList.remove('hover:bg-indigo-50/70', 'border-slate-200', 'hover:bg-purple-50/70', 'hover:border-purple-300', 'hover:bg-emerald-50', 'hover:bg-amber-50');
                 targetElement.classList.add('bg-emerald-500', 'text-white', 'border-emerald-600', 'shadow-lg');
-                disableAllOptions();
-            } else if (currentMode === 2) {
-                const input = document.getElementById('englishInput');
-                input.classList.remove('border-slate-200', 'border-rose-400', 'bg-rose-50');
-                input.classList.add('bg-emerald-50', 'border-emerald-500', 'text-emerald-700');
-                input.disabled = true;
-                document.getElementById('btnSubmitSpelling').classList.add('opacity-50', 'pointer-events-none');
             }
+            disableAllOptions();
 
             showFeedback('מצוין! תשובה נכונה! 🎉', 'success');
             document.getElementById('nextButtonArea').classList.remove('hidden');
@@ -932,34 +904,22 @@
             }, 300);
         }
 
-        function revealMode2CorrectAnswer(current) {
+        function revealMode2ChoiceCorrectAnswer(current) {
             isQuestionAnswered = true;
             currentStreak = 0;
             updateStatsUI();
+            disableAllOptions();
 
-            const input = document.getElementById('englishInput');
-            const wrongAttempt = input.value.trim();
-            input.disabled = true;
-            input.classList.remove('border-rose-400', 'bg-rose-50');
-            input.classList.add('bg-slate-100', 'border-slate-300', 'text-slate-400');
-            document.getElementById('btnSubmitSpelling').classList.add('opacity-50', 'pointer-events-none');
+            // Highlight correct English answer button in green
+            const buttons = document.querySelectorAll('.mode2-option-btn');
+            buttons.forEach(btn => {
+                if (btn.dataset.english.toLowerCase() === current.english.toLowerCase()) {
+                    btn.classList.remove('border-slate-200', 'bg-white', 'text-slate-800');
+                    btn.classList.add('bg-emerald-100', 'border-emerald-500', 'text-emerald-800', 'font-black');
+                }
+            });
 
-            // Show prominent reveal box
-            const revealBox = document.getElementById('mode2RevealBox');
-            const revealedCorrectEnglish = document.getElementById('revealedCorrectEnglish');
-            const revealedUserMistake = document.getElementById('revealedUserMistake');
-            const revealedWrongText = document.getElementById('revealedWrongText');
-
-            revealedCorrectEnglish.textContent = current.english;
-            if (wrongAttempt) {
-                revealedWrongText.textContent = wrongAttempt;
-                revealedUserMistake.classList.remove('hidden');
-            } else {
-                revealedUserMistake.classList.add('hidden');
-            }
-            revealBox.classList.remove('hidden');
-
-            showFeedback(`שימו לב לתשובה הנכונה למטה והאזינו להגייה 🎧`, 'reveal');
+            showFeedback(`התשובה הנכונה היא: ${current.english}`, 'reveal');
             document.getElementById('nextButtonArea').classList.remove('hidden');
 
             // Automatically pronounce the correct English answer clearly
@@ -969,10 +929,10 @@
         }
 
         function disableAllOptions() {
-            const buttons = document.querySelectorAll('.option-btn');
+            const buttons = document.querySelectorAll('.option-btn, .mode2-option-btn');
             buttons.forEach(b => {
                 b.disabled = true;
-                b.classList.remove('hover:bg-indigo-50/70', 'hover:border-indigo-300');
+                b.classList.remove('hover:bg-indigo-50/70', 'hover:border-indigo-300', 'hover:bg-purple-50/70', 'hover:border-purple-300');
             });
         }
 
