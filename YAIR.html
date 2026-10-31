@@ -4,19 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>יאיר או לא יאיר? - משחק הצבעות</title>
+    
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700;800;900&family=Rubik:wght@700;900&display=swap" rel="stylesheet">
-    
+
     <style>
         :root {
-            --bg-start: #0a0e1a;
-            --bg-end: #17122b;
-            --card-bg: rgba(26, 29, 49, 0.85);
+            --bg-start: #080b16;
+            --bg-end: #141029;
+            --card-bg: rgba(22, 27, 46, 0.88);
             --card-border: rgba(255, 255, 255, 0.12);
             --primary: #f59e0b;
-            --primary-glow: rgba(245, 158, 11, 0.35);
+            --primary-glow: rgba(245, 158, 11, 0.4);
             --yes-color: #10b981;
             --yes-glow: rgba(16, 185, 129, 0.35);
             --no-color: #f43f5e;
@@ -45,17 +46,16 @@
             position: relative;
         }
 
-        /* Subtle animated background glow */
         .ambient-glow {
             position: fixed;
             top: 20%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 380px;
-            height: 380px;
-            background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, rgba(245, 158, 11, 0.08) 50%, transparent 70%);
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.18) 0%, rgba(245, 158, 11, 0.1) 45%, transparent 75%);
             border-radius: 50%;
-            filter: blur(50px);
+            filter: blur(60px);
             pointer-events: none;
             z-index: 0;
         }
@@ -72,7 +72,6 @@
             flex-direction: column;
         }
 
-        /* Header */
         header {
             display: flex;
             align-items: center;
@@ -91,18 +90,18 @@
         }
 
         .brand-icon {
-            font-size: 2rem;
+            font-size: 2.2rem;
             filter: drop-shadow(0 0 12px var(--primary-glow));
             transition: transform 0.2s;
         }
 
         .brand:active .brand-icon {
-            transform: scale(1.15) rotate(10deg);
+            transform: scale(1.15) rotate(8deg);
         }
 
         .brand-title {
             font-family: 'Rubik', sans-serif;
-            font-size: 1.6rem;
+            font-size: 1.65rem;
             font-weight: 900;
             background: linear-gradient(90deg, #fcd34d, #f472b6, #a78bfa);
             -webkit-background-clip: text;
@@ -117,19 +116,57 @@
             margin-top: 2px;
         }
 
-        /* Glass Cards */
+        .cloud-badge {
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(16, 185, 129, 0.12);
+            color: #34d399;
+            padding: 5px 10px;
+            border-radius: 99px;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            white-space: nowrap;
+        }
+
+        .cloud-badge.syncing {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+            border-color: rgba(245, 158, 11, 0.35);
+        }
+
+        .cloud-dot {
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 8px #10b981;
+        }
+
+        .cloud-badge.syncing .cloud-dot {
+            background: #f59e0b;
+            box-shadow: 0 0 8px #f59e0b;
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.4; transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1.15); }
+        }
+
         .glass-card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
             border-radius: 24px;
             padding: 28px 24px;
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
             transition: all 0.3s ease;
         }
 
-        /* Screen States */
         .screen {
             display: none;
             opacity: 0;
@@ -143,7 +180,6 @@
             transform: translateY(0);
         }
 
-        /* Form Controls */
         .input-group {
             margin: 20px 0;
         }
@@ -151,7 +187,7 @@
         .input-label {
             display: block;
             font-size: 0.95rem;
-            font-weight: 600;
+            font-weight: 700;
             margin-bottom: 8px;
             color: #cbd5e1;
         }
@@ -175,7 +211,6 @@
             background: rgba(15, 23, 42, 0.95);
         }
 
-        /* Buttons */
         .btn-primary {
             width: 100%;
             background: linear-gradient(135deg, #f59e0b, #d97706);
@@ -204,7 +239,7 @@
             color: #e2e8f0;
             padding: 10px 18px;
             border-radius: 12px;
-            font-weight: 600;
+            font-weight: 700;
             font-size: 0.95rem;
             cursor: pointer;
             display: inline-flex;
@@ -214,23 +249,22 @@
         }
 
         .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.14);
+            background: rgba(255, 255, 255, 0.16);
         }
 
-        /* Quiz Layout */
         .progress-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 12px;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             font-weight: 700;
             color: #cbd5e1;
         }
 
         .progress-track {
             width: 100%;
-            height: 8px;
+            height: 9px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 99px;
             overflow: hidden;
@@ -246,7 +280,7 @@
         }
 
         .question-card {
-            background: rgba(15, 23, 42, 0.6);
+            background: rgba(15, 23, 42, 0.65);
             border: 1px solid rgba(255, 255, 255, 0.12);
             border-radius: 20px;
             padding: 28px 20px;
@@ -256,7 +290,7 @@
             justify-content: center;
             text-align: center;
             margin-bottom: 26px;
-            box-shadow: inset 0 2px 8px rgba(0,0,0,0.3);
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.4);
         }
 
         .question-text {
@@ -267,7 +301,6 @@
             letter-spacing: -0.2px;
         }
 
-        /* Voting Buttons */
         .vote-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -278,7 +311,7 @@
             border: none;
             border-radius: 20px;
             padding: 22px 14px;
-            font-size: 1.15rem;
+            font-size: 1.2rem;
             font-weight: 800;
             cursor: pointer;
             display: flex;
@@ -307,24 +340,22 @@
         }
 
         .vote-btn-icon {
-            font-size: 2rem;
+            font-size: 2.2rem;
         }
 
-        /* Finish / Thank you Screen */
         .success-badge {
-            width: 80px;
-            height: 80px;
+            width: 85px;
+            height: 85px;
             border-radius: 50%;
             background: linear-gradient(135deg, #10b981, #059669);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.5rem;
+            font-size: 2.7rem;
             margin: 0 auto 20px auto;
-            box-shadow: 0 0 30px var(--yes-glow);
+            box-shadow: 0 0 35px var(--yes-glow);
         }
 
-        /* Footer */
         footer {
             padding: 20px 0;
             text-align: center;
@@ -353,12 +384,11 @@
             color: #94a3b8;
         }
 
-        /* Admin Modal */
         .modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.88);
+            backdrop-filter: blur(12px);
             z-index: 100;
             display: flex;
             align-items: center;
@@ -375,15 +405,15 @@
         }
 
         .modal-content {
-            background: #131728;
+            background: #121626;
             border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 24px;
             width: 100%;
-            max-width: 650px;
-            max-height: 90vh;
+            max-width: 680px;
+            max-height: 92vh;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+            box-shadow: 0 25px 65px rgba(0, 0, 0, 0.85);
             overflow: hidden;
         }
 
@@ -420,7 +450,7 @@
         }
 
         .modal-close-btn:hover {
-            background: rgba(255, 255, 255, 0.18);
+            background: rgba(255, 255, 255, 0.2);
         }
 
         .modal-body {
@@ -429,7 +459,6 @@
             flex: 1;
         }
 
-        /* Admin Gate View */
         .admin-gate {
             text-align: center;
             padding: 30px 10px;
@@ -442,7 +471,6 @@
             margin: 20px auto 0 auto;
         }
 
-        /* Dashboard Breakdown */
         .stat-banner {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -459,13 +487,13 @@
         }
 
         .stat-num {
-            font-size: 1.6rem;
+            font-size: 1.8rem;
             font-weight: 900;
             line-height: 1.2;
         }
 
         .stat-label {
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             color: var(--text-muted);
             margin-top: 4px;
         }
@@ -487,13 +515,13 @@
         }
 
         .bar-wrapper {
-            height: 14px;
-            background: rgba(0, 0, 0, 0.5);
+            height: 16px;
+            background: rgba(0, 0, 0, 0.55);
             border-radius: 99px;
             overflow: hidden;
             display: flex;
             margin-bottom: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .bar-yes {
@@ -517,8 +545,8 @@
 
         .verdict-tag {
             display: inline-block;
-            font-size: 0.75rem;
-            padding: 2px 10px;
+            font-size: 0.78rem;
+            padding: 3px 12px;
             border-radius: 99px;
             font-weight: 800;
             margin-top: 6px;
@@ -551,7 +579,24 @@
             border-top: 1px solid rgba(255, 255, 255, 0.08);
         }
 
-        /* Toast notifications */
+        .participants-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            margin-top: 10px;
+        }
+
+        .participants-table th, .participants-table td {
+            padding: 8px 12px;
+            text-align: right;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .participants-table th {
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+
         .toast {
             position: fixed;
             bottom: 24px;
@@ -597,24 +642,24 @@
     <div class="container">
         <!-- Header -->
         <header>
-            <div class="brand" id="brandHeader" title="">
+            <div class="brand" id="brandHeader" title="לחץ 5 פעמים לכניסת מנהל">
                 <span class="brand-icon">🎉</span>
                 <div>
                     <h1 class="brand-title">יאיר או לא יאיר?</h1>
                     <p class="brand-subtitle">משחק הטריוויה וההצבעות</p>
                 </div>
             </div>
-            <div id="statusDot" style="font-size: 0.75rem; color: #10b981; font-weight: 700; display: flex; align-items: center; gap: 4px;">
-                <span style="width: 8px; height: 8px; background: #10b981; border-radius: 50%; display: inline-block; box-shadow: 0 0 8px #10b981;"></span>
-                <span>מחובר</span>
+            <div class="cloud-badge" id="cloudBadge">
+                <span class="cloud-dot"></span>
+                <span id="cloudStatusText">סנכרון ענן פעיל</span>
             </div>
         </header>
 
-        <!-- SCREEN 1: Welcome & Name entry (NO PASSWORD REQUIRED) -->
+        <!-- SCREEN 1: Welcome (No password needed for players) -->
         <div id="screenWelcome" class="screen glass-card active">
             <div style="text-align: center; margin-bottom: 20px;">
                 <span style="font-size: 3rem; display: block; margin-bottom: 10px;">👑</span>
-                <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 6px;">כמה אתם באמת מכירים את יאיר?</h2>
+                <h2 style="font-size: 1.55rem; font-weight: 800; margin-bottom: 6px;">כמה אתם באמת מכירים את יאיר?</h2>
                 <p style="color: var(--text-muted); font-size: 0.95rem;">
                     ענו על 10 שאלות מהירות ונגלה מה כולם חושבים!
                 </p>
@@ -635,7 +680,7 @@
             </p>
         </div>
 
-        <!-- SCREEN 2: 10 Interactive Questions -->
+        <!-- SCREEN 2: 10 Questions -->
         <div id="screenQuiz" class="screen glass-card">
             <div class="progress-header">
                 <span id="questionCounter">שאלה 1 מתוך 10</span>
@@ -661,7 +706,7 @@
             </div>
         </div>
 
-        <!-- SCREEN 3: Completion & Thank you -->
+        <!-- SCREEN 3: Thank you Screen -->
         <div id="screenDone" class="screen glass-card" style="text-align: center;">
             <div class="success-badge">✨</div>
             <h2 style="font-size: 1.7rem; font-weight: 900; margin-bottom: 8px; color: #fff;">
@@ -685,14 +730,14 @@
         </div>
     </div>
 
-    <!-- Minimal Discreet Footer -->
+    <!-- Discreet Footer -->
     <footer>
         <span>משחק יום הולדת / בר מצווה יאיר ©</span>
         <span>•</span>
-        <button class="secret-admin-link" id="footerAdminTrigger">ניהול</button>
+        <button class="secret-admin-link" id="footerAdminTrigger">ניהול 🔒</button>
     </footer>
 
-    <!-- ADMIN MODAL (PASSWORD 443894 REQUIRED HERE ONLY) -->
+    <!-- ADMIN MODAL (Passcode: 443894) -->
     <div class="modal-overlay" id="adminModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -728,8 +773,29 @@
                         </div>
                     </div>
 
+                    <!-- Questions Stats -->
                     <div id="adminQuestionsStats"></div>
 
+                    <!-- Participants List -->
+                    <div style="margin-top: 20px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 16px;">
+                        <h4 style="font-size: 0.95rem; color: #fcd34d; margin-bottom: 10px;">רשימת המצביעים שנקלטו:</h4>
+                        <div style="max-height: 180px; overflow-y: auto;">
+                            <table class="participants-table">
+                                <thead>
+                                    <tr>
+                                        <th>שם</th>
+                                        <th>שעה</th>
+                                        <th>הצבעות יאיר</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="participantsTableBody">
+                                    <tr><td colspan="3" style="text-align: center; color: var(--text-muted);">טוען נתונים...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Controls -->
                     <div class="admin-actions">
                         <button class="btn-secondary" id="btnRefreshStats">רענן נתונים 🔄</button>
                         <button class="btn-secondary" id="btnExportCSV">ייצוא ל-Excel 📥</button>
@@ -740,13 +806,12 @@
         </div>
     </div>
 
-    <!-- Custom Toast -->
+    <!-- Toast Notification -->
     <div class="toast" id="toastBox">
         <span id="toastIcon">✨</span>
         <span id="toastMsg">הודעה</span>
     </div>
 
-    <!-- Application Script -->
     <script>
         // 10 Official Questions
         const QUESTIONS = [
@@ -763,10 +828,11 @@
         ];
 
         const ADMIN_PASSWORD = "443894";
-        const STORAGE_KEY_VOTES = "yair_quiz_all_votes_v3";
-        const STORAGE_KEY_USER = "yair_quiz_user_done_v3";
-        // Remote Cloud Sync endpoint keyed to Yair's Quiz
-        const CLOUD_SYNC_ENDPOINT = "https://kvdb.io/4y2V6HjVw1gZ6M5K9tqJkP/yair_quiz_party_2024_master";
+        const STORAGE_KEY_VOTES = "yair_quiz_all_votes_v4";
+        const STORAGE_KEY_USER = "yair_quiz_user_done_v4";
+
+        // High-availability open Firebase Realtime REST DB for cross-device voting on GitHub Pages
+        const DB_BASE_URL = "https://yair-trivia-quiz-default-rtdb.firebaseio.com/votes.json";
 
         // State
         let currentQuestionIdx = 0;
@@ -792,16 +858,16 @@
                 const now = audioContext.currentTime;
                 if (type === 'yes') {
                     osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(523.25, now); // C5
-                    osc.frequency.exponentialRampToValueAtTime(783.99, now + 0.15); // G5
+                    osc.frequency.setValueAtTime(523.25, now);
+                    osc.frequency.exponentialRampToValueAtTime(783.99, now + 0.15);
                     gain.gain.setValueAtTime(0.2, now);
                     gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
                     osc.start(now);
                     osc.stop(now + 0.25);
-                } else if (type === 'no') {
+                } else {
                     osc.type = 'sine';
-                    osc.frequency.setValueAtTime(349.23, now); // F4
-                    osc.frequency.exponentialRampToValueAtTime(261.63, now + 0.18); // C4
+                    osc.frequency.setValueAtTime(349.23, now);
+                    osc.frequency.exponentialRampToValueAtTime(261.63, now + 0.18);
                     gain.gain.setValueAtTime(0.2, now);
                     gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
                     osc.start(now);
@@ -810,7 +876,7 @@
             } catch(e) {}
         }
 
-        // Lightweight Confetti
+        // Confetti
         function fireConfetti() {
             const canvas = document.getElementById('confettiCanvas');
             const ctx = canvas.getContext('2d');
@@ -834,14 +900,13 @@
                 });
             }
 
-            let start = performance.now();
-            function animateConfetti(time) {
+            function animateConfetti() {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 let alive = false;
                 particles.forEach(p => {
                     p.x += p.vx;
                     p.y += p.vy;
-                    p.vy += 0.35; // gravity
+                    p.vy += 0.35;
                     p.rot += p.vRot;
                     p.alpha -= 0.012;
 
@@ -866,7 +931,7 @@
             requestAnimationFrame(animateConfetti);
         }
 
-        // Toast Feedback
+        // Toast
         let toastTimer = null;
         function showToast(message, icon = "✨") {
             const toast = document.getElementById('toastBox');
@@ -879,73 +944,109 @@
             }, 3000);
         }
 
-        // Screen Navigation
         function showScreen(screenId) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(screenId).classList.add('active');
         }
 
-        // Sync Data (LocalStorage + Cloud)
-        async function fetchVotes() {
-            // First load local storage
+        // Cloud Synchronization System (Firebase REST + LocalStorage Fallback)
+        async function fetchVotesFromCloud() {
+            const badge = document.getElementById('cloudBadge');
+            const statusText = document.getElementById('cloudStatusText');
+            badge.classList.add('syncing');
+            statusText.textContent = "מסתנכרן...";
+
+            let votesArray = [];
+
+            try {
+                const res = await fetch(DB_BASE_URL + '?nocache=' + Date.now(), {
+                    method: 'GET',
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && typeof data === 'object') {
+                        // Firebase returns object with unique keys: { "-O...": { ...vote }, ... }
+                        votesArray = Object.keys(data).map(key => ({
+                            firebaseKey: key,
+                            ...data[key]
+                        }));
+                    }
+                    badge.classList.remove('syncing');
+                    statusText.textContent = `ענן פעיל (${votesArray.length})`;
+                }
+            } catch(err) {
+                console.warn("Cloud read fallback, using local storage", err);
+                badge.classList.remove('syncing');
+                statusText.textContent = "מצב מקומי";
+            }
+
+            // Merge with local storage if any
             try {
                 const local = localStorage.getItem(STORAGE_KEY_VOTES);
                 if (local) {
-                    aggregatedVotes = JSON.parse(local);
+                    const localList = JSON.parse(local);
+                    // Add any votes that exist locally but not yet in cloud
+                    localList.forEach(lv => {
+                        if (!votesArray.some(v => v.id === lv.id)) {
+                            votesArray.push(lv);
+                        }
+                    });
                 }
             } catch(e) {}
 
-            // Try Cloud fetch
-            try {
-                const res = await fetch(CLOUD_SYNC_ENDPOINT, { cache: 'no-store' });
-                if (res.ok) {
-                    const data = await res.json();
-                    if (Array.isArray(data)) {
-                        aggregatedVotes = data;
-                        localStorage.setItem(STORAGE_KEY_VOTES, JSON.stringify(aggregatedVotes));
-                    }
-                }
-            } catch(err) {
-                console.log("Using cached offline votes");
-            }
+            aggregatedVotes = votesArray;
+            localStorage.setItem(STORAGE_KEY_VOTES, JSON.stringify(aggregatedVotes));
 
             if (isAdminLoggedIn) {
                 renderAdminDashboard();
             }
         }
 
-        async function saveVoteLocallyAndCloud(voteItem) {
-            // Fetch fresh from cloud first to merge
-            let current = [];
+        async function submitVoteRecord(voteRecord) {
+            // 1. Immediately store in LocalStorage
             try {
-                const res = await fetch(CLOUD_SYNC_ENDPOINT, { cache: 'no-store' });
-                if (res.ok) {
-                    const data = await res.json();
-                    if (Array.isArray(data)) current = data;
-                }
+                let local = [];
+                const saved = localStorage.getItem(STORAGE_KEY_VOTES);
+                if (saved) local = JSON.parse(saved);
+                local.push(voteRecord);
+                localStorage.setItem(STORAGE_KEY_VOTES, JSON.stringify(local));
+                aggregatedVotes = local;
             } catch(e) {}
 
-            if (current.length === 0 && aggregatedVotes.length > 0) {
-                current = [...aggregatedVotes];
-            }
-
-            current.push(voteItem);
-            aggregatedVotes = current;
-            localStorage.setItem(STORAGE_KEY_VOTES, JSON.stringify(aggregatedVotes));
-
-            // Upload
+            // 2. Post directly to Firebase Cloud DB
             try {
-                await fetch(CLOUD_SYNC_ENDPOINT, {
+                const res = await fetch(DB_BASE_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(aggregatedVotes)
+                    body: JSON.stringify(voteRecord)
                 });
+                if (res.ok) {
+                    console.log("Vote uploaded to cloud successfully");
+                }
             } catch(e) {
-                console.warn("Cloud save pending, saved in local device storage");
+                console.warn("Cloud upload pending, saved locally", e);
             }
         }
 
-        // User Quiz Flow
+        // Voting Check
+        function checkVotedStatus() {
+            try {
+                const savedUser = localStorage.getItem(STORAGE_KEY_USER);
+                if (savedUser) {
+                    const data = JSON.parse(savedUser);
+                    participantName = data.name || "אורח/ת";
+                    participantChoices = data.votes || [];
+                    document.getElementById('donePlayerName').textContent = participantName;
+                    showScreen('screenDone');
+                    return true;
+                }
+            } catch(e) {}
+            return false;
+        }
+
+        // Flow Handlers
         const participantInput = document.getElementById('participantInput');
         const btnStartQuiz = document.getElementById('btnStartQuiz');
         const questionCounter = document.getElementById('questionCounter');
@@ -957,22 +1058,6 @@
         const donePlayerName = document.getElementById('donePlayerName');
         const btnToggleMyAnswers = document.getElementById('btnToggleMyAnswers');
         const myAnswersList = document.getElementById('myAnswersList');
-
-        // Check if user has already voted
-        function checkVotedStatus() {
-            try {
-                const savedUser = localStorage.getItem(STORAGE_KEY_USER);
-                if (savedUser) {
-                    const data = JSON.parse(savedUser);
-                    participantName = data.name || "אורח/ת";
-                    participantChoices = data.votes || [];
-                    donePlayerName.textContent = participantName;
-                    showScreen('screenDone');
-                    return true;
-                }
-            } catch(e) {}
-            return false;
-        }
 
         btnStartQuiz.addEventListener('click', () => {
             const rawName = participantInput.value.trim();
@@ -992,9 +1077,8 @@
             questionText.style.opacity = '0';
             setTimeout(() => {
                 questionText.textContent = QUESTIONS[idx];
-                questionText.style.transition = 'opacity 0.25s ease';
                 questionText.style.opacity = '1';
-            }, 80);
+            }, 60);
         }
 
         async function registerVote(isYes) {
@@ -1005,7 +1089,6 @@
                 currentQuestionIdx++;
                 loadQuestion(currentQuestionIdx);
             } else {
-                // Done all 10!
                 finishQuiz();
             }
         }
@@ -1014,24 +1097,28 @@
         btnVoteNo.addEventListener('click', () => registerVote(false));
 
         async function finishQuiz() {
+            const now = new Date();
+            const timeFormatted = now.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
+
             const voteRecord = {
-                id: 'id_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
+                id: 'id_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
                 name: participantName,
                 votes: participantChoices,
-                time: new Date().toISOString()
+                time: timeFormatted,
+                fullDate: now.toISOString()
             };
 
-            // Save user cookie so they cannot vote twice
+            // Prevent revoting on this device
             localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(voteRecord));
 
             showScreen('screenDone');
             fireConfetti();
             showToast("תודה! התשובות שלך נשמרו", "🎉");
 
-            await saveVoteLocallyAndCloud(voteRecord);
+            await submitVoteRecord(voteRecord);
+            fetchVotesFromCloud();
         }
 
-        // Toggle user choices review
         btnToggleMyAnswers.addEventListener('click', () => {
             if (myAnswersList.style.display === 'none') {
                 myAnswersList.innerHTML = '';
@@ -1065,7 +1152,7 @@
             }
         });
 
-        // ================= ADMIN PANEL LOGIC =================
+        // ================= ADMIN DASHBOARD (443894) =================
         const adminModal = document.getElementById('adminModal');
         const btnCloseModal = document.getElementById('btnCloseModal');
         const footerAdminTrigger = document.getElementById('footerAdminTrigger');
@@ -1078,13 +1165,14 @@
         const btnRefreshStats = document.getElementById('btnRefreshStats');
         const btnExportCSV = document.getElementById('btnExportCSV');
         const btnResetVotes = document.getElementById('btnResetVotes');
+        const participantsTableBody = document.getElementById('participantsTableBody');
 
         function openAdminModal() {
             adminModal.classList.add('open');
             if (isAdminLoggedIn) {
                 adminGateView.style.display = 'none';
                 adminDataView.style.display = 'block';
-                fetchVotes();
+                fetchVotesFromCloud();
             } else {
                 adminGateView.style.display = 'block';
                 adminDataView.style.display = 'none';
@@ -1098,7 +1186,7 @@
             adminModal.classList.remove('open');
         }
 
-        // Secret access 1: Click logo 5 times rapidly
+        // Access 1: Click logo 5 times rapidly
         brandHeader.addEventListener('click', () => {
             brandClickCount++;
             clearTimeout(brandClickTimer);
@@ -1112,23 +1200,17 @@
             }
         });
 
-        // Secret access 2: Discreet footer trigger
+        // Access 2: Discreet footer button
         footerAdminTrigger.addEventListener('click', openAdminModal);
 
-        // Secret access 3: URL hash #admin
+        // Access 3: URL Hash #admin
         if (window.location.hash === '#admin') {
-            setTimeout(openAdminModal, 300);
+            setTimeout(openAdminModal, 400);
         }
 
         btnCloseModal.addEventListener('click', closeAdminModal);
         adminModal.addEventListener('click', (e) => {
             if (e.target === adminModal) closeAdminModal();
-        });
-
-        // Password Authentication
-        btnAdminLogin.addEventListener('click', performAdminCheck);
-        adminPassInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') performAdminCheck();
         });
 
         function performAdminCheck() {
@@ -1137,14 +1219,18 @@
                 isAdminLoggedIn = true;
                 adminGateView.style.display = 'none';
                 adminDataView.style.display = 'block';
-                renderAdminDashboard();
-                fetchVotes();
+                fetchVotesFromCloud();
                 showToast("ברוך הבא למערכת הניהול", "🔓");
             } else {
                 adminErrorNotice.style.display = 'block';
                 adminPassInput.select();
             }
         }
+
+        btnAdminLogin.addEventListener('click', performAdminCheck);
+        adminPassInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') performAdminCheck();
+        });
 
         function renderAdminDashboard() {
             const total = aggregatedVotes.length;
@@ -1156,12 +1242,29 @@
             const questionsContainer = document.getElementById('adminQuestionsStats');
             questionsContainer.innerHTML = '';
 
+            // Update Participants Table
+            participantsTableBody.innerHTML = '';
+            if (aggregatedVotes.length === 0) {
+                participantsTableBody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: var(--text-muted);">אין משתתפים עדיין</td></tr>';
+            } else {
+                aggregatedVotes.slice().reverse().forEach(v => {
+                    const yesCount = (v.votes || []).filter(val => val === true).length;
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td style="font-weight:700; color:#fff;">${escapeHtml(v.name || 'אנונימי')}</td>
+                        <td style="color:var(--text-muted);">${v.time || 'עכשיו'}</td>
+                        <td style="color:#34d399; font-weight:700;">${yesCount} / 10</td>
+                    `;
+                    participantsTableBody.appendChild(tr);
+                });
+            }
+
             if (total === 0) {
                 questionsContainer.innerHTML = `
                     <div style="text-align:center; padding:30px 10px; color:#94a3b8;">
-                        <span style="font-size:2rem; display:block; margin-bottom:8px;">⏳</span>
-                        <p style="font-weight:700;">עדיין לא נקלטו הצבעות</p>
-                        <p style="font-size:0.85rem; margin-top:4px;">ברגע שאנשים יצביעו במכשירם, התוצאות יוצגו כאן!</p>
+                        <span style="font-size:2.2rem; display:block; margin-bottom:8px;">⏳</span>
+                        <p style="font-weight:700; font-size:1.1rem;">עדיין לא נקלטו הצבעות במערכת</p>
+                        <p style="font-size:0.85rem; margin-top:4px;">כאשר אנשים יענו מהטלפון שלהם, הנתונים יופיעו כאן אוטומטית!</p>
                     </div>
                 `;
                 document.getElementById('totalYesSum').textContent = '0';
@@ -1226,9 +1329,13 @@
             document.getElementById('totalNoSum').textContent = grandTotalNo;
         }
 
+        function escapeHtml(str) {
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+        }
+
         btnRefreshStats.addEventListener('click', async () => {
-            await fetchVotes();
-            showToast("הנתונים סונכרנו בהצלחה", "🔄");
+            await fetchVotesFromCloud();
+            showToast("הנתונים עודכנו מהענן", "🔄");
         });
 
         // Export to CSV
@@ -1238,32 +1345,32 @@
                 return;
             }
 
-            let csvContent = "\uFEFF"; // UTF-8 BOM for Hebrew Excel
-            csvContent += "מזהה,שם משתתף,תאריך," + QUESTIONS.map((_, i) => `שאלה ${i + 1}`).join(",") + "\n";
+            let csv = "\uFEFF"; // UTF-8 BOM for Hebrew Excel
+            csv += "מספר,שם משתתף,שעה," + QUESTIONS.map((_, i) => `שאלה ${i + 1}`).join(",") + "\n";
 
-            aggregatedVotes.forEach(r => {
+            aggregatedVotes.forEach((r, idx) => {
                 const row = [
-                    `"${r.id || ''}"`,
+                    idx + 1,
                     `"${(r.name || '').replace(/"/g, '""')}"`,
                     `"${r.time || ''}"`,
                     ...(r.votes || []).map(v => v ? "יאיר" : "לא יאיר")
                 ];
-                csvContent += row.join(",") + "\n";
+                csv += row.join(",") + "\n";
             });
 
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
-            link.setAttribute("download", `תוצאות_משחק_יאיר_${Date.now()}.csv`);
+            link.setAttribute("download", `תוצאות_הצבעה_יאיר_${Date.now()}.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            showToast("קובץ Excel יוצא בהצלחה", "📥");
+            showToast("קובץ Excel נוצר בהצלחה", "📥");
         });
 
         // Reset votes
         btnResetVotes.addEventListener('click', async () => {
-            const confirmed = window.confirm("האם לאפס את כל ההצבעות במערכת? פעולה זו תמחק את כל הנתונים!");
+            const confirmed = window.confirm("האם למחוק את כל ההצבעות מהמערכת והענן? פעולה זו תאפס את המשחק לחלוטין!");
             if (!confirmed) return;
 
             aggregatedVotes = [];
@@ -1271,28 +1378,28 @@
             localStorage.removeItem(STORAGE_KEY_USER);
 
             try {
-                await fetch(CLOUD_SYNC_ENDPOINT, {
-                    method: 'POST',
+                await fetch(DB_BASE_URL, {
+                    method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify([])
+                    body: JSON.stringify({})
                 });
             } catch(e) {}
 
             renderAdminDashboard();
-            showToast("כל ההצבעות אופסו", "🗑️");
+            showToast("כל הנתונים אופסו בהצלחה", "🗑️");
         });
 
-        // Init App
+        // Init
         window.addEventListener('load', () => {
-            const alreadyVoted = checkVotedStatus();
-            fetchVotes();
+            checkVotedStatus();
+            fetchVotesFromCloud();
 
-            // Background polling every 5 seconds for live sync
+            // Background live polling every 3.5 seconds
             setInterval(() => {
                 if (document.visibilityState === 'visible') {
-                    fetchVotes();
+                    fetchVotesFromCloud();
                 }
-            }, 5000);
+            }, 3500);
         });
     </script>
 </body>
