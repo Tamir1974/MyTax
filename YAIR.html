@@ -419,6 +419,10 @@
   <script>
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzf8U8iJNIRQpVMdd3gBXbLi5TDKzf-Sdih5DohmCIZGvwDtIcIsMIa8GGzTYtaWmMA/exec";
     const SHEET_VIEW_URL = "https://docs.google.com/spreadsheets/d/1mJoE14Vh-m5XSIsFLMFqJYSfPXiCakbtfn8NIjlxzHA/edit?gid=0#gid=0";
+    
+    // קריאת CSV ישירה מגיליון Google Sheets ללא חסימות
+    const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT1sXk9sP2h8Vf2Q3j_YAIRDB_EXPORT/pub?output=csv";
+    const DIRECT_CSV_URL = "https://docs.google.com/spreadsheets/d/1mJoE14Vh-m5XSIsFLMFqJYSfPXiCakbtfn8NIjlxzHA/gviz/tq?tqx=out:csv&sheet=Sheet1";
 
     const questions = [
       "יאיר מסוגל לשמוע פתיחת שקית חטיפים משלושה חדרים, אבל לא שומע כשקוראים לו לבוא לעזור.",
@@ -497,7 +501,6 @@
       document.getElementById("thankYouScreen").classList.remove("hidden");
     }
 
-    // ניהול סודי
     let clickCount = 0;
     let clickTimer;
     document.getElementById("logoTitle").addEventListener("click", () => {
@@ -538,29 +541,40 @@
       document.getElementById("dashboardModal").classList.add("hidden");
     }
 
-    // טעינת נתונים עוקפת CORS בשיטת JSONP
-    function loadAdminData() {
+    // קריאת נתונים אמינה וישירה מגיליון Google Sheets ללא חסימות
+    async function loadAdminData() {
       const container = document.getElementById("questionsSummaryList");
       container.innerHTML = "טוען הצבעות מ-Google Sheets...";
 
-      const callbackName = "handleSheetData_" + Date.now();
-      
-      const timeoutTimer = setTimeout(() => {
-        container.innerHTML = "שגיאה בטעינת הנתונים. ודא ששמרת New version ב-Apps Script.";
-        delete window[callbackName];
-      }, 10000);
-
-      window[callbackName] = function(data) {
-        clearTimeout(timeoutTimer);
-        allParticipantsData = data || [];
+      try {
+        const res = await fetch(DIRECT_CSV_URL);
+        const text = await res.text();
+        
+        allParticipantsData = parseCSVData(text);
         renderAdminDashboard();
-        delete window[callbackName];
-        if (scriptTag.parentNode) scriptTag.parentNode.removeChild(scriptTag);
-      };
+      } catch (err) {
+        console.error(err);
+        container.innerHTML = "שגיאה בטעינת הנתונים. ודא שהגיליון מוגדר כ-Publish to web או שותף כציבורי לצפייה.";
+      }
+    }
 
-      const scriptTag = document.createElement("script");
-      scriptTag.src = `${GOOGLE_SCRIPT_URL}?callback=${callbackName}&t=${Date.now()}`;
-      document.body.appendChild(scriptTag);
+    function parseCSVData(csvText) {
+      const lines = csvText.trim().split("\n");
+      if (lines.length <= 1) return [];
+
+      const parsed = [];
+      for (let i = 1; i < lines.length; i++) {
+        // פירוק שורת ה-CSV
+        const row = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(item => item.replace(/^"|"$/g, '').trim());
+        if (row.length >= 12) {
+          parsed.push({
+            timestamp: row[0],
+            name: row[1],
+            answers: [row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11]]
+          });
+        }
+      }
+      return parsed;
     }
 
     function setCorrectAnswer(qIndex, val) {
@@ -607,7 +621,6 @@
         container.appendChild(card);
       });
 
-      // חישוב ציונים לכל משתתף
       const tbody = document.getElementById("leaderboardBody");
       tbody.innerHTML = "";
 
