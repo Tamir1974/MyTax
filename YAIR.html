@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>יאיר או לא יאיר? 🎉</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Google Fonts: Rubik & Heebo -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,400;0,600;0,700;0,900;1,400&family=Secular+One&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Rubik', sans-serif;
+            background: linear-gradient(135deg, #181934 0%, #2f195f 50%, #151838 100%);
+            min-height: 100vh;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        .font-heading {
+            font-family: 'Secular One', 'Rubik', sans-serif;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        .btn-gradient-yes {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.45);
+        }
+        .btn-gradient-yes:hover {
+            background: linear-gradient(135deg, #34d399 0%, #059669 100%);
+            transform: translateY(-2px);
+        }
+
+        .btn-gradient-no {
+            background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
+            box-shadow: 0 10px 25px -5px rgba(244, 63, 94, 0.45);
+        }
+        .btn-gradient-no:hover {
+            background: linear-gradient(135deg, #fb7185 0%, #e11d48 100%);
+            transform: translateY(-2px);
+        }
+
+        .pulse-glow {
+            animation: pulse-glow 3s infinite alternate ease-in-out;
+        }
+
+        @keyframes pulse-glow {
+            0% {
+                filter: drop-shadow(0 0 15px rgba(234, 179, 8, 0.3));
+            }
+            100% {
+                filter: drop-shadow(0 0 35px rgba(249, 115, 22, 0.6));
+            }
+        }
+
+        /* Smooth card transition */
+        .card-anim-enter {
+            animation: scaleIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes scaleIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.92) translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen justify-between relative selection:bg-amber-400 selection:text-black">
+
+    <!-- Top floating bar -->
+    <header class="w-full max-w-4xl mx-auto px-4 py-4 flex items-center justify-between z-20">
+        <div class="flex items-center gap-3">
+            <span class="text-3xl">🎯</span>
+            <div>
+                <h1 class="text-xl md:text-2xl font-black font-heading tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-pink-400 to-purple-300">
+                    יאיר או לא יאיר?
+                </h1>
+                <p class="text-xs text-purple-200 opacity-80">משחק ההצבעות הרשמי</p>
+            </div>
+        </div>
+
+        <!-- Organizer secret button -->
+        <button id="adminTriggerBtn" title="כניסת מנהל משחק" class="p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-yellow-300 border border-white/10 transition-all active:scale-95 flex items-center gap-1.5 text-xs font-semibold px-3">
+            <i class="fa-solid fa-crown text-amber-400"></i>
+            <span class="hidden sm:inline">לוח תוצאות למארגן</span>
+        </button>
+    </header>
+
+    <!-- Main Container -->
+    <main class="w-full max-w-2xl mx-auto px-4 py-6 flex-1 flex flex-col justify-center items-center relative z-10">
+        
+        <!-- SCREEN 1: WELCOME & NAME ENTRY -->
+        <div id="welcomeScreen" class="w-full glass-panel rounded-3xl p-6 sm:p-10 text-center card-anim-enter">
+            <div class="text-6xl mb-4 pulse-glow inline-block">🎉🤔✨</div>
+            <h2 class="text-3xl sm:text-4xl font-extrabold font-heading mb-3 text-white">
+                כמה טוב אתם מכירים את יאיר?
+            </h2>
+            <p class="text-purple-200 text-base sm:text-lg mb-8 max-w-md mx-auto leading-relaxed">
+                10 שאלות ומצבים קורעים מהחיים: האם זה <span class="text-emerald-400 font-bold">יאיר לגמרי</span> או שזה <span class="text-rose-400 font-bold">ממש לא יאיר</span>?
+            </p>
+
+            <div class="max-w-md mx-auto space-y-4">
+                <div class="text-right">
+                    <label for="userNameInput" class="block text-sm font-medium text-purple-200 mb-1.5">השם שלכם (כדי שנדע מי הצביע):</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-user absolute right-3.5 top-1/2 -translate-y-1/2 text-purple-400"></i>
+                        <input id="userNameInput" type="text" placeholder="למשל: דניאל, נועה, סבא..." 
+                            class="w-full bg-slate-900/60 border border-purple-500/30 rounded-2xl pr-11 pl-4 py-3.5 text-white placeholder-purple-300/40 focus:outline-none focus:ring-2 focus:ring-amber-400 text-lg">
+                    </div>
+                </div>
+
+                <button id="startBtn" class="w-full py-4 rounded-2xl bg-gradient-to-r from-amber-400 via-orange-500 to-pink-500 hover:from-amber-300 hover:to-pink-400 text-slate-950 font-black text-xl shadow-lg shadow-orange-500/30 transition-all transform active:scale-95 flex items-center justify-center gap-2">
+                    <span>מתחילים בהצבעה!</span>
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+            </div>
+            
+            <p class="text-xs text-purple-300/60 mt-6 flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-lock text-[10px]"></i> כל משתתף עונה פעם אחת בלבד
+            </p>
+        </div>
+
+        <!-- SCREEN 2: QUESTION CARD -->
+        <div id="quizScreen" class="w-full hidden card-anim-enter">
+            <!-- Progress Bar & counter -->
+            <div class="glass-panel rounded-2xl p-4 mb-4 flex items-center justify-between gap-4">
+                <div class="flex items-center gap-2 font-bold text-amber-300 text-sm">
+                    <span id="questionStep">שאלה 1</span> מתוך 10
+                </div>
+                <div class="w-1/2 bg-white/10 h-2.5 rounded-full overflow-hidden">
+                    <div id="quizProgressBar" class="h-full bg-gradient-to-r from-amber-400 to-pink-500 transition-all duration-300 rounded-full" style="width: 10%;"></div>
+                </div>
+                <span id="answeredNameBadge" class="text-xs bg-purple-500/20 text-purple-200 px-2.5 py-1 rounded-full truncate max-w-[100px]">משתתף</span>
+            </div>
+
+            <!-- The Question Card -->
+            <div class="glass-panel rounded-3xl p-6 sm:p-9 relative overflow-hidden border-t-4 border-amber-400">
+                <div class="text-xs font-semibold uppercase tracking-wider text-amber-300 mb-2 flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+                    האם זה קורה אצל יאיר?
+                </div>
+
+                <div class="min-h-[120px] flex items-center justify-center my-4">
+                    <h3 id="questionText" class="text-xl sm:text-2xl font-bold text-center leading-relaxed text-white">
+                        טוען שאלה...
+                    </h3>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
+                    <button id="voteYesBtn" class="btn-gradient-yes text-white font-extrabold text-lg py-4 px-6 rounded-2xl transition-all duration-200 active:scale-95 flex items-center justify-center gap-3">
+                        <span class="text-2xl">😎</span>
+                        <span>יאיר לגמרי!</span>
+                    </button>
+
+                    <button id="voteNoBtn" class="btn-gradient-no text-white font-extrabold text-lg py-4 px-6 rounded-2xl transition-all duration-200 active:scale-95 flex items-center justify-center gap-3">
+                        <span class="text-2xl">🙅‍♂️</span>
+                        <span>ממש לא יאיר!</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCREEN 3: THANKS / VOTED ALREADY -->
+        <div id="thankYouScreen" class="w-full glass-panel rounded-3xl p-8 sm:p-12 text-center hidden card-anim-enter">
+            <div class="text-6xl mb-4">🏆🌟🎈</div>
+            <h2 class="text-3xl font-black font-heading mb-3 text-white">תודה רבה, <span id="voterDisplayName" class="text-amber-300"></span>!</h2>
+            <p class="text-purple-200 text-lg mb-6 leading-relaxed">
+                התשובות שלך נשמרו בהצלחה במערכת. <br>
+                התוצאות הסופיות והמצחיקות יוצגו על המסך הגדול בסוף האירוע על ידי המארגן! 🤫
+            </p>
+
+            <div class="bg-purple-950/60 border border-purple-500/20 rounded-2xl p-4 max-w-md mx-auto text-sm text-purple-200 flex items-center gap-3 text-right">
+                <i class="fa-solid fa-circle-check text-emerald-400 text-2xl flex-shrink-0"></i>
+                <div>
+                    <strong>ההצבעה נקלטה:</strong> כל 10 התשובות שלך שוקללו יחד עם שאר המשתתפים.
+                </div>
+            </div>
+
+            <div class="mt-8 pt-4 border-t border-white/10 flex justify-center">
+                <button id="viewMyAnswersBtn" class="text-xs text-purple-300 hover:text-white underline py-1">
+                    רוצה לצפות בסיכום הבחירות שלי
+                </button>
+            </div>
+            
+            <div id="mySummaryContainer" class="hidden mt-6 text-right max-h-60 overflow-y-auto space-y-2 pr-1"></div>
+        </div>
+
+    </main>
+
+    <!-- ADMIN / ORGANIZER MODAL (Passcode Protected) -->
+    <div id="adminModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-3 sm:p-6 hidden">
+        <div class="glass-panel w-full max-w-4xl bg-slate-900/95 border border-purple-400/30 rounded-3xl p-6 sm:p-8 flex flex-col max-h-[90vh] overflow-hidden">
+            
+            <!-- Admin Header -->
+            <div class="flex items-center justify-between pb-4 border-b border-white/10">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-amber-400/20 text-amber-300 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-chart-pie"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-black font-heading text-white">לוח תוצאות למארגן</h3>
+                        <p class="text-xs text-purple-300">חשיפת התשובות המצטברות בלבד</p>
+                    </div>
+                </div>
+                <button id="closeAdminModal" class="text-slate-400 hover:text-white text-2xl p-1 rounded-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Passcode Gate (If not authenticated) -->
+            <div id="adminLoginView" class="py-12 px-4 text-center max-w-sm mx-auto w-full">
+                <i class="fa-solid fa-lock text-4xl text-amber-400 mb-3"></i>
+                <h4 class="text-xl font-bold mb-2">אזור המארגן בלבד</h4>
+                <p class="text-sm text-purple-200 mb-6">הזן קוד גישה (סיסמת ברירת מחדל: <span class="font-mono text-amber-300 font-bold">1234</span> או <span class="text-amber-300 font-bold">יאיר</span>):</p>
+                <div class="flex gap-2">
+                    <input id="adminPassInput" type="password" placeholder="קוד גישה..." class="flex-1 bg-slate-800 border border-purple-500/40 rounded-xl px-4 py-2.5 text-center text-lg focus:outline-none focus:ring-2 focus:ring-amber-400">
+                    <button id="adminLoginBtn" class="bg-amber-400 text-slate-950 font-bold px-6 py-2.5 rounded-xl hover:bg-amber-300 active:scale-95">כניסה</button>
+                </div>
+                <p id="adminErrorMsg" class="text-rose-400 text-xs mt-3 hidden">קוד שגוי, נסו שוב!</p>
+            </div>
+
+            <!-- Admin Results Dashboard (Shown after password) -->
+            <div id="adminDashboardView" class="hidden flex-1 flex flex-col overflow-hidden pt-4">
+                <!-- Summary Stats -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+                    <div class="bg-white/5 rounded-2xl p-3 border border-white/5 text-center">
+                        <div class="text-xs text-purple-300">סך כל המשתתפים</div>
+                        <div id="totalParticipantsCount" class="text-2xl sm:text-3xl font-extrabold text-amber-300">0</div>
+                    </div>
+                    <div class="bg-white/5 rounded-2xl p-3 border border-white/5 text-center">
+                        <div class="text-xs text-purple-300">סה״כ תשובות "יאיר"</div>
+                        <div id="totalYesCount" class="text-2xl sm:text-3xl font-extrabold text-emerald-400">0</div>
+                    </div>
+                    <div class="bg-white/5 rounded-2xl p-3 border border-white/5 text-center col-span-2 sm:col-span-1">
+                        <div class="text-xs text-purple-300">סה״כ "לא יאיר"</div>
+                        <div id="totalNoCount" class="text-2xl sm:text-3xl font-extrabold text-rose-400">0</div>
+                    </div>
+                </div>
+
+                <!-- Questions List & Progress breakdown -->
+                <div id="adminQuestionsList" class="flex-1 overflow-y-auto space-y-3.5 pr-2 pl-1">
+                    <!-- Dynamic question cards injected here -->
+                </div>
+
+                <!-- Footer Tools -->
+                <div class="pt-4 mt-3 border-t border-white/10 flex flex-wrap items-center justify-between gap-3 text-xs">
+                    <div class="flex items-center gap-2">
+                        <span id="syncStatusBadge" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                            סנכרון פעיל
+                        </span>
+                    </div>
+
+                    <div class="flex gap-2">
+                        <button id="refreshAdminBtn" class="bg-purple-600/40 hover:bg-purple-600/60 px-3 py-1.5 rounded-xl border border-purple-400/30 flex items-center gap-1">
+                            <i class="fa-solid fa-rotate-right"></i> רענן נתונים
+                        </button>
+                        <button id="resetVotesBtn" class="bg-rose-600/20 hover:bg-rose-600/40 text-rose-300 px-3 py-1.5 rounded-xl border border-rose-500/30 flex items-center gap-1">
+                            <i class="fa-solid fa-trash-can"></i> איפוס הצבעות
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Confirm Dialog Custom Modal (No alerts allowed) -->
+    <div id="confirmModal" class="fixed inset-0 bg-black/85 z-50 flex items-center justify-center p-4 hidden">
+        <div class="glass-panel max-w-sm w-full p-6 rounded-2xl text-center space-y-4">
+            <i class="fa-solid fa-triangle-exclamation text-amber-400 text-3xl"></i>
+            <h4 id="confirmModalTitle" class="text-lg font-bold text-white">האם אתה בטוח?</h4>
+            <p id="confirmModalText" class="text-xs text-purple-200">פעולה זו תמחק את כל ההצבעות שנאספו עד כה.</p>
+            <div class="flex gap-3 pt-2">
+                <button id="confirmModalCancel" class="flex-1 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-medium">ביטול</button>
+                <button id="confirmModalApprove" class="flex-1 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold">אישור ומחיקה</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-slate-900 border border-amber-400/50 text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-2 transform transition-all duration-300 translate-y-24 opacity-0 pointer-events-none text-sm">
+        <span id="toastIcon">✨</span>
+        <span id="toastMessage">הודעה</span>
+    </div>
+
+    <footer class="w-full text-center py-4 text-xs text-purple-300/50 relative z-10">
+        יאיר או לא יאיר? • חגיגה של שאלות • 100% הומור
+    </footer>
+
+    <!-- Firebase Script & App Logic -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // 10 Specific Questions
+        const QUESTIONS = [
+            "יאיר מסוגל לשמוע פתיחת שקית חטיפים משלושה חדרים, אבל לא שומע כשקוראים לו לבוא לעזור.",
+            "יאיר כבר בדק אם בר מצווה מאפשרת להוציא רישיון נהיגה — לפחות לקורקינט.",
+            "כשהוא אומר ״אני מוכן, יוצאים״ — הוא עדיין נועל נעליים.",
+            "כשהיה קטן, יאיר רצה להיות רופא.",
+            "יאיר מאמין שלשים צלחת בכיור זה לעזור, ולהכניס למדיח זה כבר לעבוד בהתנדבות.",
+            "יאיר מסוגל לזכור סיסמה של משחק מלפני שלוש שנים, אבל לא איפה הניח את הנעליים לפני חמש דקות.",
+            "המשפט ״אני הולך לישון מוקדם״ אצל יאיר זה פעם בשבוע.",
+            "כשיאיר מסדר את החדר, הארון נהיה קצת יותר מלא והדלת קצת יותר קשה לסגירה.",
+            "יאיר מוכן לחלוק הכול עם האחים שלו — חוץ מהמטען, החטיפים והמקום על הספה.",
+            "פעם יאיר הצליח לשכנע את ההורים שהוא יודע לבשל."
+        ];
+
+        // State variables
+        let currentQuestionIndex = 0;
+        let participantName = "";
+        let participantVotes = []; // Array of booleans: true for Yes (יאיר), false for No (לא יאיר)
+        let isAdminLoggedIn = false;
+        let unsubscribeFirestore = null;
+        let aggregatedVotes = []; // array of all vote docs
+
+        // Web Audio Effects
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playChime(isYes) {
+            try {
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                const now = audioCtx.currentTime;
+                if (isYes) {
+                    // Upbeat major note
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(440, now); // A4
+                    osc.frequency.exponentialRampToValueAtTime(880, now + 0.15); // A5
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                } else {
+                    // Playful 'boop' note
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(320, now);
+                    osc.frequency.exponentialRampToValueAtTime(220, now + 0.18);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+                    osc.start(now);
+                    osc.stop(now + 0.25);
+                }
+            } catch(e) {
+                // audio context disabled or unsupported
+            }
+        }
+
+        // Firebase Initialization with fallback
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'yair-quiz-app';
+        let db = null;
+        let auth = null;
+        let isFirebaseActive = false;
+
+        async function setupBackend() {
+            try {
+                if (typeof __firebase_config !== 'undefined') {
+                    const firebaseConfig = JSON.parse(__firebase_config);
+                    const app = initializeApp(firebaseConfig);
+                    db = getFirestore(app);
+                    auth = getAuth(app);
+
+                    // Mandatory: Authenticate first
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
+
+                    isFirebaseActive = true;
+                    listenToVotes();
+                } else {
+                    initLocalMemory();
+                }
+            } catch (err) {
+                console.warn("Firestore not configured, running local memory mode:", err);
+                initLocalMemory();
+            }
+        }
+
+        // Setup real-time listener (RULE 1: /artifacts/{appId}/public/data/votes)
+        function listenToVotes() {
+            if (!isFirebaseActive || !db) return;
+            const votesCollection = collection(db, 'artifacts', appId, 'public', 'data', 'votes');
+            
+            unsubscribeFirestore = onSnapshot(votesCollection, (snapshot) => {
+                aggregatedVotes = [];
+                snapshot.forEach(docSnap => {
+                    aggregatedVotes.push({ id: docSnap.id, ...docSnap.data() });
+                });
+                updateAdminDashboardUI();
+            }, (error) => {
+                console.error("Firestore listen error:", error);
+                document.getElementById('syncStatusBadge').innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-400"></span> מקומי בלבד`;
+            });
+        }
+
+        // Fallback local memory storage in case Firestore isn't in scope
+        function initLocalMemory() {
+            isFirebaseActive = false;
+            // Load from session storage for persistence across reloads in iframe
+            try {
+                const stored = localStorage.getItem('yair_quiz_aggregated_votes');
+                if (stored) {
+                    aggregatedVotes = JSON.parse(stored);
+                }
+            } catch(e) {}
+            document.getElementById('syncStatusBadge').innerHTML = `<span class="w-2 h-2 rounded-full bg-blue-400"></span> מצב עבודה שמור מקומית`;
+            updateAdminDashboardUI();
+        }
+
+        // Check if user has already voted
+        function checkExistingVote() {
+            try {
+                const userVoteData = localStorage.getItem('yair_quiz_user_done');
+                if (userVoteData) {
+                    const data = JSON.parse(userVoteData);
+                    participantName = data.name || "משתתף";
+                    participantVotes = data.votes || [];
+                    showAlreadyVotedScreen();
+                }
+            } catch (e) {
+                // Ignore storage error
+            }
+        }
+
+        // DOM elements
+        const welcomeScreen = document.getElementById('welcomeScreen');
+        const quizScreen = document.getElementById('quizScreen');
+        const thankYouScreen = document.getElementById('thankYouScreen');
+        const userNameInput = document.getElementById('userNameInput');
+        const startBtn = document.getElementById('startBtn');
+        const questionStep = document.getElementById('questionStep');
+        const quizProgressBar = document.getElementById('quizProgressBar');
+        const questionText = document.getElementById('questionText');
+        const voteYesBtn = document.getElementById('voteYesBtn');
+        const voteNoBtn = document.getElementById('voteNoBtn');
+        const answeredNameBadge = document.getElementById('answeredNameBadge');
+        const voterDisplayName = document.getElementById('voterDisplayName');
+        const viewMyAnswersBtn = document.getElementById('viewMyAnswersBtn');
+        const mySummaryContainer = document.getElementById('mySummaryContainer');
+
+        // Admin Elements
+        const adminTriggerBtn = document.getElementById('adminTriggerBtn');
+        const adminModal = document.getElementById('adminModal');
+        const closeAdminModal = document.getElementById('closeAdminModal');
+        const adminLoginView = document.getElementById('adminLoginView');
+        const adminDashboardView = document.getElementById('adminDashboardView');
+        const adminPassInput = document.getElementById('adminPassInput');
+        const adminLoginBtn = document.getElementById('adminLoginBtn');
+        const adminErrorMsg = document.getElementById('adminErrorMsg');
+        const refreshAdminBtn = document.getElementById('refreshAdminBtn');
+        const resetVotesBtn = document.getElementById('resetVotesBtn');
+
+        // Confirm Modal
+        const confirmModal = document.getElementById('confirmModal');
+        const confirmModalCancel = document.getElementById('confirmModalCancel');
+        const confirmModalApprove = document.getElementById('confirmModalApprove');
+
+        // Start Quiz
+        startBtn.addEventListener('click', () => {
+            const val = userNameInput.value.trim();
+            participantName = val || "אורח/ת סודי/ת";
+            answeredNameBadge.textContent = participantName;
+            
+            welcomeScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            currentQuestionIndex = 0;
+            participantVotes = [];
+            loadQuestion(0);
+        });
+
+        function loadQuestion(index) {
+            questionStep.textContent = `שאלה ${index + 1}`;
+            quizProgressBar.style.width = `${((index + 1) / QUESTIONS.length) * 100}%`;
+            
+            // Text animation
+            questionText.style.opacity = '0';
+            questionText.style.transform = 'translateY(10px)';
+            
+            setTimeout(() => {
+                questionText.textContent = QUESTIONS[index];
+                questionText.style.transition = 'all 0.3s ease';
+                questionText.style.opacity = '1';
+                questionText.style.transform = 'translateY(0)';
+            }, 100);
+        }
+
+        // Handle Voting
+        async function handleVote(isYes) {
+            playChime(isYes);
+            participantVotes.push(isYes);
+
+            // Pop subtle mini confetti on vote
+            confetti({
+                particleCount: 20,
+                spread: 40,
+                origin: { y: 0.8 },
+                colors: isYes ? ['#10b981', '#34d399'] : ['#f43f5e', '#fb7185']
+            });
+
+            if (currentQuestionIndex < QUESTIONS.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion(currentQuestionIndex);
+            } else {
+                // Finished all 10 questions
+                await submitAllVotes();
+            }
+        }
+
+        voteYesBtn.addEventListener('click', () => handleVote(true));
+        voteNoBtn.addEventListener('click', () => handleVote(false));
+
+        // Submit to Database
+        async function submitAllVotes() {
+            quizScreen.classList.add('hidden');
+            thankYouScreen.classList.remove('hidden');
+            voterDisplayName.textContent = participantName;
+
+            // Grand confetti
+            confetti({
+                particleCount: 120,
+                spread: 80,
+                origin: { y: 0.6 }
+            });
+
+            const votePayload = {
+                name: participantName,
+                votes: participantVotes,
+                timestamp: Date.now()
+            };
+
+            // Save to localStorage so they can't vote again on this device
+            try {
+                localStorage.setItem('yair_quiz_user_done', JSON.stringify(votePayload));
+            } catch(e) {}
+
+            // Save to Firestore if available
+            if (isFirebaseActive && db && auth.currentUser) {
+                try {
+                    const votesCollection = collection(db, 'artifacts', appId, 'public', 'data', 'votes');
+                    await addDoc(votesCollection, votePayload);
+                    showToast("ההצבעה נשמרה בהצלחה!", "🎉");
+                } catch(e) {
+                    console.error("Save error:", e);
+                    saveLocally(votePayload);
+                }
+            } else {
+                saveLocally(votePayload);
+            }
+        }
+
+        function saveLocally(payload) {
+            aggregatedVotes.push(payload);
+            try {
+                localStorage.setItem('yair_quiz_aggregated_votes', JSON.stringify(aggregatedVotes));
+            } catch(e) {}
+            showToast("הצבעתך נקלטה במכשיר!", "👍");
+            updateAdminDashboardUI();
+        }
+
+        function showAlreadyVotedScreen() {
+            welcomeScreen.classList.add('hidden');
+            quizScreen.classList.add('hidden');
+            thankYouScreen.classList.remove('hidden');
+            voterDisplayName.textContent = participantName;
+        }
+
+        // Show individual summary toggle
+        viewMyAnswersBtn.addEventListener('click', () => {
+            if (mySummaryContainer.classList.contains('hidden')) {
+                mySummaryContainer.innerHTML = '';
+                QUESTIONS.forEach((q, idx) => {
+                    const answeredYes = participantVotes[idx];
+                    const item = document.createElement('div');
+                    item.className = 'p-2.5 rounded-xl bg-white/5 border border-white/5 text-xs flex justify-between items-center gap-2';
+                    item.innerHTML = `
+                        <span class="text-white flex-1">${idx + 1}. ${q}</span>
+                        <span class="font-bold shrink-0 ${answeredYes ? 'text-emerald-400' : 'text-rose-400'}">
+                            ${answeredYes ? 'יאיר 😎' : 'לא יאיר 🙅‍♂️'}
+                        </span>
+                    `;
+                    mySummaryContainer.appendChild(item);
+                });
+                mySummaryContainer.classList.remove('hidden');
+                viewMyAnswersBtn.textContent = 'הסתר את הבחירות שלי';
+            } else {
+                mySummaryContainer.classList.add('hidden');
+                viewMyAnswersBtn.textContent = 'רוצה לצפות בסיכום הבחירות שלי';
+            }
+        });
+
+        // ================= ADMIN & RESULTS LOGIC =================
+
+        adminTriggerBtn.addEventListener('click', () => {
+            adminModal.classList.remove('hidden');
+            if (isAdminLoggedIn) {
+                adminLoginView.classList.add('hidden');
+                adminDashboardView.classList.remove('hidden');
+                updateAdminDashboardUI();
+            } else {
+                adminLoginView.classList.remove('hidden');
+                adminDashboardView.classList.add('hidden');
+                adminPassInput.value = '';
+                adminErrorMsg.classList.add('hidden');
+                setTimeout(() => adminPassInput.focus(), 100);
+            }
+        });
+
+        closeAdminModal.addEventListener('click', () => {
+            adminModal.classList.add('hidden');
+        });
+
+        adminLoginBtn.addEventListener('click', performAdminLogin);
+        adminPassInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') performAdminLogin();
+        });
+
+        function performAdminLogin() {
+            const code = adminPassInput.value.trim().toLowerCase();
+            // Accept 1234 or יאיר (or yair)
+            if (code === '1234' || code === 'יאיר' || code === 'yair') {
+                isAdminLoggedIn = true;
+                adminLoginView.classList.add('hidden');
+                adminDashboardView.classList.remove('hidden');
+                updateAdminDashboardUI();
+            } else {
+                adminErrorMsg.classList.remove('hidden');
+            }
+        }
+
+        function updateAdminDashboardUI() {
+            if (!isAdminLoggedIn) return;
+
+            const totalParticipants = aggregatedVotes.length;
+            document.getElementById('totalParticipantsCount').textContent = totalParticipants;
+
+            let totalYesAll = 0;
+            let totalNoAll = 0;
+
+            // Compute statistics for each question
+            const questionStats = QUESTIONS.map((q, qIndex) => {
+                let yesCount = 0;
+                let noCount = 0;
+
+                aggregatedVotes.forEach(submission => {
+                    if (Array.isArray(submission.votes) && submission.votes[qIndex] !== undefined) {
+                        if (submission.votes[qIndex] === true) {
+                            yesCount++;
+                            totalYesAll++;
+                        } else {
+                            noCount++;
+                            totalNoAll++;
+                        }
+                    }
+                });
+
+                const totalForQ = yesCount + noCount;
+                const yesPct = totalForQ > 0 ? Math.round((yesCount / totalForQ) * 100) : 0;
+                const noPct = totalForQ > 0 ? (100 - yesPct) : 0;
+
+                return {
+                    text: q,
+                    yesCount,
+                    noCount,
+                    yesPct,
+                    noPct,
+                    totalForQ
+                };
+            });
+
+            document.getElementById('totalYesCount').textContent = totalYesAll;
+            document.getElementById('totalNoCount').textContent = totalNoAll;
+
+            // Render Questions List with Breakdown
+            const container = document.getElementById('adminQuestionsList');
+            container.innerHTML = '';
+
+            if (totalParticipants === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-10 text-purple-300">
+                        <i class="fa-solid fa-hourglass-start text-3xl mb-2 text-amber-400"></i>
+                        <p class="font-bold">עדיין אין הצבעות במערכת</p>
+                        <p class="text-xs text-purple-400/80 mt-1">כאשר אנשים יענו, התוצאות יזרמו לכאן אוטומטית!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            questionStats.forEach((stat, idx) => {
+                const card = document.createElement('div');
+                card.className = 'bg-white/5 border border-white/10 rounded-2xl p-4 transition-all hover:bg-white/[0.08]';
+
+                // Determine verdict badge
+                let verdictBadge = '';
+                if (stat.totalForQ > 0) {
+                    if (stat.yesPct > stat.noPct) {
+                        verdictBadge = `<span class="bg-emerald-500/20 text-emerald-400 text-xs px-2.5 py-0.5 rounded-full font-bold">הרוב קבעו: יאיר לגמרי! 😎</span>`;
+                    } else if (stat.noPct > stat.yesPct) {
+                        verdictBadge = `<span class="bg-rose-500/20 text-rose-400 text-xs px-2.5 py-0.5 rounded-full font-bold">הרוב קבעו: לא יאיר 🙅‍♂️</span>`;
+                    } else {
+                        verdictBadge = `<span class="bg-amber-500/20 text-amber-300 text-xs px-2.5 py-0.5 rounded-full font-bold">תיקו מוחלט! 🤝</span>`;
+                    }
+                }
+
+                card.innerHTML = `
+                    <div class="flex items-start justify-between gap-3 mb-2">
+                        <div class="text-sm font-bold text-white leading-snug">
+                            <span class="text-amber-400 font-extrabold ml-1">#${idx + 1}</span> ${stat.text}
+                        </div>
+                        ${verdictBadge}
+                    </div>
+
+                    <!-- Visual Percentage Bar -->
+                    <div class="w-full bg-slate-950/60 h-4 rounded-full overflow-hidden flex my-2 border border-white/10">
+                        <div class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full transition-all duration-500" style="width: ${stat.yesPct}%;"></div>
+                        <div class="bg-gradient-to-r from-rose-500 to-pink-500 h-full transition-all duration-500" style="width: ${stat.noPct}%;"></div>
+                    </div>
+
+                    <div class="flex items-center justify-between text-xs font-semibold pt-1">
+                        <div class="text-emerald-400 flex items-center gap-1">
+                            <span>יאיר:</span>
+                            <span class="font-bold text-sm">${stat.yesPct}%</span>
+                            <span class="text-purple-300 text-[10px]">(${stat.yesCount} קולות)</span>
+                        </div>
+                        <div class="text-rose-400 flex items-center gap-1">
+                            <span class="text-purple-300 text-[10px]">(${stat.noCount} קולות)</span>
+                            <span class="font-bold text-sm">${stat.noPct}%</span>
+                            <span>:לא יאיר</span>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        refreshAdminBtn.addEventListener('click', () => {
+            updateAdminDashboardUI();
+            showToast("הנתונים רועננו!", "🔄");
+        });
+
+        // Reset votes logic (Host only)
+        resetVotesBtn.addEventListener('click', () => {
+            confirmModal.classList.remove('hidden');
+        });
+
+        confirmModalCancel.addEventListener('click', () => {
+            confirmModal.classList.add('hidden');
+        });
+
+        confirmModalApprove.addEventListener('click', async () => {
+            confirmModal.classList.add('hidden');
+
+            if (isFirebaseActive && db) {
+                try {
+                    const votesCollection = collection(db, 'artifacts', appId, 'public', 'data', 'votes');
+                    const snapshot = await getDocs(votesCollection);
+                    const deletes = snapshot.docs.map(d => deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'votes', d.id)));
+                    await Promise.all(deletes);
+                } catch(e) {
+                    console.error("Firebase deletion failed:", e);
+                }
+            }
+
+            aggregatedVotes = [];
+            try {
+                localStorage.removeItem('yair_quiz_aggregated_votes');
+                localStorage.removeItem('yair_quiz_user_done');
+            } catch(e) {}
+
+            updateAdminDashboardUI();
+            showToast("כל ההצבעות אופסו בהצלחה", "🗑️");
+        });
+
+        // Toast feedback
+        let toastTimeout;
+        function showToast(msg, icon = "✨") {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').textContent = msg;
+            document.getElementById('toastIcon').textContent = icon;
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 3000);
+        }
+
+        // Initialize on load
+        window.addEventListener('load', () => {
+            setupBackend();
+            checkExistingVote();
+        });
+    </script>
+</body>
+</html>
