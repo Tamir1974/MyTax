@@ -1,1449 +1,462 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>יאיר או לא יאיר? - משחק הצבעות</title>
-    
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700;800;900&family=Rubik:wght@700;900&display=swap" rel="stylesheet">
-
-    <style>
-        :root {
-            --bg-start: #080b16;
-            --bg-end: #141029;
-            --card-bg: rgba(22, 27, 46, 0.88);
-            --card-border: rgba(255, 255, 255, 0.12);
-            --primary: #f59e0b;
-            --primary-glow: rgba(245, 158, 11, 0.4);
-            --yes-color: #10b981;
-            --yes-glow: rgba(16, 185, 129, 0.35);
-            --no-color: #f43f5e;
-            --no-glow: rgba(244, 63, 94, 0.35);
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --accent-purple: #8b5cf6;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Assistant', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            background: linear-gradient(145deg, var(--bg-start) 0%, var(--bg-end) 100%);
-            min-height: 100vh;
-            color: var(--text-main);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            overflow-x: hidden;
-            position: relative;
-        }
-
-        .ambient-glow {
-            position: fixed;
-            top: 20%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(139, 92, 246, 0.18) 0%, rgba(245, 158, 11, 0.1) 45%, transparent 75%);
-            border-radius: 50%;
-            filter: blur(60px);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 620px;
-            margin: 0 auto;
-            padding: 16px 20px;
-            position: relative;
-            z-index: 1;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 8px 0 16px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            margin-bottom: 24px;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .brand-icon {
-            font-size: 2.2rem;
-            filter: drop-shadow(0 0 12px var(--primary-glow));
-            transition: transform 0.2s;
-        }
-
-        .brand:active .brand-icon {
-            transform: scale(1.15) rotate(8deg);
-        }
-
-        .brand-title {
-            font-family: 'Rubik', sans-serif;
-            font-size: 1.65rem;
-            font-weight: 900;
-            background: linear-gradient(90deg, #fcd34d, #f472b6, #a78bfa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: -0.5px;
-            line-height: 1.1;
-        }
-
-        .brand-subtitle {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-top: 2px;
-        }
-
-        .cloud-badge {
-            font-size: 0.75rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(16, 185, 129, 0.12);
-            color: #34d399;
-            padding: 5px 10px;
-            border-radius: 99px;
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            white-space: nowrap;
-        }
-
-        .cloud-badge.syncing {
-            background: rgba(245, 158, 11, 0.15);
-            color: #fbbf24;
-            border-color: rgba(245, 158, 11, 0.35);
-        }
-
-        .cloud-dot {
-            width: 8px;
-            height: 8px;
-            background: #10b981;
-            border-radius: 50%;
-            display: inline-block;
-            box-shadow: 0 0 8px #10b981;
-        }
-
-        .cloud-badge.syncing .cloud-dot {
-            background: #f59e0b;
-            box-shadow: 0 0 8px #f59e0b;
-            animation: pulse 1s infinite alternate;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 0.4; transform: scale(0.9); }
-            100% { opacity: 1; transform: scale(1.15); }
-        }
-
-        .glass-card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 24px;
-            padding: 28px 24px;
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
-            transition: all 0.3s ease;
-        }
-
-        .screen {
-            display: none;
-            opacity: 0;
-            transform: translateY(14px);
-            transition: opacity 0.3s ease, transform 0.3s ease;
-        }
-
-        .screen.active {
-            display: block;
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .input-group {
-            margin: 20px 0;
-        }
-
-        .input-label {
-            display: block;
-            font-size: 0.95rem;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: #cbd5e1;
-        }
-
-        .custom-input {
-            width: 100%;
-            background: rgba(15, 23, 42, 0.7);
-            border: 2px solid rgba(255, 255, 255, 0.14);
-            border-radius: 16px;
-            padding: 14px 18px;
-            color: #fff;
-            font-size: 1.1rem;
-            text-align: right;
-            outline: none;
-            transition: all 0.25s ease;
-        }
-
-        .custom-input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 16px var(--primary-glow);
-            background: rgba(15, 23, 42, 0.95);
-        }
-
-        .btn-primary {
-            width: 100%;
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: #0f172a;
-            border: none;
-            padding: 16px 24px;
-            font-size: 1.25rem;
-            font-weight: 800;
-            border-radius: 18px;
-            cursor: pointer;
-            box-shadow: 0 8px 25px var(--primary-glow);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            transition: transform 0.15s ease, box-shadow 0.15s ease;
-        }
-
-        .btn-primary:active {
-            transform: scale(0.97);
-        }
-
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            color: #e2e8f0;
-            padding: 10px 18px;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 0.95rem;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: background 0.2s;
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.16);
-        }
-
-        .progress-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-            font-size: 0.95rem;
-            font-weight: 700;
-            color: #cbd5e1;
-        }
-
-        .progress-track {
-            width: 100%;
-            height: 9px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 99px;
-            overflow: hidden;
-            margin-bottom: 24px;
-        }
-
-        .progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, #f59e0b, #10b981);
-            border-radius: 99px;
-            width: 10%;
-            transition: width 0.35s ease;
-        }
-
-        .question-card {
-            background: rgba(15, 23, 42, 0.65);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 20px;
-            padding: 28px 20px;
-            min-height: 160px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            margin-bottom: 26px;
-            box-shadow: inset 0 2px 10px rgba(0,0,0,0.4);
-        }
-
-        .question-text {
-            font-size: 1.35rem;
-            line-height: 1.5;
-            font-weight: 700;
-            color: #ffffff;
-            letter-spacing: -0.2px;
-        }
-
-        .vote-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14px;
-        }
-
-        .vote-btn {
-            border: none;
-            border-radius: 20px;
-            padding: 22px 14px;
-            font-size: 1.2rem;
-            font-weight: 800;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: transform 0.12s ease, box-shadow 0.12s ease;
-            user-select: none;
-        }
-
-        .vote-btn:active {
-            transform: scale(0.95);
-        }
-
-        .vote-btn-yes {
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: #ffffff;
-            box-shadow: 0 10px 24px var(--yes-glow);
-        }
-
-        .vote-btn-no {
-            background: linear-gradient(135deg, #f43f5e, #e11d48);
-            color: #ffffff;
-            box-shadow: 0 10px 24px var(--no-glow);
-        }
-
-        .vote-btn-icon {
-            font-size: 2.2rem;
-        }
-
-        .success-badge {
-            width: 85px;
-            height: 85px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #10b981, #059669);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.7rem;
-            margin: 0 auto 20px auto;
-            box-shadow: 0 0 35px var(--yes-glow);
-        }
-
-        footer {
-            padding: 20px 0;
-            text-align: center;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .secret-admin-link {
-            background: none;
-            border: none;
-            color: #475569;
-            font-size: 0.8rem;
-            cursor: pointer;
-            text-decoration: none;
-            padding: 4px 8px;
-            border-radius: 6px;
-            transition: color 0.2s;
-        }
-
-        .secret-admin-link:hover {
-            color: #94a3b8;
-        }
-
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.88);
-            backdrop-filter: blur(12px);
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 16px;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.25s ease;
-        }
-
-        .modal-overlay.open {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .modal-content {
-            background: #121626;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 24px;
-            width: 100%;
-            max-width: 680px;
-            max-height: 92vh;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 25px 65px rgba(0, 0, 0, 0.85);
-            overflow: hidden;
-        }
-
-        .modal-header {
-            padding: 18px 24px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: rgba(255, 255, 255, 0.02);
-        }
-
-        .modal-header h3 {
-            font-size: 1.25rem;
-            font-weight: 800;
-            color: #fcd34d;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .modal-close-btn {
-            background: rgba(255, 255, 255, 0.08);
-            border: none;
-            color: #cbd5e1;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-close-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .modal-body {
-            padding: 20px 24px;
-            overflow-y: auto;
-            flex: 1;
-        }
-
-        .admin-gate {
-            text-align: center;
-            padding: 30px 10px;
-        }
-
-        .admin-pass-form {
-            display: flex;
-            gap: 10px;
-            max-width: 320px;
-            margin: 20px auto 0 auto;
-        }
-
-        .stat-banner {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .stat-card {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            padding: 14px 10px;
-            text-align: center;
-        }
-
-        .stat-num {
-            font-size: 1.8rem;
-            font-weight: 900;
-            line-height: 1.2;
-        }
-
-        .stat-label {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-top: 4px;
-        }
-
-        .q-stat-item {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.07);
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 14px;
-        }
-
-        .q-stat-title {
-            font-size: 0.98rem;
-            font-weight: 700;
-            line-height: 1.4;
-            margin-bottom: 10px;
-            color: #f1f5f9;
-        }
-
-        .bar-wrapper {
-            height: 16px;
-            background: rgba(0, 0, 0, 0.55);
-            border-radius: 99px;
-            overflow: hidden;
-            display: flex;
-            margin-bottom: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .bar-yes {
-            background: linear-gradient(90deg, #10b981, #059669);
-            height: 100%;
-            transition: width 0.4s ease;
-        }
-
-        .bar-no {
-            background: linear-gradient(90deg, #f43f5e, #e11d48);
-            height: 100%;
-            transition: width 0.4s ease;
-        }
-
-        .bar-labels {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.85rem;
-            font-weight: 700;
-        }
-
-        .verdict-tag {
-            display: inline-block;
-            font-size: 0.78rem;
-            padding: 3px 12px;
-            border-radius: 99px;
-            font-weight: 800;
-            margin-top: 6px;
-        }
-
-        .verdict-yes {
-            background: rgba(16, 185, 129, 0.2);
-            color: #34d399;
-            border: 1px solid rgba(16, 185, 129, 0.4);
-        }
-
-        .verdict-no {
-            background: rgba(244, 63, 94, 0.2);
-            color: #fb7185;
-            border: 1px solid rgba(244, 63, 94, 0.4);
-        }
-
-        .verdict-tie {
-            background: rgba(245, 158, 11, 0.2);
-            color: #fcd34d;
-            border: 1px solid rgba(245, 158, 11, 0.4);
-        }
-
-        .admin-actions {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-top: 16px;
-            padding-top: 16px;
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .participants-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.85rem;
-            margin-top: 10px;
-        }
-
-        .participants-table th, .participants-table td {
-            padding: 8px 12px;
-            text-align: right;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-        }
-
-        .participants-table th {
-            color: var(--text-muted);
-            font-weight: 700;
-        }
-
-        .toast {
-            position: fixed;
-            bottom: 24px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: #1e293b;
-            color: #fff;
-            padding: 12px 24px;
-            border-radius: 14px;
-            font-weight: 700;
-            font-size: 0.95rem;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            z-index: 200;
-            opacity: 0;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            pointer-events: none;
-        }
-
-        .toast.show {
-            transform: translateX(-50%) translateY(0);
-            opacity: 1;
-        }
-
-        #confettiCanvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 150;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>יאיר או לא יאיר? 🎯</title>
+  <style>
+    :root {
+      --bg: #0f111a;
+      --card-bg: #1a1e2e;
+      --card-border: #2a3048;
+      --text: #ffffff;
+      --text-muted: #9ba3bf;
+      --primary: #6366f1;
+      --accent-yes: #10b981;
+      --accent-no: #f43f5e;
+      --radius: 20px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Heebo", sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: radial-gradient(circle at top, #1e1b4b 0%, #0f111a 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 500px;
+      position: relative;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 24px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    header h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #a5b4fc, #f43f5e, #fbbf24);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 6px;
+    }
+
+    header p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 30px 24px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Start Screen */
+    .input-group {
+      margin-bottom: 20px;
+      text-align: right;
+    }
+
+    .input-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 14px 16px;
+      background: #111422;
+      border: 1.5px solid var(--card-border);
+      border-radius: 12px;
+      color: #fff;
+      font-size: 1.1rem;
+      outline: none;
+      transition: border-color 0.2s;
+      text-align: right;
+    }
+
+    .input-group input:focus {
+      border-color: var(--primary);
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 14px;
+      font-size: 1.15rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+    }
+
+    .btn-primary:active {
+      transform: scale(0.98);
+    }
+
+    /* Quiz Screen */
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: #111422;
+      border-radius: 999px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #6366f1, #ec4899);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .question-badge {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #818cf8;
+      background: rgba(99, 102, 241, 0.15);
+      padding: 4px 12px;
+      border-radius: 999px;
+      display: inline-block;
+      margin-bottom: 15px;
+    }
+
+    .question-text {
+      font-size: 1.35rem;
+      font-weight: 700;
+      line-height: 1.5;
+      margin-bottom: 30px;
+      min-height: 85px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .actions-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .btn-vote {
+      padding: 20px 10px;
+      border-radius: 16px;
+      font-size: 1.15rem;
+      font-weight: 800;
+      border: 2px solid transparent;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: transform 0.15s ease, background 0.2s;
+    }
+
+    .btn-vote:active {
+      transform: scale(0.94);
+    }
+
+    .btn-yes {
+      background: rgba(16, 185, 129, 0.15);
+      border-color: rgba(16, 185, 129, 0.4);
+      color: #34d399;
+    }
+
+    .btn-no {
+      background: rgba(244, 63, 94, 0.15);
+      border-color: rgba(244, 63, 94, 0.4);
+      color: #fb7185;
+    }
+
+    /* Thank You Screen */
+    .thank-you-wrap {
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    .icon-done {
+      width: 80px;
+      height: 80px;
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      border-radius: 50%;
+      margin: 0 auto 20px auto;
+    }
+
+    .sync-status {
+      font-size: 0.9rem;
+      color: #34d399;
+      background: rgba(16, 185, 129, 0.1);
+      padding: 8px 16px;
+      border-radius: 999px;
+      display: inline-block;
+      margin-top: 15px;
+    }
+
+    /* Modal / Admin */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      padding: 16px;
+    }
+
+    .modal-card {
+      background: #171b29;
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 480px;
+      padding: 24px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 0.8rem;
+      color: #4b5563;
+    }
+
+    footer span {
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-    <div class="ambient-glow"></div>
-    <canvas id="confettiCanvas"></canvas>
 
-    <div class="container">
-        <!-- Header -->
-        <header>
-            <div class="brand" id="brandHeader" title="לחץ 5 פעמים לכניסת מנהל">
-                <span class="brand-icon">🎉</span>
-                <div>
-                    <h1 class="brand-title">יאיר או לא יאיר?</h1>
-                    <p class="brand-subtitle">משחק הטריוויה וההצבעות</p>
-                </div>
-            </div>
-            <div class="cloud-badge" id="cloudBadge">
-                <span class="cloud-dot"></span>
-                <span id="cloudStatusText">סנכרון ענן פעיל</span>
-            </div>
-        </header>
+  <div class="container">
+    <header id="mainHeader" title="הצבעה ליאיר">
+      <h1 id="logoTitle">🎯 יאיר או לא יאיר?</h1>
+      <p>שאלון ההיכרות הרשמי</p>
+    </header>
 
-        <!-- SCREEN 1: Welcome (No password needed for players) -->
-        <div id="screenWelcome" class="screen glass-card active">
-            <div style="text-align: center; margin-bottom: 20px;">
-                <span style="font-size: 3rem; display: block; margin-bottom: 10px;">👑</span>
-                <h2 style="font-size: 1.55rem; font-weight: 800; margin-bottom: 6px;">כמה אתם באמת מכירים את יאיר?</h2>
-                <p style="color: var(--text-muted); font-size: 0.95rem;">
-                    ענו על 10 שאלות מהירות ונגלה מה כולם חושבים!
-                </p>
-            </div>
-
-            <div class="input-group">
-                <label class="input-label" for="participantInput">איך קוראים לכם?</label>
-                <input type="text" id="participantInput" class="custom-input" placeholder="שם או כינוי (למשל: דניאל)" autocomplete="off">
-            </div>
-
-            <button class="btn-primary" id="btnStartQuiz">
-                <span>בואו נתחיל להצביע!</span>
-                <span>🚀</span>
-            </button>
-
-            <p style="text-align: center; color: var(--text-muted); font-size: 0.8rem; margin-top: 14px;">
-                * ההצבעה הינה פעם אחת בלבד לכל משתתף
-            </p>
-        </div>
-
-        <!-- SCREEN 2: 10 Questions -->
-        <div id="screenQuiz" class="screen glass-card">
-            <div class="progress-header">
-                <span id="questionCounter">שאלה 1 מתוך 10</span>
-                <span id="playerNameBadge" style="color: #fcd34d; font-weight: 700;"></span>
-            </div>
-            <div class="progress-track">
-                <div class="progress-bar" id="progressBar"></div>
-            </div>
-
-            <div class="question-card">
-                <div class="question-text" id="questionText">טוען שאלה...</div>
-            </div>
-
-            <div class="vote-grid">
-                <button class="vote-btn vote-btn-yes" id="btnVoteYes">
-                    <span class="vote-btn-icon">😎</span>
-                    <span>יאיר לגמרי!</span>
-                </button>
-                <button class="vote-btn vote-btn-no" id="btnVoteNo">
-                    <span class="vote-btn-icon">🙅‍♂️</span>
-                    <span>ממש לא יאיר</span>
-                </button>
-            </div>
-        </div>
-
-        <!-- SCREEN 3: Thank you Screen -->
-        <div id="screenDone" class="screen glass-card" style="text-align: center;">
-            <div class="success-badge">✨</div>
-            <h2 style="font-size: 1.7rem; font-weight: 900; margin-bottom: 8px; color: #fff;">
-                תודה שהצבעת, <span id="donePlayerName" style="color: #fcd34d;"></span>!
-            </h2>
-            <p style="color: #cbd5e1; font-size: 1.05rem; line-height: 1.6; margin-bottom: 24px;">
-                התשובות שלך נקלטו בהצלחה במערכת! 🎯<br>
-                התוצאות המצטברות של כולם ייחשפו בהמשך האירוע.
-            </p>
-
-            <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 16px; margin-bottom: 20px;">
-                <p style="font-size: 0.9rem; color: #94a3b8;">
-                    ענית על 10 מתוך 10 שאלות. התוצאות הסופיות נשמרות אצל המארגן.
-                </p>
-            </div>
-
-            <button class="btn-secondary" id="btnToggleMyAnswers" style="width: 100%; justify-content: center; padding: 14px;">
-                צפייה בתשובות שלי 📋
-            </button>
-            <div id="myAnswersList" style="display: none; margin-top: 16px; text-align: right; max-height: 250px; overflow-y: auto;"></div>
-        </div>
+    <!-- Start View -->
+    <div id="startScreen" class="card">
+      <div class="input-group">
+        <label for="userName">מה השם שלך? (אפשר גם כינוי)</label>
+        <input type="text" id="userName" placeholder="הכנס שם...">
+      </div>
+      <button class="btn btn-primary" onclick="startQuiz()">בואו נתחיל להצביע! 🚀</button>
     </div>
 
-    <!-- Discreet Footer -->
+    <!-- Question View -->
+    <div id="quizScreen" class="card hidden">
+      <div class="progress-bar">
+        <div id="progressFill" class="progress-fill"></div>
+      </div>
+      <div class="question-badge" id="questionCounter">שאלה 1 מתוך 10</div>
+      <div class="question-text" id="questionText">טוען שאלה...</div>
+
+      <div class="actions-grid">
+        <button class="btn-vote btn-yes" onclick="submitAnswer('יאיר')">
+          <span style="font-size: 1.8rem;">😎</span>
+          <span>יאיר לגמרי!</span>
+        </button>
+        <button class="btn-vote btn-no" onclick="submitAnswer('לא יאיר')">
+          <span style="font-size: 1.8rem;">🙅‍♂️</span>
+          <span>ממש לא יאיר</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Thank You View -->
+    <div id="thankYouScreen" class="card hidden">
+      <div class="thank-you-wrap">
+        <div class="icon-done">✨</div>
+        <h2 id="thankYouTitle" style="font-size: 1.7rem; margin-bottom: 10px;">תודה שהצבעת!</h2>
+        <p style="color: var(--text-muted); line-height: 1.6;">התשובות שלך נקלטו בהצלחה בגיליון התוצאות.<br>התוצאות המלאות יוצגו על המסך בסוף האירוע!</p>
+        <div class="sync-status">🟢 נשמר ישירות בגיליון YAIRDB</div>
+      </div>
+    </div>
+
     <footer>
-        <span>משחק יום הולדת / בר מצווה יאיר ©</span>
-        <span>•</span>
-        <button class="secret-admin-link" id="footerAdminTrigger">ניהול 🔒</button>
+      <span onclick="triggerAdminLogin()">🔒</span>
     </footer>
+  </div>
 
-    <!-- ADMIN MODAL (Passcode: 443894) -->
-    <div class="modal-overlay" id="adminModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3><span>🔒</span> לוח תוצאות למארגן</h3>
-                <button class="modal-close-btn" id="btnCloseModal">✕</button>
-            </div>
-
-            <div class="modal-body">
-                <!-- Step 1: Admin Password Gate -->
-                <div id="adminGateView" class="admin-gate">
-                    <p style="color: #cbd5e1; font-size: 1rem; margin-bottom: 12px;">הזן קוד מנהל לצפייה בתוצאות המצטברות:</p>
-                    <div class="admin-pass-form">
-                        <input type="password" id="adminPassInput" class="custom-input" placeholder="סיסמה..." style="text-align: center; font-size: 1.2rem; letter-spacing: 2px;">
-                        <button class="btn-primary" id="btnAdminLogin" style="width: auto; padding: 0 20px;">כניסה</button>
-                    </div>
-                    <p id="adminErrorNotice" style="color: #f43f5e; font-size: 0.85rem; margin-top: 10px; display: none;">סיסמה שגויה!</p>
-                </div>
-
-                <!-- Step 2: Dashboard Content -->
-                <div id="adminDataView" style="display: none;">
-                    <div class="stat-banner">
-                        <div class="stat-card">
-                            <div class="stat-num" id="totalParticipants" style="color: #38bdf8;">0</div>
-                            <div class="stat-label">סך משתתפים</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-num" id="totalYesSum" style="color: #34d399;">0</div>
-                            <div class="stat-label">תשובות "יאיר"</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-num" id="totalNoSum" style="color: #fb7185;">0</div>
-                            <div class="stat-label">תשובות "לא יאיר"</div>
-                        </div>
-                    </div>
-
-                    <!-- Questions Stats -->
-                    <div id="adminQuestionsStats"></div>
-
-                    <!-- Participants List -->
-                    <div style="margin-top: 20px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 16px;">
-                        <h4 style="font-size: 0.95rem; color: #fcd34d; margin-bottom: 10px;">רשימת המצביעים שנקלטו:</h4>
-                        <div style="max-height: 180px; overflow-y: auto;">
-                            <table class="participants-table">
-                                <thead>
-                                    <tr>
-                                        <th>שם</th>
-                                        <th>שעה</th>
-                                        <th>הצבעות יאיר</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="participantsTableBody">
-                                    <tr><td colspan="3" style="text-align: center; color: var(--text-muted);">טוען נתונים...</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <!-- Controls -->
-                    <div class="admin-actions">
-                        <button class="btn-secondary" id="btnRefreshStats">רענן נתונים 🔄</button>
-                        <button class="btn-secondary" id="btnExportCSV">ייצוא ל-Excel 📥</button>
-                        <button class="btn-secondary" id="btnResetVotes" style="color: #fb7185; border-color: rgba(244,63,94,0.3); margin-right: auto;">איפוס תוצאות 🗑️</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <!-- Admin Login Modal -->
+  <div id="adminModal" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <h3 style="margin-bottom: 16px; text-align: center;">כניסת מנהל בלבד</h3>
+      <div class="input-group">
+        <input type="password" id="adminPassword" placeholder="הזן סיסמת ניהול...">
+      </div>
+      <button class="btn btn-primary" onclick="verifyAdminPassword()" style="margin-bottom: 10px;">כניסה לגיליון</button>
+      <button class="btn" onclick="closeAdminModal()" style="background: transparent; color: var(--text-muted);">ביטול</button>
     </div>
+  </div>
 
-    <!-- Toast Notification -->
-    <div class="toast" id="toastBox">
-        <span id="toastIcon">✨</span>
-        <span id="toastMsg">הודעה</span>
-    </div>
+  <script>
+    // הקישור הישיר ל-Google Apps Script המחובר ל-YAIRDB
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzf8U8iJNIRQpVMdd3gBXbLi5TDKzf-Sdih5DohmCIZGvwDtIcIsMIa8GGzTYtaWmMA/exec";
+    const SHEET_VIEW_URL = "https://docs.google.com/spreadsheets/d/1mJoE14Vh-m5XSIsFLMFqJYSfPXiCakbtfn8NIjlxzHA/edit?gid=0#gid=0";
 
-    <script>
-        // 10 Official Questions
-        const QUESTIONS = [
-            "יאיר מסוגל לשמוע פתיחת שקית חטיפים משלושה חדרים, אבל לא שומע כשקוראים לו לבוא לעזור.",
-            "יאיר כבר בדק אם בר מצווה מאפשרת להוציא רישיון נהיגה — לפחות לקורקינט.",
-            "כשהוא אומר ״אני מוכן, יוצאים״ — הוא עדיין נועל נעליים.",
-            "כשהיה קטן, יאיר רצה להיות רופא.",
-            "יאיר מאמין שלשים צלחת בכיור זה לעזור, ולהכניס למדיח זה כבר לעבוד בהתנדבות.",
-            "יאיר מסוגל לזכור סיסמה של משחק מלפני שלוש שנים, אבל לא איפה הניח את הנעליים לפני חמש דקות.",
-            "המשפט ״אני הולך לישון מוקדם ״ אצל יאיר זה פעם בשבוע.",
-            "כשיאיר מסדר את החדר, הארון נהיה קצת יותר מלא והדלת קצת יותר קשה לסגירה.",
-            "יאיר מוכן לחלוק הכול עם האחים שלו — חוץ מהמטען, החטיפים והמקום על הספה.",
-            "פעם יאיר הצליח לשכנע את ההורים שהוא יודע לבשל."
-        ];
+    const questions = [
+      "יאיר מסוגל לשמוע פתיחת שקית חטיפים משלושה חדרים, אבל לא שומע כשקוראים לו לבוא לעזור.",
+      "יאיר כבר בדק אם בר מצווה מאפשרת להוציא רישיון נהיגה — לפחות לקורקינט.",
+      "כשהוא אומר ״אני מוכן, יוצאים״ — הוא עדיין נועל נעליים.",
+      "כשהיה קטן, יאיר רצה להיות רופא.",
+      "יאיר מאמין שלשים צלחת בכיור זה לעזור, ולהכניס למדיח זה כבר לעבוד בהתנדבות.",
+      "יאיר מסוגל לזכור סיסמה של משחק מלפני שלוש שנים, אבל לא איפה הניח את הנעליים לפני חמש דקות.",
+      "המשפט ״אני הולך לישון מוקדם ״ אצל יאיר זה פעם בשבוע.",
+      "כשיאיר מסדר את החדר, הארון נהיה קצת יותר מלא והדלת קצת יותר קשה לסגירה.",
+      "יאיר מוכן לחלוק הכול עם האחים שלו — חוץ מהמטען, החטיפים והמקום על הספה.",
+      "פעם יאיר הצליח לשכנע את ההורים שהוא יודע לבשל."
+    ];
 
-        const ADMIN_PASSWORD = "443894";
-        const STORAGE_KEY_VOTES = "yair_quiz_all_votes_v5";
-        const STORAGE_KEY_USER = "yair_quiz_user_done_v5";
+    let currentQuestionIndex = 0;
+    let participantName = "";
+    let userAnswers = [];
 
-        // Guaranteed CORS-friendly multi-device public API
-        const CLOUD_ROOM_TAG = "YAIR_QUIZ_ROOM_2025";
-        const PRIMARY_API_ENDPOINT = "https://api.restful-api.dev/objects";
+    // בדיקה האם כבר הצביע במכשיר זה
+    window.addEventListener("DOMContentLoaded", () => {
+      if (localStorage.getItem("hasVoted_Yair")) {
+        showThankYou(localStorage.getItem("votedName") || "");
+      }
+    });
 
-        // State
-        let currentQuestionIdx = 0;
-        let participantName = "";
-        let participantChoices = [];
-        let aggregatedVotes = [];
-        let isAdminLoggedIn = false;
-        let brandClickCount = 0;
-        let brandClickTimer = null;
-        let isFetchingCloud = false;
+    function startQuiz() {
+      const input = document.getElementById("userName");
+      participantName = input.value.trim() || "אורח/ת";
+      document.getElementById("startScreen").classList.add("hidden");
+      document.getElementById("quizScreen").classList.remove("hidden");
+      renderQuestion();
+    }
 
-        // Sound Effects (Web Audio API)
-        let audioContext = null;
-        function playTone(type) {
-            try {
-                if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                if (audioContext.state === 'suspended') audioContext.resume();
-                
-                const osc = audioContext.createOscillator();
-                const gain = audioContext.createGain();
-                osc.connect(gain);
-                gain.connect(audioContext.destination);
+    function renderQuestion() {
+      const q = questions[currentQuestionIndex];
+      document.getElementById("questionText").innerText = q;
+      document.getElementById("questionCounter").innerText = `שאלה ${currentQuestionIndex + 1} מתוך ${questions.length}`;
+      const progress = ((currentQuestionIndex) / questions.length) * 100;
+      document.getElementById("progressFill").style.width = `${progress}%`;
+    }
 
-                const now = audioContext.currentTime;
-                if (type === 'yes') {
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(523.25, now);
-                    osc.frequency.exponentialRampToValueAtTime(783.99, now + 0.15);
-                    gain.gain.setValueAtTime(0.2, now);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
-                    osc.start(now);
-                    osc.stop(now + 0.25);
-                } else {
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(349.23, now);
-                    osc.frequency.exponentialRampToValueAtTime(261.63, now + 0.18);
-                    gain.gain.setValueAtTime(0.2, now);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
-                    osc.start(now);
-                    osc.stop(now + 0.22);
-                }
-            } catch(e) {}
-        }
+    function submitAnswer(answer) {
+      userAnswers.push(answer);
+      currentQuestionIndex++;
 
-        // Confetti
-        function fireConfetti() {
-            const canvas = document.getElementById('confettiCanvas');
-            const ctx = canvas.getContext('2d');
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+      if (currentQuestionIndex < questions.length) {
+        renderQuestion();
+      } else {
+        document.getElementById("progressFill").style.width = `100%`;
+        finishAndSave();
+      }
+    }
 
-            const particles = [];
-            const colors = ['#f59e0b', '#10b981', '#f43f5e', '#38bdf8', '#a855f7', '#fbbf24'];
+    async function finishAndSave() {
+      document.getElementById("quizScreen").classList.add("hidden");
+      showThankYou(participantName);
 
-            for (let i = 0; i < 90; i++) {
-                particles.push({
-                    x: canvas.width / 2,
-                    y: canvas.height * 0.45,
-                    vx: (Math.random() - 0.5) * 14,
-                    vy: (Math.random() - 0.8) * 14,
-                    size: Math.random() * 8 + 4,
-                    color: colors[Math.floor(Math.random() * colors.length)],
-                    rot: Math.random() * 360,
-                    vRot: (Math.random() - 0.5) * 10,
-                    alpha: 1
-                });
-            }
+      localStorage.setItem("hasVoted_Yair", "true");
+      localStorage.setItem("votedName", participantName);
 
-            function animateConfetti() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                let alive = false;
-                particles.forEach(p => {
-                    p.x += p.vx;
-                    p.y += p.vy;
-                    p.vy += 0.35;
-                    p.rot += p.vRot;
-                    p.alpha -= 0.012;
-
-                    if (p.alpha > 0) {
-                        alive = true;
-                        ctx.save();
-                        ctx.translate(p.x, p.y);
-                        ctx.rotate((p.rot * Math.PI) / 180);
-                        ctx.fillStyle = p.color;
-                        ctx.globalAlpha = Math.max(0, p.alpha);
-                        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
-                        ctx.restore();
-                    }
-                });
-
-                if (alive) {
-                    requestAnimationFrame(animateConfetti);
-                } else {
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                }
-            }
-            requestAnimationFrame(animateConfetti);
-        }
-
-        // Toast
-        let toastTimer = null;
-        function showToast(message, icon = "✨") {
-            const toast = document.getElementById('toastBox');
-            document.getElementById('toastMsg').textContent = message;
-            document.getElementById('toastIcon').textContent = icon;
-            toast.classList.add('show');
-            clearTimeout(toastTimer);
-            toastTimer = setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
-        }
-
-        function showScreen(screenId) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(screenId).classList.add('active');
-        }
-
-        // ================= CLOUD SYNC ENGINE =================
-        async function fetchVotesFromCloud() {
-            if (isFetchingCloud) return;
-            isFetchingCloud = true;
-
-            const badge = document.getElementById('cloudBadge');
-            const statusText = document.getElementById('cloudStatusText');
-            badge.classList.add('syncing');
-
-            let cloudList = [];
-            try {
-                // Fetch all records from the public CORS-friendly store
-                const response = await fetch(PRIMARY_API_ENDPOINT, {
-                    method: 'GET',
-                    headers: { 'Accept': 'application/json' }
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    if (Array.isArray(data)) {
-                        data.forEach(item => {
-                            if (item.name === CLOUD_ROOM_TAG && item.data && item.data.vote) {
-                                cloudList.push(item.data.vote);
-                            }
-                        });
-                    }
-                    badge.classList.remove('syncing');
-                    statusText.textContent = `🟢 מחובר לענן (${cloudList.length})`;
-                }
-            } catch(e) {
-                console.warn("Cloud read notice:", e);
-                badge.classList.remove('syncing');
-                statusText.textContent = "מצב לוקאלי";
-            } finally {
-                isFetchingCloud = false;
-            }
-
-            // Merge with local storage cache to ensure zero data loss
-            let localCached = [];
-            try {
-                const raw = localStorage.getItem(STORAGE_KEY_VOTES);
-                if (raw) localCached = JSON.parse(raw);
-            } catch(e) {}
-
-            // Deduplicate by unique vote ID
-            const combinedMap = new Map();
-            localCached.forEach(v => { if (v && v.id) combinedMap.set(v.id, v); });
-            cloudList.forEach(v => { if (v && v.id) combinedMap.set(v.id, v); });
-
-            aggregatedVotes = Array.from(combinedMap.values());
-            localStorage.setItem(STORAGE_KEY_VOTES, JSON.stringify(aggregatedVotes));
-
-            if (isAdminLoggedIn) {
-                renderAdminDashboard();
-            }
-        }
-
-        async function submitVoteRecord(voteRecord) {
-            // 1. Immediately cache locally
-            try {
-                let local = [];
-                const saved = localStorage.getItem(STORAGE_KEY_VOTES);
-                if (saved) local = JSON.parse(saved);
-                if (!local.some(v => v.id === voteRecord.id)) {
-                    local.push(voteRecord);
-                    localStorage.setItem(STORAGE_KEY_VOTES, JSON.stringify(local));
-                }
-                aggregatedVotes = local;
-            } catch(e) {}
-
-            // 2. Transmit to Cloud REST API
-            try {
-                const payload = {
-                    name: CLOUD_ROOM_TAG,
-                    data: {
-                        vote: voteRecord,
-                        timestamp: Date.now()
-                    }
-                };
-
-                const res = await fetch(PRIMARY_API_ENDPOINT, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify(payload)
-                });
-
-                if (res.ok) {
-                    console.log("Vote synced successfully to cloud!");
-                }
-            } catch(err) {
-                console.warn("Vote saved locally, cloud queue will sync:", err);
-            }
-        }
-
-        // Voting Check
-        function checkVotedStatus() {
-            try {
-                const savedUser = localStorage.getItem(STORAGE_KEY_USER);
-                if (savedUser) {
-                    const data = JSON.parse(savedUser);
-                    participantName = data.name || "אורח/ת";
-                    participantChoices = data.votes || [];
-                    document.getElementById('donePlayerName').textContent = participantName;
-                    setupBackupCodeDisplay(data);
-                    showScreen('screenDone');
-                    return true;
-                }
-            } catch(e) {}
-            return false;
-        }
-
-        function setupBackupCodeDisplay(voteRecord) {
-            const container = document.getElementById('backupCodeBox');
-            if (container) {
-                const base64Code = btoa(unescape(encodeURIComponent(JSON.stringify(voteRecord))));
-                container.innerHTML = `
-                    <div style="margin-top:14px; background:rgba(0,0,0,0.3); border:1px dashed rgba(255,255,255,0.15); border-radius:12px; padding:10px;">
-                        <span style="font-size:0.75rem; color:#94a3b8; display:block; margin-bottom:4px;">קוד גיבוי להצבעה (למקרה של בעיית קליטה):</span>
-                        <input type="text" readonly value="${base64Code}" onclick="this.select(); document.execCommand('copy'); showToast('קוד הגיבוי הועתק!','📋');" style="width:100%; background:transparent; border:none; color:#fcd34d; font-size:0.75rem; text-align:center; font-family:monospace; outline:none; cursor:pointer;" title="לחץ להעתקה">
-                    </div>
-                `;
-            }
-        }
-
-        // Flow Handlers
-        const participantInput = document.getElementById('participantInput');
-        const btnStartQuiz = document.getElementById('btnStartQuiz');
-        const questionCounter = document.getElementById('questionCounter');
-        const playerNameBadge = document.getElementById('playerNameBadge');
-        const progressBar = document.getElementById('progressBar');
-        const questionText = document.getElementById('questionText');
-        const btnVoteYes = document.getElementById('btnVoteYes');
-        const btnVoteNo = document.getElementById('btnVoteNo');
-        const donePlayerName = document.getElementById('donePlayerName');
-        const btnToggleMyAnswers = document.getElementById('btnToggleMyAnswers');
-        const myAnswersList = document.getElementById('myAnswersList');
-
-        btnStartQuiz.addEventListener('click', () => {
-            const rawName = participantInput.value.trim();
-            participantName = rawName || "משתתף אנונימי";
-            playerNameBadge.textContent = participantName;
-            donePlayerName.textContent = participantName;
-            currentQuestionIdx = 0;
-            participantChoices = [];
-            showScreen('screenQuiz');
-            loadQuestion(0);
+      // שליחה מאובטחת לענן ללא חסימת CORS
+      try {
+        await fetch(GOOGLE_SCRIPT_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: participantName,
+            answers: userAnswers
+          })
         });
+      } catch (err) {
+        console.error("שגיאה בשמירת התשובות:", err);
+      }
+    }
 
-        function loadQuestion(idx) {
-            questionCounter.textContent = `שאלה ${idx + 1} מתוך ${QUESTIONS.length}`;
-            progressBar.style.width = `${((idx + 1) / QUESTIONS.length) * 100}%`;
-            
-            questionText.style.opacity = '0';
-            setTimeout(() => {
-                questionText.textContent = QUESTIONS[idx];
-                questionText.style.opacity = '1';
-            }, 60);
-        }
+    function showThankYou(name) {
+      document.getElementById("startScreen").classList.add("hidden");
+      document.getElementById("quizScreen").classList.add("hidden");
+      if (name) {
+        document.getElementById("thankYouTitle").innerText = `תודה שהצבעת, ${name}! 🎉`;
+      }
+      document.getElementById("thankYouScreen").classList.remove("hidden");
+    }
 
-        async function registerVote(isYes) {
-            playTone(isYes ? 'yes' : 'no');
-            participantChoices.push(isYes);
+    // ניהול סודי
+    let clickCount = 0;
+    let clickTimer;
+    document.getElementById("logoTitle").addEventListener("click", () => {
+      clickCount++;
+      clearTimeout(clickTimer);
+      if (clickCount >= 5) {
+        triggerAdminLogin();
+        clickCount = 0;
+      }
+      clickTimer = setTimeout(() => { clickCount = 0; }, 1500);
+    });
 
-            if (currentQuestionIdx < QUESTIONS.length - 1) {
-                currentQuestionIdx++;
-                loadQuestion(currentQuestionIdx);
-            } else {
-                finishQuiz();
-            }
-        }
+    function triggerAdminLogin() {
+      document.getElementById("adminModal").classList.remove("hidden");
+      document.getElementById("adminPassword").focus();
+    }
 
-        btnVoteYes.addEventListener('click', () => registerVote(true));
-        btnVoteNo.addEventListener('click', () => registerVote(false));
+    function closeAdminModal() {
+      document.getElementById("adminModal").classList.add("hidden");
+      document.getElementById("adminPassword").value = "";
+    }
 
-        async function finishQuiz() {
-            const now = new Date();
-            const timeFormatted = now.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
-
-            const voteRecord = {
-                id: 'vote_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
-                name: participantName,
-                votes: participantChoices,
-                time: timeFormatted,
-                fullDate: now.toISOString()
-            };
-
-            // Prevent revoting on this device
-            localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(voteRecord));
-
-            setupBackupCodeDisplay(voteRecord);
-            showScreen('screenDone');
-            fireConfetti();
-            showToast("תודה! התשובות שלך נקלטו", "🎉");
-
-            await submitVoteRecord(voteRecord);
-            fetchVotesFromCloud();
-        }
-
-        btnToggleMyAnswers.addEventListener('click', () => {
-            if (myAnswersList.style.display === 'none') {
-                myAnswersList.innerHTML = '';
-                QUESTIONS.forEach((q, i) => {
-                    const answeredYes = participantChoices[i];
-                    const item = document.createElement('div');
-                    item.style.padding = '10px 14px';
-                    item.style.marginBottom = '8px';
-                    item.style.borderRadius = '12px';
-                    item.style.background = 'rgba(255,255,255,0.05)';
-                    item.style.border = '1px solid rgba(255,255,255,0.07)';
-                    item.style.fontSize = '0.88rem';
-                    item.style.display = 'flex';
-                    item.style.justifyContent = 'space-between';
-                    item.style.alignItems = 'center';
-                    item.style.gap = '8px';
-
-                    item.innerHTML = `
-                        <span style="color:#e2e8f0; flex:1;">${i + 1}. ${q}</span>
-                        <span style="font-weight:800; font-size:0.9rem; color:${answeredYes ? '#34d399' : '#fb7185'}; white-space:nowrap;">
-                            ${answeredYes ? 'יאיר 😎' : 'לא יאיר 🙅‍♂️'}
-                        </span>
-                    `;
-                    myAnswersList.appendChild(item);
-                });
-                myAnswersList.style.display = 'block';
-                btnToggleMyAnswers.textContent = 'הסתר את הבחירות שלי ✕';
-            } else {
-                myAnswersList.style.display = 'none';
-                btnToggleMyAnswers.textContent = 'צפייה בתשובות שלי 📋';
-            }
-        });
-
-        // ================= ADMIN DASHBOARD (443894) =================
-        const adminModal = document.getElementById('adminModal');
-        const btnCloseModal = document.getElementById('btnCloseModal');
-        const footerAdminTrigger = document.getElementById('footerAdminTrigger');
-        const brandHeader = document.getElementById('brandHeader');
-        const adminGateView = document.getElementById('adminGateView');
-        const adminDataView = document.getElementById('adminDataView');
-        const adminPassInput = document.getElementById('adminPassInput');
-        const btnAdminLogin = document.getElementById('btnAdminLogin');
-        const adminErrorNotice = document.getElementById('adminErrorNotice');
-        const btnRefreshStats = document.getElementById('btnRefreshStats');
-        const btnExportCSV = document.getElementById('btnExportCSV');
-        const btnResetVotes = document.getElementById('btnResetVotes');
-        const participantsTableBody = document.getElementById('participantsTableBody');
-
-        function openAdminModal() {
-            adminModal.classList.add('open');
-            if (isAdminLoggedIn) {
-                adminGateView.style.display = 'none';
-                adminDataView.style.display = 'block';
-                fetchVotesFromCloud();
-            } else {
-                adminGateView.style.display = 'block';
-                adminDataView.style.display = 'none';
-                adminPassInput.value = '';
-                adminErrorNotice.style.display = 'none';
-                setTimeout(() => adminPassInput.focus(), 150);
-            }
-        }
-
-        function closeAdminModal() {
-            adminModal.classList.remove('open');
-        }
-
-        // Access 1: Click logo 5 times rapidly
-        brandHeader.addEventListener('click', () => {
-            brandClickCount++;
-            clearTimeout(brandClickTimer);
-            if (brandClickCount >= 5) {
-                brandClickCount = 0;
-                openAdminModal();
-            } else {
-                brandClickTimer = setTimeout(() => {
-                    brandClickCount = 0;
-                }, 2500);
-            }
-        });
-
-        // Access 2: Discreet footer button
-        footerAdminTrigger.addEventListener('click', openAdminModal);
-
-        // Access 3: URL Hash #admin
-        if (window.location.hash === '#admin') {
-            setTimeout(openAdminModal, 400);
-        }
-
-        btnCloseModal.addEventListener('click', closeAdminModal);
-        adminModal.addEventListener('click', (e) => {
-            if (e.target === adminModal) closeAdminModal();
-        });
-
-        function performAdminCheck() {
-            const entered = adminPassInput.value.trim();
-            if (entered === ADMIN_PASSWORD) {
-                isAdminLoggedIn = true;
-                adminGateView.style.display = 'none';
-                adminDataView.style.display = 'block';
-                fetchVotesFromCloud();
-                showToast("ברוך הבא למערכת הניהול", "🔓");
-            } else {
-                adminErrorNotice.style.display = 'block';
-                adminPassInput.select();
-            }
-        }
-
-        btnAdminLogin.addEventListener('click', performAdminCheck);
-        adminPassInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') performAdminCheck();
-        });
-
-        function renderAdminDashboard() {
-            const total = aggregatedVotes.length;
-            document.getElementById('totalParticipants').textContent = total;
-
-            let grandTotalYes = 0;
-            let grandTotalNo = 0;
-
-            const questionsContainer = document.getElementById('adminQuestionsStats');
-            questionsContainer.innerHTML = '';
-
-            // Update Participants Table
-            participantsTableBody.innerHTML = '';
-            if (aggregatedVotes.length === 0) {
-                participantsTableBody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: var(--text-muted);">אין משתתפים עדיין</td></tr>';
-            } else {
-                aggregatedVotes.slice().reverse().forEach(v => {
-                    const yesCount = (v.votes || []).filter(val => val === true).length;
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td style="font-weight:700; color:#fff;">${escapeHtml(v.name || 'אנונימי')}</td>
-                        <td style="color:var(--text-muted);">${v.time || 'עכשיו'}</td>
-                        <td style="color:#34d399; font-weight:700;">${yesCount} / 10</td>
-                    `;
-                    participantsTableBody.appendChild(tr);
-                });
-            }
-
-            if (total === 0) {
-                questionsContainer.innerHTML = `
-                    <div style="text-align:center; padding:30px 10px; color:#94a3b8;">
-                        <span style="font-size:2.2rem; display:block; margin-bottom:8px;">⏳</span>
-                        <p style="font-weight:700; font-size:1.1rem;">עדיין לא נקלטו הצבעות במערכת</p>
-                        <p style="font-size:0.85rem; margin-top:4px;">כאשר אנשים יענו מהטלפון שלהם, הנתונים יופיעו כאן אוטומטית!</p>
-                    </div>
-                `;
-                document.getElementById('totalYesSum').textContent = '0';
-                document.getElementById('totalNoSum').textContent = '0';
-                return;
-            }
-
-            QUESTIONS.forEach((question, qIdx) => {
-                let yesCount = 0;
-                let noCount = 0;
-
-                aggregatedVotes.forEach(record => {
-                    if (record.votes && record.votes[qIdx] !== undefined) {
-                        if (record.votes[qIdx] === true) {
-                            yesCount++;
-                            grandTotalYes++;
-                        } else {
-                            noCount++;
-                            grandTotalNo++;
-                        }
-                    }
-                });
-
-                const qTotal = yesCount + noCount;
-                const yesPercent = qTotal > 0 ? Math.round((yesCount / qTotal) * 100) : 0;
-                const noPercent = qTotal > 0 ? (100 - yesPercent) : 0;
-
-                let verdictHtml = '';
-                if (qTotal > 0) {
-                    if (yesPercent > noPercent) {
-                        verdictHtml = `<span class="verdict-tag verdict-yes">הרוב קבעו: יאיר לגמרי! 😎 (${yesPercent}%)</span>`;
-                    } else if (noPercent > yesPercent) {
-                        verdictHtml = `<span class="verdict-tag verdict-no">הרוב קבעו: ממש לא יאיר! 🙅‍♂️ (${noPercent}%)</span>`;
-                    } else {
-                        verdictHtml = `<span class="verdict-tag verdict-tie">תיקו מדויק! 🤝 (50%)</span>`;
-                    }
-                }
-
-                const card = document.createElement('div');
-                card.className = 'q-stat-item';
-                card.innerHTML = `
-                    <div class="q-stat-title">
-                        <span style="color:#fcd34d; font-weight:900; margin-left:4px;">#${qIdx + 1}</span>
-                        ${question}
-                    </div>
-                    <div class="bar-wrapper">
-                        <div class="bar-yes" style="width: ${yesPercent}%;"></div>
-                        <div class="bar-no" style="width: ${noPercent}%;"></div>
-                    </div>
-                    <div class="bar-labels">
-                        <span style="color:#34d399;">יאיר: ${yesPercent}% (${yesCount} קולות)</span>
-                        <span style="color:#fb7185;">לא יאיר: ${noPercent}% (${noCount} קולות)</span>
-                    </div>
-                    <div style="margin-top:6px;">
-                        ${verdictHtml}
-                    </div>
-                `;
-                questionsContainer.appendChild(card);
-            });
-
-            document.getElementById('totalYesSum').textContent = grandTotalYes;
-            document.getElementById('totalNoSum').textContent = grandTotalNo;
-        }
-
-        function escapeHtml(str) {
-            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-        }
-
-        btnRefreshStats.addEventListener('click', async () => {
-            await fetchVotesFromCloud();
-            showToast("הנתונים עודכנו מהענן", "🔄");
-        });
-
-        // Manual backup code import (if offline)
-        window.importBackupVoteCode = function() {
-            const raw = prompt("הדבק כאן את קוד הגיבוי של המשתתף:");
-            if (!raw) return;
-            try {
-                const parsed = JSON.parse(decodeURIComponent(escape(atob(raw.trim()))));
-                if (parsed && parsed.votes && Array.isArray(parsed.votes)) {
-                    submitVoteRecord(parsed);
-                    fetchVotesFromCloud();
-                    showToast(`ההצבעה של ${parsed.name || 'משתתף'} נוספה בהצלחה!`, "✅");
-                } else {
-                    alert("קוד לא תקין");
-                }
-            } catch(e) {
-                alert("שגיאה בפענוח הקוד");
-            }
-        };
-
-        // Export to CSV
-        btnExportCSV.addEventListener('click', () => {
-            if (aggregatedVotes.length === 0) {
-                showToast("אין עדיין נתונים לייצוא", "ℹ️");
-                return;
-            }
-
-            let csv = "\uFEFF"; // UTF-8 BOM for Hebrew Excel
-            csv += "מספר,שם משתתף,שעה," + QUESTIONS.map((_, i) => `שאלה ${i + 1}`).join(",") + "\n";
-
-            aggregatedVotes.forEach((r, idx) => {
-                const row = [
-                    idx + 1,
-                    `"${(r.name || '').replace(/"/g, '""')}"`,
-                    `"${r.time || ''}"`,
-                    ...(r.votes || []).map(v => v ? "יאיר" : "לא יאיר")
-                ];
-                csv += row.join(",") + "\n";
-            });
-
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
-            link.setAttribute("download", `תוצאות_הצבעה_יאיר_${Date.now()}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            showToast("קובץ Excel נוצר בהצלחה", "📥");
-        });
-
-        // Reset votes
-        btnResetVotes.addEventListener('click', async () => {
-            const confirmed = window.confirm("האם למחוק את כל ההצבעות מהמערכת והענן? פעולה זו תאפס את המשחק לחלוטין!");
-            if (!confirmed) return;
-
-            aggregatedVotes = [];
-            localStorage.removeItem(STORAGE_KEY_VOTES);
-            localStorage.removeItem(STORAGE_KEY_USER);
-
-            renderAdminDashboard();
-            showToast("כל הנתונים אופסו מקומית", "🗑️");
-        });
-
-        // Init
-        window.addEventListener('load', () => {
-            checkVotedStatus();
-            fetchVotesFromCloud();
-
-            // Background live polling every 3.5 seconds
-            setInterval(() => {
-                if (document.visibilityState === 'visible') {
-                    fetchVotesFromCloud();
-                }
-            }, 3500);
-        });
-    </script>
+    function verifyAdminPassword() {
+      const pass = document.getElementById("adminPassword").value.trim();
+      if (pass === "443894") {
+        // מעבר ישיר לגיליון התוצאות החי
+        window.open(SHEET_VIEW_URL, "_blank");
+        closeAdminModal();
+      } else {
+        alert("קוד שגוי! נסה שוב.");
+      }
+    }
+  </script>
 </body>
 </html>
