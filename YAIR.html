@@ -294,16 +294,26 @@
       border-collapse: collapse;
       margin-top: 10px;
       font-size: 0.9rem;
+      direction: rtl;
     }
 
     .leaderboard-table th, .leaderboard-table td {
       padding: 10px;
-      text-align: right;
       border-bottom: 1px solid #23283c;
     }
 
     .leaderboard-table th {
       color: var(--text-muted);
+      text-align: right;
+    }
+
+    .leaderboard-table td:nth-child(1) {
+      text-align: right;
+    }
+
+    .leaderboard-table td:nth-child(2),
+    .leaderboard-table td:nth-child(3) {
+      text-align: center;
     }
 
     .score-badge {
@@ -405,8 +415,8 @@
         <thead>
           <tr>
             <th>שם משתתף</th>
-            <th>ציון נכון</th>
-            <th>אחוז הצלחה</th>
+            <th style="text-align: center;">ציון נכון</th>
+            <th style="text-align: center;">אחוז הצלחה</th>
           </tr>
         </thead>
         <tbody id="leaderboardBody">
@@ -419,9 +429,6 @@
   <script>
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzf8U8iJNIRQpVMdd3gBXbLi5TDKzf-Sdih5DohmCIZGvwDtIcIsMIa8GGzTYtaWmMA/exec";
     const SHEET_VIEW_URL = "https://docs.google.com/spreadsheets/d/1mJoE14Vh-m5XSIsFLMFqJYSfPXiCakbtfn8NIjlxzHA/edit?gid=0#gid=0";
-    
-    // קריאת CSV ישירה מגיליון Google Sheets ללא חסימות
-    const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT1sXk9sP2h8Vf2Q3j_YAIRDB_EXPORT/pub?output=csv";
     const DIRECT_CSV_URL = "https://docs.google.com/spreadsheets/d/1mJoE14Vh-m5XSIsFLMFqJYSfPXiCakbtfn8NIjlxzHA/gviz/tq?tqx=out:csv&sheet=Sheet1";
 
     const questions = [
@@ -501,6 +508,7 @@
       document.getElementById("thankYouScreen").classList.remove("hidden");
     }
 
+    // ניהול סודי
     let clickCount = 0;
     let clickTimer;
     document.getElementById("logoTitle").addEventListener("click", () => {
@@ -541,36 +549,60 @@
       document.getElementById("dashboardModal").classList.add("hidden");
     }
 
-    // קריאת נתונים אמינה וישירה מגיליון Google Sheets ללא חסימות
+    // טעינת נתונים ישירה מגיליון Google Sheets
     async function loadAdminData() {
       const container = document.getElementById("questionsSummaryList");
       container.innerHTML = "טוען הצבעות מ-Google Sheets...";
 
       try {
-        const res = await fetch(DIRECT_CSV_URL);
+        const res = await fetch(DIRECT_CSV_URL + "&_t=" + Date.now());
         const text = await res.text();
-        
         allParticipantsData = parseCSVData(text);
         renderAdminDashboard();
       } catch (err) {
         console.error(err);
-        container.innerHTML = "שגיאה בטעינת הנתונים. ודא שהגיליון מוגדר כ-Publish to web או שותף כציבורי לצפייה.";
+        container.innerHTML = "שגיאה בטעינת הנתונים. ודא שהגיליון שותף כציבורי לצפייה.";
       }
     }
 
+    // פירוק תקני לשורות CSV כולל תמיכה מלאה בעברית ומרכאות
     function parseCSVData(csvText) {
-      const lines = csvText.trim().split("\n");
+      const lines = csvText.trim().split(/\r?\n/);
       if (lines.length <= 1) return [];
 
       const parsed = [];
       for (let i = 1; i < lines.length; i++) {
-        // פירוק שורת ה-CSV
-        const row = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(item => item.replace(/^"|"$/g, '').trim());
-        if (row.length >= 12) {
+        const line = lines[i].trim();
+        if (!line) continue;
+
+        const row = [];
+        let inQuotes = false;
+        let token = "";
+
+        for (let j = 0; j < line.length; j++) {
+          const char = line[j];
+          if (char === '"') {
+            inQuotes = !inQuotes;
+          } else if (char === ',' && !inQuotes) {
+            row.push(token.trim().replace(/^"|"$/g, ''));
+            token = "";
+          } else {
+            token += char;
+          }
+        }
+        row.push(token.trim().replace(/^"|"$/g, ''));
+
+        if (row.length >= 2) {
+          const pName = row[1] ? row[1].trim() : "אנונימי";
+          const answers = [];
+          for (let q = 2; q <= 11; q++) {
+            answers.push(row[q] ? row[q].trim() : "");
+          }
+
           parsed.push({
             timestamp: row[0],
-            name: row[1],
-            answers: [row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11]]
+            name: pName,
+            answers: answers
           });
         }
       }
@@ -653,9 +685,9 @@
       scoredList.forEach(item => {
         const tr = document.createElement("tr");
         tr.innerHTML = `
-          <td><b>${item.name}</b></td>
-          <td><span class="score-badge">${item.score} / ${item.evaluatedCount || questions.length}</span></td>
-          <td>${item.percent}%</td>
+          <td style="text-align: right; font-weight: bold; color: #fff;">${item.name || "אנונימי"}</td>
+          <td style="text-align: center;"><span class="score-badge">${item.score} / ${item.evaluatedCount || questions.length}</span></td>
+          <td style="text-align: center;">${item.percent}%</td>
         `;
         tbody.appendChild(tr);
       });
