@@ -211,7 +211,7 @@
       border: 1px solid var(--card-border);
       border-radius: var(--radius);
       width: 100%;
-      max-width: 600px;
+      max-width: 650px;
       padding: 22px;
       max-height: 90vh;
       overflow-y: auto;
@@ -241,33 +241,38 @@
       font-weight: 700;
       margin-bottom: 8px;
       color: #e2e8f0;
+      line-height: 1.4;
     }
 
     .q-stats-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 8px;
-      font-size: 0.85rem;
+      margin-bottom: 10px;
+      font-size: 0.9rem;
+      background: rgba(255, 255, 255, 0.03);
+      padding: 6px 12px;
+      border-radius: 8px;
     }
 
     .correct-selector {
       display: flex;
-      gap: 8px;
+      gap: 10px;
       align-items: center;
       margin-top: 6px;
-      font-size: 0.85rem;
+      font-size: 0.88rem;
       color: var(--text-muted);
     }
 
     .choice-btn {
-      padding: 5px 12px;
+      padding: 6px 14px;
       border-radius: 8px;
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       border: 1px solid var(--card-border);
       background: #1a1e2e;
       color: #fff;
       cursor: pointer;
+      transition: all 0.2s;
     }
 
     .choice-btn.selected-yes {
@@ -288,7 +293,7 @@
       width: 100%;
       border-collapse: collapse;
       margin-top: 10px;
-      font-size: 0.88rem;
+      font-size: 0.9rem;
     }
 
     .leaderboard-table th, .leaderboard-table td {
@@ -305,7 +310,7 @@
       font-weight: bold;
       color: #fbbf24;
       background: rgba(251, 191, 36, 0.15);
-      padding: 2px 8px;
+      padding: 3px 10px;
       border-radius: 6px;
     }
 
@@ -369,7 +374,7 @@
 
   <!-- Admin Login Modal -->
   <div id="loginModal" class="modal-backdrop hidden">
-    <div class="modal-card" style="max-width: 400px;">
+    <div class="modal-card" style="max-width: 380px;">
       <h3 style="margin-bottom: 16px; text-align: center;">כניסת מנהל</h3>
       <div class="input-group">
         <input type="password" id="adminPassword" placeholder="הזן סיסמת ניהול...">
@@ -405,7 +410,7 @@
           </tr>
         </thead>
         <tbody id="leaderboardBody">
-          <tr><td colspan="3" style="text-align: center; color: var(--text-muted);">טוען ציונים...</td></tr>
+          <tr><td colspan="3" style="text-align: center; color: var(--text-muted);">המתן לטעינת נתונים...</td></tr>
         </tbody>
       </table>
     </div>
@@ -428,7 +433,6 @@
       "פעם יאיר הצליח לשכנע את ההורים שהוא יודע לבשל."
     ];
 
-    // תשובות נכונות שהמנהל מגדיר (נשמר מקומית בדפדפן המנהל)
     let correctAnswers = JSON.parse(localStorage.getItem("yair_correct_answers") || "{}");
     let allParticipantsData = [];
 
@@ -482,7 +486,7 @@
           body: JSON.stringify({ name: participantName, answers: userAnswers })
         });
       } catch (err) {
-        console.error(err);
+        console.error("Error saving vote:", err);
       }
     }
 
@@ -493,7 +497,7 @@
       document.getElementById("thankYouScreen").classList.remove("hidden");
     }
 
-    // כניסה סודית
+    // ניהול סודי
     let clickCount = 0;
     let clickTimer;
     document.getElementById("logoTitle").addEventListener("click", () => {
@@ -534,16 +538,29 @@
       document.getElementById("dashboardModal").classList.add("hidden");
     }
 
-    async function loadAdminData() {
+    // טעינת נתונים עוקפת CORS בשיטת JSONP
+    function loadAdminData() {
       const container = document.getElementById("questionsSummaryList");
       container.innerHTML = "טוען הצבעות מ-Google Sheets...";
-      try {
-        const res = await fetch(GOOGLE_SCRIPT_URL);
-        allParticipantsData = await res.json();
+
+      const callbackName = "handleSheetData_" + Date.now();
+      
+      const timeoutTimer = setTimeout(() => {
+        container.innerHTML = "שגיאה בטעינת הנתונים. ודא ששמרת New version ב-Apps Script.";
+        delete window[callbackName];
+      }, 10000);
+
+      window[callbackName] = function(data) {
+        clearTimeout(timeoutTimer);
+        allParticipantsData = data || [];
         renderAdminDashboard();
-      } catch (err) {
-        container.innerHTML = "שגיאה בטעינת הנתונים מהענן. ודא שעדכנת את גרסת ה-Apps Script ל-New version.";
-      }
+        delete window[callbackName];
+        if (scriptTag.parentNode) scriptTag.parentNode.removeChild(scriptTag);
+      };
+
+      const scriptTag = document.createElement("script");
+      scriptTag.src = `${GOOGLE_SCRIPT_URL}?callback=${callbackName}&t=${Date.now()}`;
+      document.body.appendChild(scriptTag);
     }
 
     function setCorrectAnswer(qIndex, val) {
@@ -582,7 +599,7 @@
             <span style="color: #fb7185;">לא יאיר: <b>${noVotes}</b> הצבעות</span>
           </div>
           <div class="correct-selector">
-            <span>קבע את התשובה הנכונה:</span>
+            <span>קבע תשובה נכונה:</span>
             <button class="choice-btn ${correct === 'יאיר' ? 'selected-yes' : ''}" onclick="setCorrectAnswer(${idx}, 'יאיר')">✓ יאיר</button>
             <button class="choice-btn ${correct === 'לא יאיר' ? 'selected-no' : ''}" onclick="setCorrectAnswer(${idx}, 'לא יאיר')">✗ לא יאיר</button>
           </div>
@@ -590,7 +607,7 @@
         container.appendChild(card);
       });
 
-      // חישוב ציונים ולוח מנצחים
+      // חישוב ציונים לכל משתתף
       const tbody = document.getElementById("leaderboardBody");
       tbody.innerHTML = "";
 
@@ -618,7 +635,6 @@
         };
       });
 
-      // מיון מבעלי הציון הגבוה לנמוך
       scoredList.sort((a, b) => b.score - a.score);
 
       scoredList.forEach(item => {
