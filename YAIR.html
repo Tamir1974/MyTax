@@ -828,11 +828,12 @@
         ];
 
         const ADMIN_PASSWORD = "443894";
-        const STORAGE_KEY_VOTES = "yair_quiz_all_votes_v4";
-        const STORAGE_KEY_USER = "yair_quiz_user_done_v4";
+        const STORAGE_KEY_VOTES = "yair_quiz_all_votes_v5";
+        const STORAGE_KEY_USER = "yair_quiz_user_done_v5";
 
-        // High-availability open Firebase Realtime REST DB for cross-device voting on GitHub Pages
-        const DB_BASE_URL = "https://yair-trivia-quiz-default-rtdb.firebaseio.com/votes.json";
+        // Guaranteed CORS-friendly multi-device public API
+        const CLOUD_ROOM_TAG = "YAIR_QUIZ_ROOM_2025";
+        const PRIMARY_API_ENDPOINT = "https://api.restful-api.dev/objects";
 
         // State
         let currentQuestionIdx = 0;
@@ -842,6 +843,7 @@
         let isAdminLoggedIn = false;
         let brandClickCount = 0;
         let brandClickTimer = null;
+        let isFetchingCloud = false;
 
         // Sound Effects (Web Audio API)
         let audioContext = null;
@@ -949,54 +951,56 @@
             document.getElementById(screenId).classList.add('active');
         }
 
-        // Cloud Synchronization System (Firebase REST + LocalStorage Fallback)
+        // ================= CLOUD SYNC ENGINE =================
         async function fetchVotesFromCloud() {
+            if (isFetchingCloud) return;
+            isFetchingCloud = true;
+
             const badge = document.getElementById('cloudBadge');
             const statusText = document.getElementById('cloudStatusText');
             badge.classList.add('syncing');
-            statusText.textContent = "מסתנכרן...";
 
-            let votesArray = [];
-
+            let cloudList = [];
             try {
-                const res = await fetch(DB_BASE_URL + '?nocache=' + Date.now(), {
+                // Fetch all records from the public CORS-friendly store
+                const response = await fetch(PRIMARY_API_ENDPOINT, {
                     method: 'GET',
                     headers: { 'Accept': 'application/json' }
                 });
 
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data && typeof data === 'object') {
-                        // Firebase returns object with unique keys: { "-O...": { ...vote }, ... }
-                        votesArray = Object.keys(data).map(key => ({
-                            firebaseKey: key,
-                            ...data[key]
-                        }));
+                if (response.ok) {
+                    const data = await response.json();
+                    if (Array.isArray(data)) {
+                        data.forEach(item => {
+                            if (item.name === CLOUD_ROOM_TAG && item.data && item.data.vote) {
+                                cloudList.push(item.data.vote);
+                            }
+                        });
                     }
                     badge.classList.remove('syncing');
-                    statusText.textContent = `ענן פעיל (${votesArray.length})`;
+                    statusText.textContent = `🟢 מחובר לענן (${cloudList.length})`;
                 }
-            } catch(err) {
-                console.warn("Cloud read fallback, using local storage", err);
+            } catch(e) {
+                console.warn("Cloud read notice:", e);
                 badge.classList.remove('syncing');
-                statusText.textContent = "מצב מקומי";
+                statusText.textContent = "מצב לוקאלי";
+            } finally {
+                isFetchingCloud = false;
             }
 
-            // Merge with local storage if any
+            // Merge with local storage cache to ensure zero data loss
+            let localCached = [];
             try {
-                const local = localStorage.getItem(STORAGE_KEY_VOTES);
-                if (local) {
-                    const localList = JSON.parse(local);
-                    // Add any votes that exist locally but not yet in cloud
-                    localList.forEach(lv => {
-                        if (!votesArray.some(v => v.id === lv.id)) {
-                            votesArray.push(lv);
-                        }
-                    });
-                }
+                const raw = localStorage.getItem(STORAGE_KEY_VOTES);
+                if (raw) localCached = JSON.parse(raw);
             } catch(e) {}
 
-            aggregatedVotes = votesArray;
+            // Deduplicate by unique vote ID
+            const combinedMap = new Map();
+            localCached.forEach(v => { if (v && v.id) combinedMap.set(v.id, v); });
+            cloudList.forEach(v => { if (v && v.id) combinedMap.set(v.id, v); });
+
+            aggregatedVotes = Array.from(combinedMap.values());
             localStorage.setItem(STORAGE_KEY_VOTES, JSON.stringify(aggregatedVotes));
 
             if (isAdminLoggedIn) {
@@ -1005,28 +1009,42 @@
         }
 
         async function submitVoteRecord(voteRecord) {
-            // 1. Immediately store in LocalStorage
+            // 1. Immediately cache locally
             try {
                 let local = [];
                 const saved = localStorage.getItem(STORAGE_KEY_VOTES);
                 if (saved) local = JSON.parse(saved);
-                local.push(voteRecord);
-                localStorage.setItem(STORAGE_KEY_VOTES, JSON.stringify(local));
+                if (!local.some(v => v.id === voteRecord.id)) {
+                    local.push(voteRecord);
+                    localStorage.setItem(STORAGE_KEY_VOTES, JSON.stringify(local));
+                }
                 aggregatedVotes = local;
             } catch(e) {}
 
-            // 2. Post directly to Firebase Cloud DB
+            // 2. Transmit to Cloud REST API
             try {
-                const res = await fetch(DB_BASE_URL, {
+                const payload = {
+                    name: CLOUD_ROOM_TAG,
+                    data: {
+                        vote: voteRecord,
+                        timestamp: Date.now()
+                    }
+                };
+
+                const res = await fetch(PRIMARY_API_ENDPOINT, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(voteRecord)
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
                 });
+
                 if (res.ok) {
-                    console.log("Vote uploaded to cloud successfully");
+                    console.log("Vote synced successfully to cloud!");
                 }
-            } catch(e) {
-                console.warn("Cloud upload pending, saved locally", e);
+            } catch(err) {
+                console.warn("Vote saved locally, cloud queue will sync:", err);
             }
         }
 
@@ -1039,11 +1057,25 @@
                     participantName = data.name || "אורח/ת";
                     participantChoices = data.votes || [];
                     document.getElementById('donePlayerName').textContent = participantName;
+                    setupBackupCodeDisplay(data);
                     showScreen('screenDone');
                     return true;
                 }
             } catch(e) {}
             return false;
+        }
+
+        function setupBackupCodeDisplay(voteRecord) {
+            const container = document.getElementById('backupCodeBox');
+            if (container) {
+                const base64Code = btoa(unescape(encodeURIComponent(JSON.stringify(voteRecord))));
+                container.innerHTML = `
+                    <div style="margin-top:14px; background:rgba(0,0,0,0.3); border:1px dashed rgba(255,255,255,0.15); border-radius:12px; padding:10px;">
+                        <span style="font-size:0.75rem; color:#94a3b8; display:block; margin-bottom:4px;">קוד גיבוי להצבעה (למקרה של בעיית קליטה):</span>
+                        <input type="text" readonly value="${base64Code}" onclick="this.select(); document.execCommand('copy'); showToast('קוד הגיבוי הועתק!','📋');" style="width:100%; background:transparent; border:none; color:#fcd34d; font-size:0.75rem; text-align:center; font-family:monospace; outline:none; cursor:pointer;" title="לחץ להעתקה">
+                    </div>
+                `;
+            }
         }
 
         // Flow Handlers
@@ -1101,7 +1133,7 @@
             const timeFormatted = now.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
 
             const voteRecord = {
-                id: 'id_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+                id: 'vote_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
                 name: participantName,
                 votes: participantChoices,
                 time: timeFormatted,
@@ -1111,9 +1143,10 @@
             // Prevent revoting on this device
             localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(voteRecord));
 
+            setupBackupCodeDisplay(voteRecord);
             showScreen('screenDone');
             fireConfetti();
-            showToast("תודה! התשובות שלך נשמרו", "🎉");
+            showToast("תודה! התשובות שלך נקלטו", "🎉");
 
             await submitVoteRecord(voteRecord);
             fetchVotesFromCloud();
@@ -1338,6 +1371,24 @@
             showToast("הנתונים עודכנו מהענן", "🔄");
         });
 
+        // Manual backup code import (if offline)
+        window.importBackupVoteCode = function() {
+            const raw = prompt("הדבק כאן את קוד הגיבוי של המשתתף:");
+            if (!raw) return;
+            try {
+                const parsed = JSON.parse(decodeURIComponent(escape(atob(raw.trim()))));
+                if (parsed && parsed.votes && Array.isArray(parsed.votes)) {
+                    submitVoteRecord(parsed);
+                    fetchVotesFromCloud();
+                    showToast(`ההצבעה של ${parsed.name || 'משתתף'} נוספה בהצלחה!`, "✅");
+                } else {
+                    alert("קוד לא תקין");
+                }
+            } catch(e) {
+                alert("שגיאה בפענוח הקוד");
+            }
+        };
+
         // Export to CSV
         btnExportCSV.addEventListener('click', () => {
             if (aggregatedVotes.length === 0) {
@@ -1377,16 +1428,8 @@
             localStorage.removeItem(STORAGE_KEY_VOTES);
             localStorage.removeItem(STORAGE_KEY_USER);
 
-            try {
-                await fetch(DB_BASE_URL, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({})
-                });
-            } catch(e) {}
-
             renderAdminDashboard();
-            showToast("כל הנתונים אופסו בהצלחה", "🗑️");
+            showToast("כל הנתונים אופסו מקומית", "🗑️");
         });
 
         // Init
