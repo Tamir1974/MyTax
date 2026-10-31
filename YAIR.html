@@ -14,7 +14,7 @@
       --primary: #6366f1;
       --accent-yes: #10b981;
       --accent-no: #f43f5e;
-      --radius: 20px;
+      --radius: 18px;
     }
 
     * {
@@ -33,19 +33,18 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 20px;
-      overflow-x: hidden;
+      padding: 16px;
     }
 
     .container {
       width: 100%;
-      max-width: 500px;
+      max-width: 520px;
       position: relative;
     }
 
     header {
       text-align: center;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
       cursor: pointer;
       user-select: none;
     }
@@ -68,19 +67,16 @@
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: var(--radius);
-      padding: 30px 24px;
+      padding: 26px 20px;
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-      backdrop-filter: blur(10px);
-      transition: all 0.3s ease;
     }
 
     .hidden {
       display: none !important;
     }
 
-    /* Start Screen */
     .input-group {
-      margin-bottom: 20px;
+      margin-bottom: 18px;
       text-align: right;
     }
 
@@ -100,44 +96,37 @@
       color: #fff;
       font-size: 1.1rem;
       outline: none;
-      transition: border-color 0.2s;
       text-align: right;
-    }
-
-    .input-group input:focus {
-      border-color: var(--primary);
     }
 
     .btn {
       display: block;
       width: 100%;
-      padding: 16px;
+      padding: 15px;
       border: none;
       border-radius: 14px;
-      font-size: 1.15rem;
+      font-size: 1.1rem;
       font-weight: 700;
       cursor: pointer;
-      transition: all 0.2s;
       text-align: center;
+      transition: all 0.2s;
     }
 
     .btn-primary {
       background: linear-gradient(135deg, #6366f1, #4f46e5);
       color: #fff;
-      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
     }
 
     .btn-primary:active {
       transform: scale(0.98);
     }
 
-    /* Quiz Screen */
     .progress-bar {
       width: 100%;
       height: 8px;
       background: #111422;
       border-radius: 999px;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
       overflow: hidden;
     }
 
@@ -160,11 +149,11 @@
     }
 
     .question-text {
-      font-size: 1.35rem;
+      font-size: 1.3rem;
       font-weight: 700;
       line-height: 1.5;
-      margin-bottom: 30px;
-      min-height: 85px;
+      margin-bottom: 26px;
+      min-height: 80px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -180,7 +169,7 @@
     .btn-vote {
       padding: 20px 10px;
       border-radius: 16px;
-      font-size: 1.15rem;
+      font-size: 1.1rem;
       font-weight: 800;
       border: 2px solid transparent;
       display: flex;
@@ -188,11 +177,10 @@
       align-items: center;
       gap: 8px;
       cursor: pointer;
-      transition: transform 0.15s ease, background 0.2s;
     }
 
     .btn-vote:active {
-      transform: scale(0.94);
+      transform: scale(0.95);
     }
 
     .btn-yes {
@@ -207,36 +195,6 @@
       color: #fb7185;
     }
 
-    /* Thank You Screen */
-    .thank-you-wrap {
-      text-align: center;
-      padding: 20px 0;
-    }
-
-    .icon-done {
-      width: 80px;
-      height: 80px;
-      background: rgba(16, 185, 129, 0.2);
-      color: #34d399;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2.5rem;
-      border-radius: 50%;
-      margin: 0 auto 20px auto;
-    }
-
-    .sync-status {
-      font-size: 0.9rem;
-      color: #34d399;
-      background: rgba(16, 185, 129, 0.1);
-      padding: 8px 16px;
-      border-radius: 999px;
-      display: inline-block;
-      margin-top: 15px;
-    }
-
-    /* Modal / Admin */
     .modal-backdrop {
       position: fixed;
       inset: 0;
@@ -253,28 +211,116 @@
       border: 1px solid var(--card-border);
       border-radius: var(--radius);
       width: 100%;
-      max-width: 480px;
-      padding: 24px;
+      max-width: 600px;
+      padding: 22px;
       max-height: 90vh;
       overflow-y: auto;
     }
 
-    footer {
-      text-align: center;
-      margin-top: 30px;
-      font-size: 0.8rem;
-      color: #4b5563;
+    /* Admin Styles */
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--card-border);
     }
 
-    footer span {
+    .q-summary-card {
+      background: #111422;
+      border: 1px solid #23283c;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 12px;
+      text-align: right;
+    }
+
+    .q-summary-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #e2e8f0;
+    }
+
+    .q-stats-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 0.85rem;
+    }
+
+    .correct-selector {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-top: 6px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .choice-btn {
+      padding: 5px 12px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      border: 1px solid var(--card-border);
+      background: #1a1e2e;
+      color: #fff;
       cursor: pointer;
+    }
+
+    .choice-btn.selected-yes {
+      background: var(--accent-yes);
+      border-color: var(--accent-yes);
+      color: #000;
+      font-weight: bold;
+    }
+
+    .choice-btn.selected-no {
+      background: var(--accent-no);
+      border-color: var(--accent-no);
+      color: #fff;
+      font-weight: bold;
+    }
+
+    .leaderboard-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 0.88rem;
+    }
+
+    .leaderboard-table th, .leaderboard-table td {
+      padding: 10px;
+      text-align: right;
+      border-bottom: 1px solid #23283c;
+    }
+
+    .leaderboard-table th {
+      color: var(--text-muted);
+    }
+
+    .score-badge {
+      font-weight: bold;
+      color: #fbbf24;
+      background: rgba(251, 191, 36, 0.15);
+      padding: 2px 8px;
+      border-radius: 6px;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 24px;
+      font-size: 0.85rem;
+      color: #4b5563;
     }
   </style>
 </head>
 <body>
 
   <div class="container">
-    <header id="mainHeader" title="הצבעה ליאיר">
+    <header id="mainHeader">
       <h1 id="logoTitle">🎯 יאיר או לא יאיר?</h1>
       <p>שאלון ההיכרות הרשמי</p>
     </header>
@@ -288,7 +334,7 @@
       <button class="btn btn-primary" onclick="startQuiz()">בואו נתחיל להצביע! 🚀</button>
     </div>
 
-    <!-- Question View -->
+    <!-- Quiz Screen -->
     <div id="quizScreen" class="card hidden">
       <div class="progress-bar">
         <div id="progressFill" class="progress-fill"></div>
@@ -309,34 +355,63 @@
     </div>
 
     <!-- Thank You View -->
-    <div id="thankYouScreen" class="card hidden">
-      <div class="thank-you-wrap">
-        <div class="icon-done">✨</div>
-        <h2 id="thankYouTitle" style="font-size: 1.7rem; margin-bottom: 10px;">תודה שהצבעת!</h2>
-        <p style="color: var(--text-muted); line-height: 1.6;">התשובות שלך נקלטו בהצלחה בגיליון התוצאות.<br>התוצאות המלאות יוצגו על המסך בסוף האירוע!</p>
-        <div class="sync-status">🟢 נשמר ישירות בגיליון YAIRDB</div>
-      </div>
+    <div id="thankYouScreen" class="card hidden" style="text-align: center; padding: 30px 20px;">
+      <div style="font-size: 3rem; margin-bottom: 10px;">✨</div>
+      <h2 id="thankYouTitle" style="font-size: 1.6rem; margin-bottom: 10px;">תודה שהצבעת!</h2>
+      <p style="color: var(--text-muted); line-height: 1.6;">התשובות שלך נקלטו בהצלחה בגיליון התוצאות.<br>התוצאות והמנצחים יוצגו בסוף האירוע!</p>
+      <div style="margin-top: 15px; font-size: 0.85rem; color: #34d399;">🟢 נשמר בגיליון YAIRDB</div>
     </div>
 
     <footer>
-      <span onclick="triggerAdminLogin()">🔒</span>
+      <span onclick="triggerAdminLogin()" style="cursor: pointer;">🔒</span>
     </footer>
   </div>
 
   <!-- Admin Login Modal -->
-  <div id="adminModal" class="modal-backdrop hidden">
-    <div class="modal-card">
-      <h3 style="margin-bottom: 16px; text-align: center;">כניסת מנהל בלבד</h3>
+  <div id="loginModal" class="modal-backdrop hidden">
+    <div class="modal-card" style="max-width: 400px;">
+      <h3 style="margin-bottom: 16px; text-align: center;">כניסת מנהל</h3>
       <div class="input-group">
         <input type="password" id="adminPassword" placeholder="הזן סיסמת ניהול...">
       </div>
-      <button class="btn btn-primary" onclick="verifyAdminPassword()" style="margin-bottom: 10px;">כניסה לגיליון</button>
-      <button class="btn" onclick="closeAdminModal()" style="background: transparent; color: var(--text-muted);">ביטול</button>
+      <button class="btn btn-primary" onclick="verifyAdminPassword()" style="margin-bottom: 10px;">כניסה</button>
+      <button class="btn" onclick="closeLoginModal()" style="background: transparent; color: var(--text-muted);">ביטול</button>
+    </div>
+  </div>
+
+  <!-- Admin Dashboard Modal -->
+  <div id="dashboardModal" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="admin-header">
+        <h3 style="font-size: 1.25rem;">📊 סיכום תשובות ותוצאות</h3>
+        <button onclick="closeDashboard()" style="background: none; border: none; color: #fff; font-size: 1.4rem; cursor: pointer;">✕</button>
+      </div>
+
+      <div style="display: flex; gap: 10px; margin-bottom: 16px;">
+        <button class="btn btn-primary" onclick="loadAdminData()" style="padding: 10px; font-size: 0.95rem;">🔄 רענן נתונים</button>
+        <button class="btn" onclick="window.open(SHEET_VIEW_URL, '_blank')" style="padding: 10px; font-size: 0.95rem; background: #22c55e; color: #000; font-weight: bold;">📄 פתח גיליון Google Sheets</button>
+      </div>
+
+      <h4 style="margin: 18px 0 10px 0; color: #818cf8;">1. הגדרת תשובות נכונות וסיכום הצבעות:</h4>
+      <div id="questionsSummaryList">טוען נתונים...</div>
+
+      <h4 style="margin: 22px 0 10px 0; color: #fbbf24;">2. לוח תוצאות וציוני משתתפים:</h4>
+      <table class="leaderboard-table">
+        <thead>
+          <tr>
+            <th>שם משתתף</th>
+            <th>ציון נכון</th>
+            <th>אחוז הצלחה</th>
+          </tr>
+        </thead>
+        <tbody id="leaderboardBody">
+          <tr><td colspan="3" style="text-align: center; color: var(--text-muted);">טוען ציונים...</td></tr>
+        </tbody>
+      </table>
     </div>
   </div>
 
   <script>
-    // הקישור הישיר ל-Google Apps Script המחובר ל-YAIRDB
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzf8U8iJNIRQpVMdd3gBXbLi5TDKzf-Sdih5DohmCIZGvwDtIcIsMIa8GGzTYtaWmMA/exec";
     const SHEET_VIEW_URL = "https://docs.google.com/spreadsheets/d/1mJoE14Vh-m5XSIsFLMFqJYSfPXiCakbtfn8NIjlxzHA/edit?gid=0#gid=0";
 
@@ -353,11 +428,14 @@
       "פעם יאיר הצליח לשכנע את ההורים שהוא יודע לבשל."
     ];
 
+    // תשובות נכונות שהמנהל מגדיר (נשמר מקומית בדפדפן המנהל)
+    let correctAnswers = JSON.parse(localStorage.getItem("yair_correct_answers") || "{}");
+    let allParticipantsData = [];
+
     let currentQuestionIndex = 0;
     let participantName = "";
     let userAnswers = [];
 
-    // בדיקה האם כבר הצביע במכשיר זה
     window.addEventListener("DOMContentLoaded", () => {
       if (localStorage.getItem("hasVoted_Yair")) {
         showThankYou(localStorage.getItem("votedName") || "");
@@ -373,21 +451,18 @@
     }
 
     function renderQuestion() {
-      const q = questions[currentQuestionIndex];
-      document.getElementById("questionText").innerText = q;
+      document.getElementById("questionText").innerText = questions[currentQuestionIndex];
       document.getElementById("questionCounter").innerText = `שאלה ${currentQuestionIndex + 1} מתוך ${questions.length}`;
-      const progress = ((currentQuestionIndex) / questions.length) * 100;
-      document.getElementById("progressFill").style.width = `${progress}%`;
+      document.getElementById("progressFill").style.width = `${(currentQuestionIndex / questions.length) * 100}%`;
     }
 
-    function submitAnswer(answer) {
-      userAnswers.push(answer);
+    function submitAnswer(ans) {
+      userAnswers.push(ans);
       currentQuestionIndex++;
-
       if (currentQuestionIndex < questions.length) {
         renderQuestion();
       } else {
-        document.getElementById("progressFill").style.width = `100%`;
+        document.getElementById("progressFill").style.width = "100%";
         finishAndSave();
       }
     }
@@ -399,32 +474,26 @@
       localStorage.setItem("hasVoted_Yair", "true");
       localStorage.setItem("votedName", participantName);
 
-      // שליחה מאובטחת לענן ללא חסימת CORS
       try {
         await fetch(GOOGLE_SCRIPT_URL, {
           method: "POST",
           mode: "no-cors",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name: participantName,
-            answers: userAnswers
-          })
+          body: JSON.stringify({ name: participantName, answers: userAnswers })
         });
       } catch (err) {
-        console.error("שגיאה בשמירת התשובות:", err);
+        console.error(err);
       }
     }
 
     function showThankYou(name) {
       document.getElementById("startScreen").classList.add("hidden");
       document.getElementById("quizScreen").classList.add("hidden");
-      if (name) {
-        document.getElementById("thankYouTitle").innerText = `תודה שהצבעת, ${name}! 🎉`;
-      }
+      if (name) document.getElementById("thankYouTitle").innerText = `תודה שהצבעת, ${name}! 🎉`;
       document.getElementById("thankYouScreen").classList.remove("hidden");
     }
 
-    // ניהול סודי
+    // כניסה סודית
     let clickCount = 0;
     let clickTimer;
     document.getElementById("logoTitle").addEventListener("click", () => {
@@ -438,24 +507,129 @@
     });
 
     function triggerAdminLogin() {
-      document.getElementById("adminModal").classList.remove("hidden");
+      document.getElementById("loginModal").classList.remove("hidden");
       document.getElementById("adminPassword").focus();
     }
 
-    function closeAdminModal() {
-      document.getElementById("adminModal").classList.add("hidden");
+    function closeLoginModal() {
+      document.getElementById("loginModal").classList.add("hidden");
       document.getElementById("adminPassword").value = "";
     }
 
     function verifyAdminPassword() {
-      const pass = document.getElementById("adminPassword").value.trim();
-      if (pass === "443894") {
-        // מעבר ישיר לגיליון התוצאות החי
-        window.open(SHEET_VIEW_URL, "_blank");
-        closeAdminModal();
+      if (document.getElementById("adminPassword").value.trim() === "443894") {
+        closeLoginModal();
+        openDashboard();
       } else {
-        alert("קוד שגוי! נסה שוב.");
+        alert("סיסמה שגויה!");
       }
+    }
+
+    function openDashboard() {
+      document.getElementById("dashboardModal").classList.remove("hidden");
+      loadAdminData();
+    }
+
+    function closeDashboard() {
+      document.getElementById("dashboardModal").classList.add("hidden");
+    }
+
+    async function loadAdminData() {
+      const container = document.getElementById("questionsSummaryList");
+      container.innerHTML = "טוען הצבעות מ-Google Sheets...";
+      try {
+        const res = await fetch(GOOGLE_SCRIPT_URL);
+        allParticipantsData = await res.json();
+        renderAdminDashboard();
+      } catch (err) {
+        container.innerHTML = "שגיאה בטעינת הנתונים מהענן. ודא שעדכנת את גרסת ה-Apps Script ל-New version.";
+      }
+    }
+
+    function setCorrectAnswer(qIndex, val) {
+      if (correctAnswers[qIndex] === val) {
+        delete correctAnswers[qIndex];
+      } else {
+        correctAnswers[qIndex] = val;
+      }
+      localStorage.setItem("yair_correct_answers", JSON.stringify(correctAnswers));
+      renderAdminDashboard();
+    }
+
+    function renderAdminDashboard() {
+      const container = document.getElementById("questionsSummaryList");
+      container.innerHTML = "";
+
+      const totalParticipants = allParticipantsData.length;
+
+      questions.forEach((q, idx) => {
+        let yesVotes = 0;
+        let noVotes = 0;
+
+        allParticipantsData.forEach(p => {
+          if (p.answers && p.answers[idx] === "יאיר") yesVotes++;
+          if (p.answers && p.answers[idx] === "לא יאיר") noVotes++;
+        });
+
+        const correct = correctAnswers[idx];
+
+        const card = document.createElement("div");
+        card.className = "q-summary-card";
+        card.innerHTML = `
+          <div class="q-summary-title">${idx + 1}. ${q}</div>
+          <div class="q-stats-row">
+            <span style="color: #34d399;">יאיר לגמרי: <b>${yesVotes}</b> הצבעות</span>
+            <span style="color: #fb7185;">לא יאיר: <b>${noVotes}</b> הצבעות</span>
+          </div>
+          <div class="correct-selector">
+            <span>קבע את התשובה הנכונה:</span>
+            <button class="choice-btn ${correct === 'יאיר' ? 'selected-yes' : ''}" onclick="setCorrectAnswer(${idx}, 'יאיר')">✓ יאיר</button>
+            <button class="choice-btn ${correct === 'לא יאיר' ? 'selected-no' : ''}" onclick="setCorrectAnswer(${idx}, 'לא יאיר')">✗ לא יאיר</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+
+      // חישוב ציונים ולוח מנצחים
+      const tbody = document.getElementById("leaderboardBody");
+      tbody.innerHTML = "";
+
+      if (totalParticipants === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--text-muted);">אין עדיין הצבעות בגיליון.</td></tr>`;
+        return;
+      }
+
+      const scoredList = allParticipantsData.map(p => {
+        let score = 0;
+        let evaluatedCount = 0;
+        questions.forEach((_, idx) => {
+          if (correctAnswers[idx]) {
+            evaluatedCount++;
+            if (p.answers && p.answers[idx] === correctAnswers[idx]) {
+              score++;
+            }
+          }
+        });
+        return {
+          name: p.name,
+          score: score,
+          evaluatedCount: evaluatedCount,
+          percent: evaluatedCount > 0 ? Math.round((score / evaluatedCount) * 100) : 0
+        };
+      });
+
+      // מיון מבעלי הציון הגבוה לנמוך
+      scoredList.sort((a, b) => b.score - a.score);
+
+      scoredList.forEach(item => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td><b>${item.name}</b></td>
+          <td><span class="score-badge">${item.score} / ${item.evaluatedCount || questions.length}</span></td>
+          <td>${item.percent}%</td>
+        `;
+        tbody.appendChild(tr);
+      });
     }
   </script>
 </body>
