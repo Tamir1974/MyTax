@@ -119,87 +119,111 @@
                 </p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-4xl mx-auto">
                 <!-- Mode 1 Card -->
-                <button onclick="startPractice(1)" class="group relative bg-white p-7 rounded-3xl shadow-lg hover:shadow-2xl border-2 border-indigo-100 hover:border-indigo-400 text-right transition-all transform hover:-translate-y-1 duration-200 flex flex-col justify-between overflow-hidden">
-                    <div class="absolute -left-6 -bottom-6 w-28 h-28 bg-indigo-50 rounded-full group-hover:scale-125 transition duration-300 pointer-events-none"></div>
+                <button onclick="startPractice(1)" class="group relative bg-white p-6 rounded-3xl shadow-lg hover:shadow-2xl border-2 border-indigo-100 hover:border-indigo-400 text-right transition-all transform hover:-translate-y-1 duration-200 flex flex-col justify-between overflow-hidden">
+                    <div class="absolute -left-6 -bottom-6 w-24 h-24 bg-indigo-50 rounded-full group-hover:scale-125 transition duration-300 pointer-events-none"></div>
                     <div>
-                        <div class="w-16 h-16 rounded-2xl bg-indigo-500/10 text-indigo-600 flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition">
+                        <div class="w-14 h-14 rounded-2xl bg-indigo-500/10 text-indigo-600 flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition">
                             🎧
                         </div>
                         <div class="inline-block text-xs font-bold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-md mb-2">מצב 1: בחירה מרובה</div>
-                        <h3 class="text-xl font-black text-slate-800 mb-2 group-hover:text-indigo-600 transition">
+                        <h3 class="text-lg font-black text-slate-800 mb-2 group-hover:text-indigo-600 transition">
                             האזן באנגלית ובחר בעברית
                         </h3>
-                        <p class="text-sm text-slate-500 leading-relaxed">
-                            שומעים וקוראים את המילה המדוברת באנגלית ובוחרים את התרגום המדויק מתוך 4 אפשרויות.
+                        <p class="text-xs text-slate-500 leading-relaxed">
+                            שומעים וקוראים את המילה החדשה באנגלית ובוחרים את התרגום המדויק מתוך 4 אפשרויות.
                         </p>
                     </div>
-                    <div class="mt-6 flex items-center justify-between text-indigo-600 font-bold text-sm">
+                    <div class="mt-5 flex items-center justify-between text-indigo-600 font-bold text-sm">
                         <span>התחל אימון</span>
                         <span class="text-xl group-hover:-translate-x-1 transition">←</span>
                     </div>
                 </button>
 
                 <!-- Mode 2 Card -->
-                <button onclick="startPractice(2)" class="group relative bg-white p-7 rounded-3xl shadow-lg hover:shadow-2xl border-2 border-purple-100 hover:border-purple-400 text-right transition-all transform hover:-translate-y-1 duration-200 flex flex-col justify-between overflow-hidden">
-                    <div class="absolute -left-6 -bottom-6 w-28 h-28 bg-purple-50 rounded-full group-hover:scale-125 transition duration-300 pointer-events-none"></div>
+                <button onclick="startPractice(2)" class="group relative bg-white p-6 rounded-3xl shadow-lg hover:shadow-2xl border-2 border-purple-100 hover:border-purple-400 text-right transition-all transform hover:-translate-y-1 duration-200 flex flex-col justify-between overflow-hidden">
+                    <div class="absolute -left-6 -bottom-6 w-24 h-24 bg-purple-50 rounded-full group-hover:scale-125 transition duration-300 pointer-events-none"></div>
                     <div>
-                        <div class="w-16 h-16 rounded-2xl bg-purple-500/10 text-purple-600 flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition">
+                        <div class="w-14 h-14 rounded-2xl bg-purple-500/10 text-purple-600 flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition">
                             🗣️
                         </div>
                         <div class="inline-block text-xs font-bold text-purple-600 bg-purple-50 px-2.5 py-1 rounded-md mb-2">מצב 2: בחירה באנגלית</div>
-                        <h3 class="text-xl font-black text-slate-800 mb-2 group-hover:text-purple-600 transition">
+                        <h3 class="text-lg font-black text-slate-800 mb-2 group-hover:text-purple-600 transition">
                             האזן בעברית ובחר באנגלית
                         </h3>
-                        <p class="text-sm text-slate-500 leading-relaxed">
-                            רואים ושומעים את המילה בעברית, ובוחרים מתוך 4 מילים באנגלית עם השמעה קולית של כל בחירה.
+                        <p class="text-xs text-slate-500 leading-relaxed">
+                            רואים ושומעים את המילה בעברית, ובוחרים מתוך 4 מילים באנגלית עם השמעה קולית לכל אפשרות.
                         </p>
                     </div>
-                    <div class="mt-6 flex items-center justify-between text-purple-600 font-bold text-sm">
+                    <div class="mt-5 flex items-center justify-between text-purple-600 font-bold text-sm">
                         <span>התחל אימון</span>
                         <span class="text-xl group-hover:-translate-x-1 transition">←</span>
                     </div>
                 </button>
 
                 <!-- Mode 3 Card: Numbers 1-12 -->
-                <button onclick="startPractice(3)" class="group relative bg-white p-7 rounded-3xl shadow-lg hover:shadow-2xl border-2 border-emerald-100 hover:border-emerald-400 text-right transition-all transform hover:-translate-y-1 duration-200 flex flex-col justify-between overflow-hidden">
-                    <div class="absolute -left-6 -bottom-6 w-28 h-28 bg-emerald-50 rounded-full group-hover:scale-125 transition duration-300 pointer-events-none"></div>
+                <button onclick="startPractice(3)" class="group relative bg-white p-6 rounded-3xl shadow-lg hover:shadow-2xl border-2 border-emerald-100 hover:border-emerald-400 text-right transition-all transform hover:-translate-y-1 duration-200 flex flex-col justify-between overflow-hidden">
+                    <div class="absolute -left-6 -bottom-6 w-24 h-24 bg-emerald-50 rounded-full group-hover:scale-125 transition duration-300 pointer-events-none"></div>
                     <div>
-                        <div class="w-16 h-16 rounded-2xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition">
+                        <div class="w-14 h-14 rounded-2xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition">
                             🔢
                         </div>
                         <div class="inline-block text-xs font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-md mb-2">מצב 3: מספרים עד 12</div>
-                        <h3 class="text-xl font-black text-slate-800 mb-2 group-hover:text-emerald-600 transition">
+                        <h3 class="text-lg font-black text-slate-800 mb-2 group-hover:text-emerald-600 transition">
                             קרא מספר באנגלית והתאם לספרה
                         </h3>
-                        <p class="text-sm text-slate-500 leading-relaxed">
-                            רואים ושומעים את שם המספר באנגלית (למשל Seven) ובוחרים את הספרה הנכונה (1–12).
+                        <p class="text-xs text-slate-500 leading-relaxed">
+                            רואים ושומעים את שם המספר באנגלית (one..twelve) ובוחרים את הספרה הנכונה (1–12).
                         </p>
                     </div>
-                    <div class="mt-6 flex items-center justify-between text-emerald-600 font-bold text-sm">
+                    <div class="mt-5 flex items-center justify-between text-emerald-600 font-bold text-sm">
                         <span>התחל אימון</span>
                         <span class="text-xl group-hover:-translate-x-1 transition">←</span>
                     </div>
                 </button>
 
                 <!-- Mode 4 Card: Colors -->
-                <button onclick="startPractice(4)" class="group relative bg-white p-7 rounded-3xl shadow-lg hover:shadow-2xl border-2 border-amber-100 hover:border-amber-400 text-right transition-all transform hover:-translate-y-1 duration-200 flex flex-col justify-between overflow-hidden">
-                    <div class="absolute -left-6 -bottom-6 w-28 h-28 bg-amber-50 rounded-full group-hover:scale-125 transition duration-300 pointer-events-none"></div>
+                <button onclick="startPractice(4)" class="group relative bg-white p-6 rounded-3xl shadow-lg hover:shadow-2xl border-2 border-amber-100 hover:border-amber-400 text-right transition-all transform hover:-translate-y-1 duration-200 flex flex-col justify-between overflow-hidden">
+                    <div class="absolute -left-6 -bottom-6 w-24 h-24 bg-amber-50 rounded-full group-hover:scale-125 transition duration-300 pointer-events-none"></div>
                     <div>
-                        <div class="w-16 h-16 rounded-2xl bg-amber-500/10 text-amber-600 flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition">
+                        <div class="w-14 h-14 rounded-2xl bg-amber-500/10 text-amber-600 flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition">
                             🎨
                         </div>
                         <div class="inline-block text-xs font-bold text-amber-600 bg-amber-50 px-2.5 py-1 rounded-md mb-2">מצב 4: צבעים</div>
-                        <h3 class="text-xl font-black text-slate-800 mb-2 group-hover:text-amber-600 transition">
+                        <h3 class="text-lg font-black text-slate-800 mb-2 group-hover:text-amber-600 transition">
                             קרא צבע באנגלית והתאם לפירוש
                         </h3>
-                        <p class="text-sm text-slate-500 leading-relaxed">
-                            קוראים ושומעים את שם הצבע (Red, Blue, Green...) ובוחרים את הפירוש והצבע המתאים.
+                        <p class="text-xs text-slate-500 leading-relaxed">
+                            קוראים ושומעים את שם הצבע (Red, Gray...) ובוחרים את הפירוש והצבע המתאים.
                         </p>
                     </div>
-                    <div class="mt-6 flex items-center justify-between text-amber-600 font-bold text-sm">
+                    <div class="mt-5 flex items-center justify-between text-amber-600 font-bold text-sm">
                         <span>התחל אימון</span>
+                        <span class="text-xl group-hover:-translate-x-1 transition">←</span>
+                    </div>
+                </button>
+
+                <!-- Mode 5 Card: Sentence Completion -->
+                <button onclick="startPractice(5)" class="group relative bg-white p-6 rounded-3xl shadow-lg hover:shadow-2xl border-2 border-rose-100 hover:border-rose-400 text-right transition-all transform hover:-translate-y-1 duration-200 flex flex-col justify-between overflow-hidden md:col-span-2 lg:col-span-2">
+                    <div class="absolute -left-6 -bottom-6 w-32 h-32 bg-rose-50 rounded-full group-hover:scale-125 transition duration-300 pointer-events-none"></div>
+                    <div>
+                        <div class="w-14 h-14 rounded-2xl bg-rose-500/10 text-rose-600 flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition">
+                            📝
+                        </div>
+                        <div class="inline-flex items-center gap-1.5 text-xs font-bold text-rose-600 bg-rose-50 px-2.5 py-1 rounded-md mb-2">
+                            <span>מצב 5: השלמת משפטים חדש!</span>
+                            <span class="bg-rose-500 text-white text-[10px] px-1.5 py-0.5 rounded-full">100 משפטים</span>
+                        </div>
+                        <h3 class="text-lg font-black text-slate-800 mb-2 group-hover:text-rose-600 transition">
+                            השלמת משפטים באנגלית מתוך 4 אפשרויות
+                        </h3>
+                        <p class="text-xs text-slate-500 leading-relaxed">
+                            קוראים את המשפט החלקי והתרגום שלו, מאזינים להקראה ובוחרים מתוך 4 אפשרויות את המילה שמשלימה את המשפט בצורה נכונה.
+                        </p>
+                    </div>
+                    <div class="mt-5 flex items-center justify-between text-rose-600 font-bold text-sm">
+                        <span>התחל אימון משפטים</span>
                         <span class="text-xl group-hover:-translate-x-1 transition">←</span>
                     </div>
                 </button>
@@ -286,6 +310,40 @@
 
                     <!-- 4 English Options Grid for Mode 2 -->
                     <div id="mode2OptionsContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-2 w-full">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Mode 5 Prompt UI (Sentence Completion) -->
+                <div id="mode5Header" class="hidden text-center w-full space-y-4">
+                    <span class="text-xs font-extrabold tracking-wider uppercase text-rose-600 bg-rose-50 px-3 py-1 rounded-full border border-rose-100 inline-block">
+                        השלימו את המילה החסרה במשפט
+                    </span>
+
+                    <div class="py-2 flex flex-col items-center space-y-3">
+                        <!-- Sentence card -->
+                        <div class="bg-rose-50/50 border-2 border-rose-100 rounded-3xl p-5 shadow-inner w-full flex flex-col items-center gap-3">
+                            <div class="flex items-center justify-center gap-3 w-full">
+                                <p id="mode5SentenceDisplay" dir="ltr" class="font-english text-2xl sm:text-3xl font-extrabold text-slate-800 tracking-wide text-center leading-relaxed">
+                                    --
+                                </p>
+                                <button onclick="playMode5SentenceAudio()" class="w-11 h-11 p-2 rounded-2xl bg-rose-500 hover:bg-rose-600 text-white shadow-md hover:scale-105 active:scale-95 transition flex-shrink-0 flex items-center justify-center" title="השמע את המשפט באנגלית">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <!-- Hebrew sentence translation/hint -->
+                            <p id="mode5TranslationDisplay" class="text-base sm:text-lg font-bold text-rose-900 bg-white/80 px-4 py-1.5 rounded-xl border border-rose-200">
+                                --
+                            </p>
+                        </div>
+                        <span class="text-xs text-slate-400 font-medium">בחרו את המילה שמשלימה את המשפט בצורה נכונה 🔤</span>
+                    </div>
+
+                    <!-- 4 English Options Grid for Mode 5 -->
+                    <div id="mode5OptionsContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-2 w-full">
                         <!-- Populated by JS -->
                     </div>
                 </div>
@@ -441,7 +499,15 @@
                 osc.connect(gain);
                 gain.connect(audioCtx.destination);
 
-                if (type === 'success') {
+                if (type === 'beep') {
+                    // Censor / blank beep for missing word in Mode 5
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(700, now);
+                    gain.gain.setValueAtTime(0.35, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.28);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                } else if (type === 'success') {
                     // Happy chord arpeggio
                     osc.type = 'triangle';
                     osc.frequency.setValueAtTime(523.25, now); // C5
@@ -477,41 +543,145 @@
         }
 
         /* -------------------------------------------------------------
-           DEFAULT VOCABULARY LIST (Requested by User)
+           DEFAULT VOCABULARY LIST (Updated from Image)
         ------------------------------------------------------------- */
         const DEFAULT_WORDS = [
-            { english: 'rabbit', hebrew: 'ארנב' },
-            { english: 'desk', hebrew: 'שולחן כתיבה' },
-            { english: 'sun', hebrew: 'שמש' },
-            { english: 'star', hebrew: 'כוכב' },
-            { english: 'foot', hebrew: 'כף רגל' },
-            { english: 'hand', hebrew: 'יד' },
-            { english: 'lemon', hebrew: 'לימון' },
-            { english: 'apple', hebrew: 'תפוח' },
-            { english: 'duck', hebrew: 'ברווז' },
-            { english: 'ball', hebrew: 'כדור' },
-            { english: 'tall', hebrew: 'גבוה' },
-            { english: 'girl', hebrew: 'ילדה' },
-            { english: 'boy', hebrew: 'ילד' },
-            { english: 'pen', hebrew: 'עט' },
-            { english: 'king', hebrew: 'מלך' },
-            { english: 'grandma', hebrew: 'סבתא' },
-            { english: 'grandpa', hebrew: 'סבא' },
-            { english: 'umbrella', hebrew: 'מטרייה' },
-            { english: 'swim', hebrew: 'לשחות' },
-            { english: 'small', hebrew: 'קטן' },
-            { english: 'run', hebrew: 'לרוץ' },
-            { english: 'jump', hebrew: 'לקפוץ' },
-            { english: 'happy', hebrew: 'שמח' },
-            { english: 'he', hebrew: 'הוא' },
-            { english: 'she', hebrew: 'היא' }
+            { english: 'bird', hebrew: 'ציפור' },
+            { english: 'family', hebrew: 'משפחה' },
+            { english: 'lesson', hebrew: 'שיעור' },
+            { english: 'nice', hebrew: 'נחמד, יפה' },
+            { english: 'speak', hebrew: 'לדבר' },
+            { english: 'want', hebrew: 'לרצות' },
+            { english: 'English', hebrew: 'אנגלית' },
+            { english: 'fly', hebrew: 'לטוס, לעוף' }
         ];
 
-        const STORAGE_KEY = 'milon_custom_vocabulary_v1';
+        /* -------------------------------------------------------------
+           MODE 5: 4TH-GRADE SENTENCE DATABASE WITH CENSORED HEBREW
+        ------------------------------------------------------------- */
+        const SENTENCES_DATABASE = [
+            // Target: want (13 sentences)
+            { sentence: "Do you ___ some water?", target: "want", full: "Do you want some water?", translation: "האם אתה ___ קצת מים?" },
+            { sentence: "I ___ a dog.", target: "want", full: "I want a dog.", translation: "אני ___ כלב." },
+            { sentence: "I ___ a rabbit.", target: "want", full: "I want a rabbit.", translation: "אני ___ ארנב." },
+            { sentence: "I ___ an apple.", target: "want", full: "I want an apple.", translation: "אני ___ תפוח." },
+            { sentence: "Do you ___ a red pen?", target: "want", full: "Do you want a red pen?", translation: "האם אתה ___ עט אדום?" },
+            { sentence: "The children ___ to play ball.", target: "want", full: "The children want to play ball.", translation: "הילדים ___ לשחק בכדור." },
+            { sentence: "I ___ to go home.", target: "want", full: "I want to go home.", translation: "אני ___ ללכת הביתה." },
+            { sentence: "We ___ ice cream.", target: "want", full: "We want ice cream.", translation: "אנחנו ___ גלידה." },
+            { sentence: "Do you ___ to run?", target: "want", full: "Do you want to run?", translation: "האם אתה ___ לרוץ?" },
+            { sentence: "I ___ a new school bag.", target: "want", full: "I want a new school bag.", translation: "אני ___ תיק בית ספר חדש." },
+            { sentence: "They ___ to see the cat.", target: "want", full: "They want to see the cat.", translation: "הם ___ לראות את החתול." },
+            { sentence: "What do you ___ today?", target: "want", full: "What do you want today?", translation: "מה אתה ___ היום?" },
+            { sentence: "I ___ to swim in the pool.", target: "want", full: "I want to swim in the pool.", translation: "אני ___ לשחות בבריכה." },
+
+            // Target: family (13 sentences)
+            { sentence: "I talk to my ___.", target: "family", full: "I talk to my family.", translation: "אני מדבר עם ה___ שלי." },
+            { sentence: "I like my ___.", target: "family", full: "I like my family.", translation: "אני אוהב את ה___ שלי." },
+            { sentence: "This is my ___.", target: "family", full: "This is my family.", translation: "זאת ה___ שלי." },
+            { sentence: "We are a happy ___.", target: "family", full: "We are a happy family.", translation: "אנחנו ___ מאושרת." },
+            { sentence: "I eat with my ___.", target: "family", full: "I eat with my family.", translation: "אני אוכל עם ה___ שלי." },
+            { sentence: "Dan has a big ___.", target: "family", full: "Dan has a big family.", translation: "לדן יש ___ גדולה." },
+            { sentence: "My ___ is at home.", target: "family", full: "My family is at home.", translation: "ה___ שלי בבית." },
+            { sentence: "I love my good ___.", target: "family", full: "I love my good family.", translation: "אני אוהב את ה___ הטובה שלי." },
+            { sentence: "Look at my ___ photo.", target: "family", full: "Look at my family photo.", translation: "תסתכל על התמונה של ה___ שלי." },
+            { sentence: "My ___ goes to the park.", target: "family", full: "My family goes to the park.", translation: "ה___ שלי הולכת לפארק." },
+            { sentence: "I sit with my ___.", target: "family", full: "I sit with my family.", translation: "אני יושב עם ה___ שלי." },
+            { sentence: "Mom and Dad are my ___.", target: "family", full: "Mom and Dad are my family.", translation: "אמא ואבא הם ה___ שלי." },
+            { sentence: "My ___ plays a game.", target: "family", full: "My family plays a game.", translation: "ה___ שלי משחקת משחק." },
+
+            // Target: English (13 sentences)
+            { sentence: "I learn ___ at school.", target: "English", full: "I learn English at school.", translation: "אני לומד ___ בבית הספר." },
+            { sentence: "This is my ___ book.", target: "English", full: "This is my English book.", translation: "זהו ספר ה___ שלי." },
+            { sentence: "I like my ___ lesson.", target: "English", full: "I like my English lesson.", translation: "אני אוהב את שיעור ה___ שלי." },
+            { sentence: "Can you speak ___?", target: "English", full: "Can you speak English?", translation: "האם אתה יכול לדבר ___?" },
+            { sentence: "We write in ___.", target: "English", full: "We write in English.", translation: "אנחנו כותבים ב___." },
+            { sentence: "She has an ___ test today.", target: "English", full: "She has an English test today.", translation: "יש לה מבחן ב___ היום." },
+            { sentence: "This is an ___ song.", target: "English", full: "This is an English song.", translation: "זהו שיר ב___." },
+            { sentence: "I know many ___ words.", target: "English", full: "I know many English words.", translation: "אני מכיר הרבה מילים ב___." },
+            { sentence: "We speak ___ with the teacher.", target: "English", full: "We speak English with the teacher.", translation: "אנחנו מדברים ___ עם המורה." },
+            { sentence: "Is your ___ notebook here?", target: "English", full: "Is your English notebook here?", translation: "האם מחברת ה___ שלך פה?" },
+            { sentence: "A, B, C are ___ letters.", target: "English", full: "A, B, C are English letters.", translation: "A, B, C הן אותיות ב___." },
+            { sentence: "I practice ___ every day.", target: "English", full: "I practice English every day.", translation: "אני מתרגל ___ כל יום." },
+            { sentence: "Read the word in ___.", target: "English", full: "Read the word in English.", translation: "קרא את המילה ב___." },
+
+            // Target: bird (12 sentences)
+            { sentence: "Look at the ___ in the tree.", target: "bird", full: "Look at the bird in the tree.", translation: "תסתכל על ה___ שעל העץ." },
+            { sentence: "A little ___ can sing.", target: "bird", full: "A little bird can sing.", translation: "___ קטנה יכולה לשיר." },
+            { sentence: "I see a blue ___.", target: "bird", full: "I see a blue bird.", translation: "אני רואה ___ כחולה." },
+            { sentence: "The yellow ___ is on the grass.", target: "bird", full: "The yellow bird is on the grass.", translation: "ה___ הצהובה על הדשא." },
+            { sentence: "The cat looks at the ___.", target: "bird", full: "The cat looks at the bird.", translation: "החתול מסתכל על ה___." },
+            { sentence: "A small ___ is in the nest.", target: "bird", full: "A small bird is in the nest.", translation: "___ קטנה נמצאת בקן." },
+            { sentence: "The ___ eats bread crumbs.", target: "bird", full: "The bird eats bread crumbs.", translation: "ה___ אוכלת פירורי לחם." },
+            { sentence: "Is that a green ___?", target: "bird", full: "Is that a green bird?", translation: "האם זאת ___ ירוקה?" },
+            { sentence: "The white ___ sits on the desk.", target: "bird", full: "The white bird sits on the desk.", translation: "ה___ הלבנה יושבת על השולחן." },
+            { sentence: "Dan draws a pretty ___.", target: "bird", full: "Dan draws a pretty bird.", translation: "דן מצייר ___ יפה." },
+            { sentence: "The ___ has two small wings.", target: "bird", full: "The bird has two small wings.", translation: "ל___ יש שתי כנפיים קטנות." },
+            { sentence: "A happy ___ sings in the morning.", target: "bird", full: "A happy bird sings in the morning.", translation: "___ שמחה שרה בבוקר." },
+
+            // Target: lesson (12 sentences)
+            { sentence: "We have an English ___ today.", target: "lesson", full: "We have an English lesson today.", translation: "יש לנו ___ אנגלית היום." },
+            { sentence: "The art ___ is fun.", target: "lesson", full: "The art lesson is fun.", translation: "___ האמנות כיפי." },
+            { sentence: "Open your book for the ___.", target: "lesson", full: "Open your book for the lesson.", translation: "פתחו את הספר ל___." },
+            { sentence: "We sit nicely in the ___.", target: "lesson", full: "We sit nicely in the lesson.", translation: "אנחנו יושבים יפה ב___." },
+            { sentence: "The music ___ starts now.", target: "lesson", full: "The music lesson starts now.", translation: "___ המוזיקה מתחיל עכשיו." },
+            { sentence: "Our math ___ was good.", target: "lesson", full: "Our math lesson was good.", translation: "___ החשבון שלנו היה טוב." },
+            { sentence: "Listen to the teacher in the ___.", target: "lesson", full: "Listen to the teacher in the lesson.", translation: "הקשיבו למורה ב___." },
+            { sentence: "I like this sports ___.", target: "lesson", full: "I like this sports lesson.", translation: "אני אוהב את ___ הספורט הזה." },
+            { sentence: "Do not shout during the ___.", target: "lesson", full: "Do not shout during the lesson.", translation: "אל תצעקו במהלך ה___." },
+            { sentence: "We write in our notebooks in the ___.", target: "lesson", full: "We write in our notebooks in the lesson.", translation: "אנחנו כותבים במחברות ב___." },
+            { sentence: "This is our first ___.", target: "lesson", full: "This is our first lesson.", translation: "זהו ה___ הראשון שלנו." },
+            { sentence: "Are you ready for the ___?", target: "lesson", full: "Are you ready for the lesson?", translation: "האם אתם מוכנים ל___?" },
+
+            // Target: nice (13 sentences)
+            { sentence: "My teacher is very ___.", target: "nice", full: "My teacher is very nice.", translation: "המורה שלי מאוד ___." },
+            { sentence: "He is a ___ boy.", target: "nice", full: "He is a nice boy.", translation: "הוא ילד ___." },
+            { sentence: "She is a ___ girl.", target: "nice", full: "She is a nice girl.", translation: "היא ילדה ___." },
+            { sentence: "Have a ___ day!", target: "nice", full: "Have a nice day!", translation: "שיהיה לך יום ___!" },
+            { sentence: "It is ___ to meet you.", target: "nice", full: "It is nice to meet you.", translation: "זה ___ לפגוש אותך." },
+            { sentence: "This is a ___ red ball.", target: "nice", full: "This is a nice red ball.", translation: "זה כדור אדום ___." },
+            { sentence: "You have a ___ dog.", target: "nice", full: "You have a nice dog.", translation: "יש לך כלב ___." },
+            { sentence: "Thank you, you are very ___.", target: "nice", full: "Thank you, you are very nice.", translation: "תודה, אתה מאוד ___." },
+            { sentence: "Today is a ___ day to play.", target: "nice", full: "Today is a nice day to play.", translation: "היום יום ___ לשחק." },
+            { sentence: "I have a ___ green pen.", target: "nice", full: "I have a nice green pen.", translation: "יש לי עט ירוק ___." },
+            { sentence: "My friend has a ___ toy.", target: "nice", full: "My friend has a nice toy.", translation: "לחבר שלי יש צעצוע ___." },
+            { sentence: "This room is very ___.", target: "nice", full: "This room is very nice.", translation: "החדר הזה מאוד ___." },
+            { sentence: "Your drawing is so ___!", target: "nice", full: "Your drawing is so nice!", translation: "הציור שלך כל כך ___!" },
+
+            // Target: speak (12 sentences)
+            { sentence: "I can ___ English.", target: "speak", full: "I can speak English.", translation: "אני יכול ___ אנגלית." },
+            { sentence: "Please ___ slowly.", target: "speak", full: "Please speak slowly.", translation: "בבקשה ___ לאט." },
+            { sentence: "Can you ___ Hebrew?", target: "speak", full: "Can you speak Hebrew?", translation: "האם אתה יכול ___ עברית?" },
+            { sentence: "Do not ___ during the test.", target: "speak", full: "Do not speak during the test.", translation: "אל ___ בזמן המבחן." },
+            { sentence: "Raise your hand to ___.", target: "speak", full: "Raise your hand to speak.", translation: "הרם את ידך כדי ___." },
+            { sentence: "We ___ quietly in class.", target: "speak", full: "We speak quietly in class.", translation: "אנחנו ___ בשקט בכיתה." },
+            { sentence: "I ___ to my friend on the phone.", target: "speak", full: "I speak to my friend on the phone.", translation: "אני ___ עם חבר שלי בטלפון." },
+            { sentence: "Can you ___ loudly, please?", target: "speak", full: "Can you speak loudly, please?", translation: "אתה יכול ___ בקול, בבקשה?" },
+            { sentence: "They ___ English together.", target: "speak", full: "They speak English together.", translation: "הם ___ אנגלית ביחד." },
+            { sentence: "Listen before you ___.", target: "speak", full: "Listen before you speak.", translation: "הקשב לפני שאתה ___." },
+            { sentence: "Mom and Dad ___ with Grandma.", target: "speak", full: "Mom and Dad speak with Grandma.", translation: "אמא ואבא ___ עם סבתא." },
+            { sentence: "I like to ___ in English.", target: "speak", full: "I like to speak in English.", translation: "אני אוהב ___ באנגלית." },
+
+            // Target: fly (12 sentences)
+            { sentence: "Birds can ___ in the sky.", target: "fly", full: "Birds can fly in the sky.", translation: "ציפורים יכולות ___ בשמיים." },
+            { sentence: "Can a plane ___ high?", target: "fly", full: "Can a plane fly high?", translation: "האם מטוס יכול ___ גבוה?" },
+            { sentence: "Look at the kite ___!", target: "fly", full: "Look at the kite fly!", translation: "תראה את העפיפון ___!" },
+            { sentence: "A bird can ___ to its tree.", target: "fly", full: "A bird can fly to its tree.", translation: "ציפור יכולה ___ לעץ שלה." },
+            { sentence: "We will ___ to Eilat.", target: "fly", full: "We will fly to Eilat.", translation: "אנחנו ___ לאילת." },
+            { sentence: "Can dogs ___? No!", target: "fly", full: "Can dogs fly? No!", translation: "האם כלבים יכולים ___? לא!" },
+            { sentence: "The butterflies ___ on flowers.", target: "fly", full: "The butterflies fly on flowers.", translation: "הפרפרים ___ על הפרחים." },
+            { sentence: "The paper airplane can ___.", target: "fly", full: "The paper airplane can fly.", translation: "מטוס הנייר יכול ___." },
+            { sentence: "Little bees ___ in the sun.", target: "fly", full: "Little bees fly in the sun.", translation: "דבורים קטנות ___ בשמש." },
+            { sentence: "I want to ___ like a bird.", target: "fly", full: "I want to fly like a bird.", translation: "אני רוצה ___ כמו ציפור." },
+            { sentence: "Ducks can swim and ___.", target: "fly", full: "Ducks can swim and fly.", translation: "ברווזים יכולים לשחות ו___." },
+            { sentence: "See how the birds ___ home.", target: "fly", full: "See how the birds fly home.", translation: "ראה איך הציפורים ___ הביתה." }
+        ];
+
+        const STORAGE_KEY = 'milon_custom_vocabulary_v2';
         let vocabulary = [];
 
         // Application State
-        let currentMode = 1; // 1: Listen EN -> Pick HE, 2: Listen HE -> Type EN
+        let currentMode = 1; // 1, 2, 3, 4, 5
         let sessionQuestions = [];
         let currentIndex = 0;
         let attemptsLeft = 2;
@@ -601,9 +771,8 @@
 
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = lang;
-            utterance.rate = 0.9; // Slightly slower for crisp clarity
+            utterance.rate = 0.9;
 
-            // Find best matching voice
             if (availableVoices.length > 0) {
                 const targetLang = lang.toLowerCase();
                 const matchedVoice = availableVoices.find(v => v.lang.toLowerCase().startsWith(targetLang) || v.lang.toLowerCase().replace('_', '-').startsWith(targetLang));
@@ -619,10 +788,63 @@
             const currentItem = sessionQuestions[currentIndex];
             if (currentMode === 2) {
                 speakText(currentItem.hebrew, 'he-IL');
+            } else if (currentMode === 5) {
+                playMode5SentenceAudio();
             } else {
-                // Modes 1, 3, 4 all speak in English
                 speakText(currentItem.english, 'en-US');
             }
+        }
+
+        // Mode 5 audio: speaks the sentence with an audible beep replacing the blank word!
+        function playMode5SentenceAudio(speakFull = false) {
+            if (!sessionQuestions[currentIndex]) return;
+            const item = sessionQuestions[currentIndex];
+
+            if (speakFull) {
+                speakText(item.full, 'en-US');
+                return;
+            }
+
+            if (!('speechSynthesis' in window)) return;
+            window.speechSynthesis.cancel();
+
+            // Split sentence by "___"
+            const parts = item.sentence.split(/_{2,}/);
+            const beforeBlank = parts[0] ? parts[0].trim() : "";
+            const afterBlank = parts[1] ? parts[1].trim() : "";
+
+            if (!beforeBlank) {
+                // If blank is at start, beep immediately and speak the rest
+                playSound('beep');
+                setTimeout(() => {
+                    if (afterBlank) speakText(afterBlank, 'en-US');
+                }, 350);
+                return;
+            }
+
+            const utter1 = new SpeechSynthesisUtterance(beforeBlank);
+            utter1.lang = 'en-US';
+            utter1.rate = 0.88;
+
+            if (availableVoices.length > 0) {
+                const voice = availableVoices.find(v => v.lang.toLowerCase().startsWith('en'));
+                if (voice) utter1.voice = voice;
+            }
+
+            utter1.onend = function() {
+                playSound('beep');
+                if (afterBlank) {
+                    setTimeout(() => {
+                        const utter2 = new SpeechSynthesisUtterance(afterBlank);
+                        utter2.lang = 'en-US';
+                        utter2.rate = 0.88;
+                        if (utter1.voice) utter2.voice = utter1.voice;
+                        window.speechSynthesis.speak(utter2);
+                    }, 350);
+                }
+            };
+
+            window.speechSynthesis.speak(utter1);
         }
 
         /* -------------------------------------------------------------
@@ -650,11 +872,14 @@
 
             // Select dataset according to chosen mode
             if (mode === 1 || mode === 2) {
-                sessionQuestions = shuffle(vocabulary).slice(0, Math.min(vocabulary.length, 15));
+                sessionQuestions = shuffle(vocabulary).slice(0, Math.min(vocabulary.length, 12));
             } else if (mode === 3) {
                 sessionQuestions = shuffle(NUMBERS_DATA);
             } else if (mode === 4) {
                 sessionQuestions = shuffle(COLORS_DATA);
+            } else if (mode === 5) {
+                // Pick 10 random sentences from the 100 sentences pool for a fun, focused session
+                sessionQuestions = shuffle(SENTENCES_DATABASE).slice(0, 10);
             }
 
             // Set UI headers
@@ -675,6 +900,9 @@
             } else if (mode === 4) {
                 badge.textContent = 'מצב 4: צבעים בעברית ואנגלית';
                 badge.className = 'bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-xs font-bold';
+            } else if (mode === 5) {
+                badge.textContent = 'מצב 5: השלמת משפטים';
+                badge.className = 'bg-rose-100 text-rose-700 px-3 py-1 rounded-full text-xs font-bold';
             }
 
             renderQuestion();
@@ -689,7 +917,6 @@
             const progressPercent = ((currentIndex + 1) / total) * 100;
             document.getElementById('progressBar').style.width = `${progressPercent}%`;
 
-            // Reset attempts visual pills
             updateAttemptPills();
             hideFeedback();
             document.getElementById('nextButtonArea').classList.add('hidden');
@@ -700,11 +927,10 @@
                 // Choice selection modes (1, 3, 4)
                 document.getElementById('mode1Header').classList.remove('hidden');
                 document.getElementById('mode2Header').classList.add('hidden');
+                document.getElementById('mode5Header').classList.add('hidden');
 
-                // Display English word prominently
                 document.getElementById('mode1EnglishWordDisplay').textContent = current.english;
 
-                // Pick distractors dataset
                 let sourceData = vocabulary;
                 if (currentMode === 3) sourceData = NUMBERS_DATA;
                 if (currentMode === 4) sourceData = COLORS_DATA;
@@ -722,14 +948,12 @@
                     btn.dataset.english = opt.english;
 
                     if (currentMode === 3) {
-                        // Numbers mode: show big digital digit with Hebrew subtext
                         btn.className = 'option-btn w-full p-4 text-center rounded-2xl border-2 border-slate-200 bg-white hover:bg-emerald-50 hover:border-emerald-300 active:scale-98 transition shadow-sm flex flex-col items-center justify-center gap-1';
                         btn.innerHTML = `
                             <span class="text-3xl sm:text-4xl font-black text-slate-800">${opt.display}</span>
                             <span class="text-xs text-slate-400 font-semibold">${opt.hebrew}</span>
                         `;
                     } else if (currentMode === 4) {
-                        // Colors mode: show color indicator swatch + Hebrew label
                         btn.className = 'option-btn w-full p-4 text-center rounded-2xl border-2 border-slate-200 bg-white hover:bg-amber-50 hover:border-amber-300 active:scale-98 transition shadow-sm flex items-center justify-center gap-3';
                         const borderStyle = opt.border ? 'border border-slate-300' : '';
                         btn.innerHTML = `
@@ -737,7 +961,6 @@
                             <span class="text-lg sm:text-xl font-bold text-slate-800">${opt.hebrew}</span>
                         `;
                     } else {
-                        // Mode 1: Hebrew word
                         btn.className = 'option-btn w-full p-4 text-center rounded-2xl border-2 border-slate-200 bg-white hover:bg-indigo-50/70 hover:border-indigo-300 active:scale-98 transition text-lg sm:text-xl font-bold text-slate-700 shadow-sm flex items-center justify-center';
                         btn.textContent = opt.hebrew;
                     }
@@ -746,15 +969,15 @@
                     container.appendChild(btn);
                 });
 
-                // Auto speak English word on first display
                 setTimeout(() => {
                     speakText(current.english, 'en-US');
                 }, 300);
 
-            } else {
-                // Setup Mode 2 UI (Listen Hebrew -> Pick from 4 English options)
+            } else if (currentMode === 2) {
+                // Mode 2: Listen Hebrew -> Pick from 4 English options
                 document.getElementById('mode1Header').classList.add('hidden');
                 document.getElementById('mode2Header').classList.remove('hidden');
+                document.getElementById('mode5Header').classList.add('hidden');
 
                 document.getElementById('hebrewPromptWord').textContent = current.hebrew;
 
@@ -779,10 +1002,47 @@
                     container.appendChild(btn);
                 });
 
-                // Auto speak Hebrew prompt
                 setTimeout(() => {
                     speakText(current.hebrew, 'he-IL');
                 }, 300);
+
+            } else if (currentMode === 5) {
+                // Mode 5: Sentence Completion
+                document.getElementById('mode1Header').classList.add('hidden');
+                document.getElementById('mode2Header').classList.add('hidden');
+                document.getElementById('mode5Header').classList.remove('hidden');
+
+                // Render sentence and translation
+                document.getElementById('mode5SentenceDisplay').textContent = current.sentence;
+                document.getElementById('mode5TranslationDisplay').textContent = current.translation;
+
+                // Pick 3 distractors from vocabulary words
+                const targetWord = current.target;
+                const pool = vocabulary.filter(w => w.english.toLowerCase() !== targetWord.toLowerCase());
+                const distractors = shuffle(pool).slice(0, 3).map(w => w.english);
+                const options = shuffle([targetWord, ...distractors]);
+
+                const container = document.getElementById('mode5OptionsContainer');
+                container.innerHTML = '';
+
+                options.forEach((word) => {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.dataset.english = word;
+                    btn.className = 'mode5-option-btn font-english w-full p-4 text-center rounded-2xl border-2 border-slate-200 bg-white hover:bg-rose-50/70 hover:border-rose-300 active:scale-98 transition text-xl sm:text-2xl font-bold text-slate-800 shadow-sm flex items-center justify-center gap-2';
+                    btn.innerHTML = `
+                        <span dir="ltr">${word}</span>
+                        <span class="text-xs text-rose-400">🔊</span>
+                    `;
+
+                    btn.onclick = () => handleMode5ChoiceSelection(word, btn);
+                    container.appendChild(btn);
+                });
+
+                // Auto speak the sentence prompt
+                setTimeout(() => {
+                    playMode5SentenceAudio();
+                }, 350);
             }
         }
 
@@ -803,22 +1063,18 @@
             const isCorrect = selectedOption.english.trim().toLowerCase() === current.english.trim().toLowerCase();
 
             if (isCorrect) {
-                // Correct!
                 markAnswerCorrect(buttonElement);
             } else {
-                // Incorrect
                 attemptsLeft--;
                 updateAttemptPills();
 
                 if (attemptsLeft === 1) {
-                    // First failure: give one more try
                     buttonElement.classList.add('bg-rose-50', 'border-rose-300', 'text-rose-600');
-                    buttonElement.disabled = true; // Disable this wrong pick
+                    buttonElement.disabled = true;
                     triggerShake();
                     playSound('warning');
                     showFeedback('נסה שוב! נותר לך עוד ניסיון אחד ⚠️', 'warning');
                 } else {
-                    // Second failure: reveal correct
                     triggerShake();
                     playSound('fail');
                     revealChoiceCorrectAnswer(current);
@@ -826,11 +1082,10 @@
             }
         }
 
-        /* Mode 2 Choice Handler: speaks selected English option immediately */
+        /* Mode 2 Choice Handler */
         function handleMode2ChoiceSelection(selectedOption, buttonElement) {
             if (isQuestionAnswered) return;
 
-            // Pronounce selected English word right away
             speakText(selectedOption.english, 'en-US');
 
             const current = sessionQuestions[currentIndex];
@@ -843,19 +1098,76 @@
                 updateAttemptPills();
 
                 if (attemptsLeft === 1) {
-                    // First failure: mark this button as wrong and allow another attempt
                     buttonElement.classList.add('bg-rose-50', 'border-rose-300', 'text-rose-600');
                     buttonElement.disabled = true;
                     triggerShake();
                     playSound('warning');
                     showFeedback('נסה שוב! נותר לך עוד ניסיון אחד ⚠️', 'warning');
                 } else {
-                    // Second failure: reveal correct answer
                     triggerShake();
                     playSound('fail');
                     revealMode2ChoiceCorrectAnswer(current);
                 }
             }
+        }
+
+        /* Mode 5 Choice Handler: Sentence Completion */
+        function handleMode5ChoiceSelection(selectedWord, buttonElement) {
+            if (isQuestionAnswered) return;
+
+            // Pronounce selected word
+            speakText(selectedWord, 'en-US');
+
+            const current = sessionQuestions[currentIndex];
+            const isCorrect = selectedWord.trim().toLowerCase() === current.target.trim().toLowerCase();
+
+            if (isCorrect) {
+                // Update display to full sentence with answered word
+                document.getElementById('mode5SentenceDisplay').textContent = current.full;
+                markAnswerCorrect(buttonElement);
+            } else {
+                attemptsLeft--;
+                updateAttemptPills();
+
+                if (attemptsLeft === 1) {
+                    buttonElement.classList.add('bg-rose-50', 'border-rose-300', 'text-rose-600');
+                    buttonElement.disabled = true;
+                    triggerShake();
+                    playSound('warning');
+                    showFeedback('נסה שוב! נותר לך עוד ניסיון אחד להשלים את המשפט ⚠️', 'warning');
+                } else {
+                    triggerShake();
+                    playSound('fail');
+                    revealMode5CorrectAnswer(current);
+                }
+            }
+        }
+
+        function revealMode5CorrectAnswer(current) {
+            isQuestionAnswered = true;
+            currentStreak = 0;
+            updateStatsUI();
+            disableAllOptions();
+
+            // Display full sentence
+            document.getElementById('mode5SentenceDisplay').textContent = current.full;
+
+            // Highlight target word button
+            const buttons = document.querySelectorAll('.mode5-option-btn');
+            buttons.forEach(btn => {
+                if (btn.dataset.english.toLowerCase() === current.target.toLowerCase()) {
+                    btn.classList.remove('border-slate-200', 'bg-white', 'text-slate-800');
+                    btn.classList.add('bg-emerald-100', 'border-emerald-500', 'text-emerald-800', 'font-black');
+                }
+            });
+
+            showFeedback(`התשובה הנכונה היא: ${current.target}`, 'reveal');
+            document.getElementById('nextButtonArea').classList.remove('hidden');
+
+            // Pronounce the complete sentence for reinforcement
+            setTimeout(() => {
+                playMode5SentenceAudio(true);
+            }, 400);
         }
 
         /* Success handling */
@@ -869,23 +1181,28 @@
             fireCelebrationConfetti();
 
             if (targetElement) {
-                targetElement.classList.remove('hover:bg-indigo-50/70', 'border-slate-200', 'hover:bg-purple-50/70', 'hover:border-purple-300', 'hover:bg-emerald-50', 'hover:bg-amber-50');
+                targetElement.classList.remove('hover:bg-indigo-50/70', 'border-slate-200', 'hover:bg-purple-50/70', 'hover:border-purple-300', 'hover:bg-emerald-50', 'hover:bg-amber-50', 'hover:bg-rose-50/70');
                 targetElement.classList.add('bg-emerald-500', 'text-white', 'border-emerald-600', 'shadow-lg');
             }
             disableAllOptions();
 
             showFeedback('מצוין! תשובה נכונה! 🎉', 'success');
             document.getElementById('nextButtonArea').classList.remove('hidden');
+
+            if (currentMode === 5) {
+                setTimeout(() => {
+                    playMode5SentenceAudio(true);
+                }, 400);
+            }
         }
 
-        /* Failure & Reveal Logic */
+        /* Failure & Reveal Logic for Modes 1, 3, 4 */
         function revealChoiceCorrectAnswer(current) {
             isQuestionAnswered = true;
             currentStreak = 0;
             updateStatsUI();
             disableAllOptions();
 
-            // Highlight the true answer button
             const buttons = document.querySelectorAll('.option-btn');
             buttons.forEach(btn => {
                 if (btn.dataset.english.toLowerCase() === current.english.toLowerCase()) {
@@ -898,7 +1215,6 @@
             showFeedback(`התשובה הנכונה היא: ${answerText}`, 'reveal');
             document.getElementById('nextButtonArea').classList.remove('hidden');
 
-            // Pronounce English word again
             setTimeout(() => {
                 speakText(current.english, 'en-US');
             }, 300);
@@ -910,7 +1226,6 @@
             updateStatsUI();
             disableAllOptions();
 
-            // Highlight correct English answer button in green
             const buttons = document.querySelectorAll('.mode2-option-btn');
             buttons.forEach(btn => {
                 if (btn.dataset.english.toLowerCase() === current.english.toLowerCase()) {
@@ -922,17 +1237,16 @@
             showFeedback(`התשובה הנכונה היא: ${current.english}`, 'reveal');
             document.getElementById('nextButtonArea').classList.remove('hidden');
 
-            // Automatically pronounce the correct English answer clearly
             setTimeout(() => {
                 speakText(current.english, 'en-US');
             }, 350);
         }
 
         function disableAllOptions() {
-            const buttons = document.querySelectorAll('.option-btn, .mode2-option-btn');
+            const buttons = document.querySelectorAll('.option-btn, .mode2-option-btn, .mode5-option-btn');
             buttons.forEach(b => {
                 b.disabled = true;
-                b.classList.remove('hover:bg-indigo-50/70', 'hover:border-indigo-300', 'hover:bg-purple-50/70', 'hover:border-purple-300');
+                b.classList.remove('hover:bg-indigo-50/70', 'hover:border-indigo-300', 'hover:bg-purple-50/70', 'hover:border-purple-300', 'hover:bg-rose-50/70');
             });
         }
 
@@ -1132,7 +1446,7 @@
         }
 
         function restoreDefaultWords() {
-            if (confirm('האם ברצונך לאפס את המאגר לרשימת המילים המקורית (25 מילים)?')) {
+            if (confirm('האם ברצונך לאפס את המאגר לרשימת המילים המקורית שבתמונה (8 מילים)?')) {
                 vocabulary = JSON.parse(JSON.stringify(DEFAULT_WORDS));
                 saveVocabulary();
                 renderAdminWordList();
