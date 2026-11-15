@@ -50,8 +50,9 @@ tr:hover td{background:#1e2236}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
 .form-group{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
 label{font-size:12px;color:var(--muted);font-weight:600}
-input,select{background:#12151f;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:8px 12px;font-size:14px;width:100%;outline:none}
-input:focus,select:focus{border-color:var(--accent)}
+input,select,textarea{background:#12151f;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:8px 12px;font-size:14px;width:100%;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+textarea{resize:vertical;font-family:monospace;font-size:13px;direction:ltr}
 .pw-wrap{position:relative}
 .pw-wrap input{padding-left:40px}
 .pw-eye{position:absolute;left:8px;top:50%;transform:translateY(-50%);cursor:pointer;border:none;background:none;color:var(--muted);font-size:12px;padding:2px 4px}
@@ -142,6 +143,7 @@ input:focus,select:focus{border-color:var(--accent)}
       <div class="form-group"><label>סוג</label><select id="et"><option value="bank">בנק</option><option value="savings">חסכון</option><option value="invest">השקעות</option><option value="insurance">ביטוח</option><option value="other">אחר</option></select></div>
     </div>
     <div class="form-group"><label>Login URL</label><input id="elu" placeholder="https://..."></div>
+    <div class="form-group"><label>לחיצות לפני הכניסה <span style="font-weight:400;color:var(--muted)">אופציונלי — סלקטור אחד בכל שורה, לפי הסדר</span></label><textarea id="epre" rows="2" placeholder="#mynav ... > span&#10;#startTypeEmail"></textarea></div>
     <div class="form-group"><label>Balance URL</label><input id="eu" placeholder="https://..."></div>
     <div class="form-row">
       <div class="form-group"><label>CSS — משתמש</label><input id="eus" placeholder="#username"></div>
@@ -544,6 +546,7 @@ function openEdit(id){
   document.getElementById('en').value=s.name||'';
   document.getElementById('et').value=s.type||'other';
   document.getElementById('elu').value=s.login_url||'';
+  document.getElementById('epre').value=(s.pre_login_clicks||[]).join('\n');
   document.getElementById('eu').value=s.url||'';
   document.getElementById('eus').value=s.username_selector||'';
   document.getElementById('eun').value=s.username||'';
@@ -574,7 +577,7 @@ function openEdit(id){
 }
 
 function clrForm(){
-  ['en','elu','eu','eus','eun','eps','epw','ecs','ec','ess','esel','e2fsel','ebal','enotes'].forEach(id=>document.getElementById(id).value='');
+  ['en','elu','epre','eu','eus','eun','eps','epw','ecs','ec','ess','esel','e2fsel','ebal','enotes'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('et').value='other';document.getElementById('ewait').value='8';document.getElementById('e2fa').checked=false;document.getElementById('e2farow').style.display='none';document.getElementById('e2fwait').value='20';document.getElementById('e2fsubmit').value='';document.getElementById('e2femail').value='';document.getElementById('e2femailpass').value='';document.getElementById('e2femailfilt').value='';document.getElementById('e2femailhost').value='';document.getElementById('eexbr').checked=false;document.getElementById('echrpr').checked=false;document.getElementById('etax').value='0';renderSubs([]);
 }
 
@@ -582,7 +585,7 @@ function closeEdit(){document.getElementById('edit-overlay').classList.remove('a
 
 async function saveSrc(){
   const id=document.getElementById('eid').value;
-  const d={id:id||String(Date.now()),name:document.getElementById('en').value.trim(),type:document.getElementById('et').value,login_url:document.getElementById('elu').value.trim(),url:document.getElementById('eu').value.trim(),username_selector:document.getElementById('eus').value.trim(),username:document.getElementById('eun').value.trim(),password_selector:document.getElementById('eps').value.trim(),password:document.getElementById('epw').value,extra_code_selector:document.getElementById('ecs').value.trim(),extra_code:document.getElementById('ec').value,submit_selector:document.getElementById('ess').value.trim(),selector:document.getElementById('esel').value.trim(),wait_seconds:parseInt(document.getElementById('ewait').value)||8,requires_2fa:document.getElementById('e2fa').checked,twofa_selector:document.getElementById('e2fsel').value.trim(),twofa_submit_selector:document.getElementById('e2fsubmit').value.trim(),twofa_wait_seconds:parseInt(document.getElementById('e2fwait').value)||20,twofa_email_user:document.getElementById('e2femail').value.trim(),twofa_email_pass:document.getElementById('e2femailpass').value,twofa_email_filter:document.getElementById('e2femailfilt').value.trim(),twofa_email_host:document.getElementById('e2femailhost').value.trim()||'imap.gmail.com',use_existing_browser:document.getElementById('eexbr').checked,use_chrome_profile:document.getElementById('echrpr').checked,tax_rate:parseFloat(document.getElementById('etax').value)||0,balance:parseFloat(document.getElementById('ebal').value)||0,notes:document.getElementById('enotes').value.trim(),sub_accounts:colSubs()};
+  const d={id:id||String(Date.now()),name:document.getElementById('en').value.trim(),type:document.getElementById('et').value,login_url:document.getElementById('elu').value.trim(),pre_login_clicks:document.getElementById('epre').value.split('\n').map(x=>x.trim()).filter(Boolean),url:document.getElementById('eu').value.trim(),username_selector:document.getElementById('eus').value.trim(),username:document.getElementById('eun').value.trim(),password_selector:document.getElementById('eps').value.trim(),password:document.getElementById('epw').value,extra_code_selector:document.getElementById('ecs').value.trim(),extra_code:document.getElementById('ec').value,submit_selector:document.getElementById('ess').value.trim(),selector:document.getElementById('esel').value.trim(),wait_seconds:parseInt(document.getElementById('ewait').value)||8,requires_2fa:document.getElementById('e2fa').checked,twofa_selector:document.getElementById('e2fsel').value.trim(),twofa_submit_selector:document.getElementById('e2fsubmit').value.trim(),twofa_wait_seconds:parseInt(document.getElementById('e2fwait').value)||20,twofa_email_user:document.getElementById('e2femail').value.trim(),twofa_email_pass:document.getElementById('e2femailpass').value,twofa_email_filter:document.getElementById('e2femailfilt').value.trim(),twofa_email_host:document.getElementById('e2femailhost').value.trim()||'imap.gmail.com',use_existing_browser:document.getElementById('eexbr').checked,use_chrome_profile:document.getElementById('echrpr').checked,tax_rate:parseFloat(document.getElementById('etax').value)||0,balance:parseFloat(document.getElementById('ebal').value)||0,notes:document.getElementById('enotes').value.trim(),sub_accounts:colSubs()};
   if(!d.name){alert('חסר שם');return;}
   if(id){const i=sources.findIndex(s=>s.id===id);if(i>=0)sources[i]={...sources[i],...d};}else{sources.push(d);}
   await saveAll();table();summary();charts();closeEdit();
