@@ -28,6 +28,13 @@ main{max-width:1300px;margin:0 auto;padding:24px}
 .chart-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px}
 .chart-card h3{font-size:14px;font-weight:600;margin-bottom:16px;color:#fff}
 canvas{max-height:240px}
+.alloc-row{grid-template-columns:1fr 1fr}
+@media(max-width:800px){.alloc-row{grid-template-columns:1fr}}
+.alloc-list{margin-top:14px;font-size:13px}
+.alloc-list div{display:flex;justify-content:space-between;padding:5px 0;border-top:1px solid var(--border)}
+.alloc-list .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-left:8px}
+.alloc-list .pct{color:var(--muted);margin-right:8px}
+.alloc3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px}
 table{width:100%;border-collapse:collapse}
 th{text-align:right;padding:10px 14px;font-size:12px;color:var(--muted);font-weight:600;border-bottom:1px solid var(--border)}
 td{padding:10px 14px;border-bottom:1px solid #1e2130;vertical-align:middle}
@@ -108,6 +115,10 @@ textarea{resize:vertical;font-family:monospace;font-size:13px;direction:ltr}
     <div class="chart-card"><h3>פיזור</h3><canvas id="pie"></canvas></div>
     <div class="chart-card"><h3>היסטוריה</h3><canvas id="line"></canvas></div>
   </div>
+  <div class="charts-row alloc-row">
+    <div class="chart-card"><h3>סיכום לפי מטבע (שקל / מט"ח)</h3><canvas id="pie-fx"></canvas><div id="alloc-fx" class="alloc-list"></div></div>
+    <div class="chart-card"><h3>סיכום לפי סוג נכס (מניות / אלטרנטיבי / אחר)</h3><canvas id="pie-cls"></canvas><div id="alloc-cls" class="alloc-list"></div></div>
+  </div>
   <div class="card" style="padding:0;overflow:hidden">
     <div style="padding:16px 20px 10px"><h2 style="font-size:16px;font-weight:700">מקורות</h2></div>
     <table><thead><tr>
@@ -185,6 +196,12 @@ textarea{resize:vertical;font-family:monospace;font-size:13px;direction:ltr}
     <div class="form-row">
       <div class="form-group"><label>אחוז מס (%)</label><input id="etax" type="number" value="0" min="0" max="100" step="0.1" placeholder="0 = ללא מס"></div>
       <div class="form-group"><label>יתרה ידנית (שקל)</label><input id="ebal" type="number" step="0.01"></div>
+    </div>
+    <div class="form-group" style="margin-bottom:4px"><label>הקצאת נכסים <span style="font-weight:400;color:var(--muted)">אחוזים מהיתרה. "אחר" = מה שנשאר אחרי מניות ואלטרנטיבי. חשבון משנה ריק = יורש מהמקור</span></label></div>
+    <div class="alloc3">
+      <div class="form-group"><label>מט"ח (%)</label><input id="efx" type="number" min="0" max="100" step="0.1" placeholder="0"></div>
+      <div class="form-group"><label>מניות (%)</label><input id="eeq" type="number" min="0" max="100" step="0.1" placeholder="0"></div>
+      <div class="form-group"><label>אלטרנטיבי (%)</label><input id="ealt" type="number" min="0" max="100" step="0.1" placeholder="0"></div>
     </div>
     <div class="form-group"><label>הערות</label><input id="enotes"></div>
     <div class="sub-section">
@@ -520,6 +537,46 @@ function charts(){
   if(pieCh)pieCh.destroy();
   pieCh=new Chart(document.getElementById('pie'),{type:'doughnut',data:{labels:pd.map(([k])=>lm[k]||k),datasets:[{data:pd.map(([,v])=>v),backgroundColor:C,borderWidth:0}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{color:'#aaa',font:{size:12}}}}}});
   lineChart();
+  allocCharts();
+}
+
+// ── Allocation (currency / asset class) ──
+const ALLOC_C=['#4f8ef7','#2ecc71','#f1c40f','#9b59b6','#e67e22'];
+function allocOf(entry,parent){
+  const g=k=>{const v=entry[k];if(v!==null&&v!==undefined&&v!=='')return Math.max(0,parseFloat(v)||0);return Math.max(0,parseFloat(parent[k])||0);};
+  const fx=Math.min(100,g('fx_pct'));let eq=g('eq_pct'),alt=g('alt_pct');
+  const eqRaw=eq,altRaw=alt;
+  if(eq+alt>100){const f=100/(eq+alt);eq*=f;alt*=f;}
+  return{fx,eq,alt,eqRaw,altRaw};
+}
+function allocation(){
+  const r={total:0,foreign:0,ils:0,eq:0,alt:0,other:0};
+  const add=(b,a)=>{
+    r.total+=b;
+    const f=b*a.fx/100;r.foreign+=f;r.ils+=b-f;
+    const e=b*a.eq/100,l=b*a.alt/100;r.eq+=e;r.alt+=l;r.other+=b-e-l;
+  };
+  sources.forEach(s=>{
+    const subs=s.sub_accounts||[];
+    if(subs.length)subs.forEach(sub=>add(sub.balance||0,allocOf(sub,s)));
+    else add(s.balance||0,allocOf(s,s));
+  });
+  return r;
+}
+let allocFxCh=null,allocClsCh=null;
+function allocList(id,rows,total){
+  document.getElementById(id).innerHTML=rows.map((x,i)=>`<div><span><span class="dot" style="background:${ALLOC_C[i]}"></span>${x[0]}</span><span>${fmt(x[1])}<span class="pct">${total?(x[1]/total*100).toFixed(1):'0.0'}%</span></span></div>`).join('');
+}
+function allocCharts(){
+  const a=allocation();
+  const fxRows=[['שקל',a.ils],['מט"ח',a.foreign]];
+  const clsRows=[['מניות',a.eq],['אלטרנטיבי',a.alt],['אחר',a.other]];
+  allocList('alloc-fx',fxRows,a.total);allocList('alloc-cls',clsRows,a.total);
+  const mk=(id,rows,old)=>{
+    if(old)old.destroy();
+    return new Chart(document.getElementById(id),{type:'doughnut',data:{labels:rows.map(x=>x[0]),datasets:[{data:rows.map(x=>Math.max(0,x[1])),backgroundColor:ALLOC_C,borderWidth:0}]},options:{responsive:true,plugins:{legend:{display:false}}}});
+  };
+  allocFxCh=mk('pie-fx',fxRows,allocFxCh);allocClsCh=mk('pie-cls',clsRows,allocClsCh);
 }
 function lineChart(){
   const h=hist();if(lineCh)lineCh.destroy();if(!h.length)return;
@@ -569,6 +626,9 @@ function openEdit(id){
   document.getElementById('eexbr').checked=!!s.use_existing_browser;
   document.getElementById('echrpr').checked=!!s.use_chrome_profile;
   document.getElementById('etax').value=s.tax_rate||0;
+  document.getElementById('efx').value=s.fx_pct||'';
+  document.getElementById('eeq').value=s.eq_pct||'';
+  document.getElementById('ealt').value=s.alt_pct||'';
   document.getElementById('ebal').value=s.balance||'';
   document.getElementById('enotes').value=s.notes||'';
   document.getElementById('delbtn').style.display='inline-flex';
@@ -578,15 +638,17 @@ function openEdit(id){
 
 function clrForm(){
   ['en','elu','epre','eu','eus','eun','eps','epw','ecs','ec','ess','esel','e2fsel','ebal','enotes'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('et').value='other';document.getElementById('ewait').value='8';document.getElementById('e2fa').checked=false;document.getElementById('e2farow').style.display='none';document.getElementById('e2fwait').value='20';document.getElementById('e2fsubmit').value='';document.getElementById('e2femail').value='';document.getElementById('e2femailpass').value='';document.getElementById('e2femailfilt').value='';document.getElementById('e2femailhost').value='';document.getElementById('eexbr').checked=false;document.getElementById('echrpr').checked=false;document.getElementById('etax').value='0';renderSubs([]);
+  document.getElementById('et').value='other';document.getElementById('ewait').value='8';document.getElementById('e2fa').checked=false;document.getElementById('e2farow').style.display='none';document.getElementById('e2fwait').value='20';document.getElementById('e2fsubmit').value='';document.getElementById('e2femail').value='';document.getElementById('e2femailpass').value='';document.getElementById('e2femailfilt').value='';document.getElementById('e2femailhost').value='';document.getElementById('eexbr').checked=false;document.getElementById('echrpr').checked=false;document.getElementById('etax').value='0';['efx','eeq','ealt'].forEach(i=>document.getElementById(i).value='');renderSubs([]);
 }
 
 function closeEdit(){document.getElementById('edit-overlay').classList.remove('active');}
 
 async function saveSrc(){
   const id=document.getElementById('eid').value;
-  const d={id:id||String(Date.now()),name:document.getElementById('en').value.trim(),type:document.getElementById('et').value,login_url:document.getElementById('elu').value.trim(),pre_login_clicks:document.getElementById('epre').value.split('\n').map(x=>x.trim()).filter(Boolean),url:document.getElementById('eu').value.trim(),username_selector:document.getElementById('eus').value.trim(),username:document.getElementById('eun').value.trim(),password_selector:document.getElementById('eps').value.trim(),password:document.getElementById('epw').value,extra_code_selector:document.getElementById('ecs').value.trim(),extra_code:document.getElementById('ec').value,submit_selector:document.getElementById('ess').value.trim(),selector:document.getElementById('esel').value.trim(),wait_seconds:parseInt(document.getElementById('ewait').value)||8,requires_2fa:document.getElementById('e2fa').checked,twofa_selector:document.getElementById('e2fsel').value.trim(),twofa_submit_selector:document.getElementById('e2fsubmit').value.trim(),twofa_wait_seconds:parseInt(document.getElementById('e2fwait').value)||20,twofa_email_user:document.getElementById('e2femail').value.trim(),twofa_email_pass:document.getElementById('e2femailpass').value,twofa_email_filter:document.getElementById('e2femailfilt').value.trim(),twofa_email_host:document.getElementById('e2femailhost').value.trim()||'imap.gmail.com',use_existing_browser:document.getElementById('eexbr').checked,use_chrome_profile:document.getElementById('echrpr').checked,tax_rate:parseFloat(document.getElementById('etax').value)||0,balance:parseFloat(document.getElementById('ebal').value)||0,notes:document.getElementById('enotes').value.trim(),sub_accounts:colSubs()};
+  const d={id:id||String(Date.now()),name:document.getElementById('en').value.trim(),type:document.getElementById('et').value,login_url:document.getElementById('elu').value.trim(),pre_login_clicks:document.getElementById('epre').value.split('\n').map(x=>x.trim()).filter(Boolean),url:document.getElementById('eu').value.trim(),username_selector:document.getElementById('eus').value.trim(),username:document.getElementById('eun').value.trim(),password_selector:document.getElementById('eps').value.trim(),password:document.getElementById('epw').value,extra_code_selector:document.getElementById('ecs').value.trim(),extra_code:document.getElementById('ec').value,submit_selector:document.getElementById('ess').value.trim(),selector:document.getElementById('esel').value.trim(),wait_seconds:parseInt(document.getElementById('ewait').value)||8,requires_2fa:document.getElementById('e2fa').checked,twofa_selector:document.getElementById('e2fsel').value.trim(),twofa_submit_selector:document.getElementById('e2fsubmit').value.trim(),twofa_wait_seconds:parseInt(document.getElementById('e2fwait').value)||20,twofa_email_user:document.getElementById('e2femail').value.trim(),twofa_email_pass:document.getElementById('e2femailpass').value,twofa_email_filter:document.getElementById('e2femailfilt').value.trim(),twofa_email_host:document.getElementById('e2femailhost').value.trim()||'imap.gmail.com',use_existing_browser:document.getElementById('eexbr').checked,use_chrome_profile:document.getElementById('echrpr').checked,tax_rate:parseFloat(document.getElementById('etax').value)||0,fx_pct:parseFloat(document.getElementById('efx').value)||0,eq_pct:parseFloat(document.getElementById('eeq').value)||0,alt_pct:parseFloat(document.getElementById('ealt').value)||0,balance:parseFloat(document.getElementById('ebal').value)||0,notes:document.getElementById('enotes').value.trim(),sub_accounts:colSubs()};
   if(!d.name){alert('חסר שם');return;}
+  const badAlloc=[d,...d.sub_accounts].filter((e,i)=>{const a=allocOf(e,d);return [e.fx_pct,e.eq_pct,e.alt_pct].some(v=>v!=null&&(v<0||v>100))||(a.eqRaw+a.altRaw>100);});
+  if(badAlloc.length){alert('הקצאת נכסים לא תקינה: מניות + אלטרנטיבי חייבים להיות עד 100%, וכל ערך בין 0 ל-100');return;}
   if(id){const i=sources.findIndex(s=>s.id===id);if(i>=0)sources[i]={...sources[i],...d};}else{sources.push(d);}
   await saveAll();table();summary();charts();closeEdit();
 }
@@ -605,10 +667,12 @@ function addSub(sub){
     <div class="form-row"><div class="form-group"><label>שם חשבון</label><input class="sn" value="${esc(sub.name||'')}"></div><div class="form-group"><label>טקסט תפריט</label><input class="st" value="${esc(sub.switch_text||'')}"></div></div>
     <div class="form-group"><label>CSS — כפתור מעבר</label><input class="sw" value="${esc(sub.switcher_selector||'')}"></div>
     <div class="form-row"><div class="form-group"><label>URL ייעודי</label><input class="su" value="${esc(sub.url||'')}"></div><div class="form-group"><label>CSS — יתרה</label><input class="ss" value="${esc(sub.selector||'')}"></div></div>
-    <div class="form-row"><div class="form-group"><label>מטבע</label><select class="scur"><option value="ILS" ${(sub.currency||'ILS')==='ILS'?'selected':''}>&#8362; שקל (ILS)</option><option value="USD" ${sub.currency==='USD'?'selected':''}>$ דולר (USD)</option></select></div><div class="form-group"><label>אחוז מס (%) <span style="font-weight:400;color:var(--muted)">ריק=ירש</span></label><input class="stax" type="number" min="0" max="100" step="0.1" placeholder="ירש מהמקור" value="${sub.tax_rate!=null?sub.tax_rate:''}"></div></div>`;
+    <div class="form-row"><div class="form-group"><label>מטבע</label><select class="scur"><option value="ILS" ${(sub.currency||'ILS')==='ILS'?'selected':''}>&#8362; שקל (ILS)</option><option value="USD" ${sub.currency==='USD'?'selected':''}>$ דולר (USD)</option></select></div><div class="form-group"><label>אחוז מס (%) <span style="font-weight:400;color:var(--muted)">ריק=ירש</span></label><input class="stax" type="number" min="0" max="100" step="0.1" placeholder="ירש מהמקור" value="${sub.tax_rate!=null?sub.tax_rate:''}"></div></div>
+    <div class="alloc3" style="margin-bottom:0"><div class="form-group"><label>מט"ח (%)</label><input class="sfx" type="number" min="0" max="100" step="0.1" placeholder="ירש" value="${sub.fx_pct!=null?sub.fx_pct:''}"></div><div class="form-group"><label>מניות (%)</label><input class="seq" type="number" min="0" max="100" step="0.1" placeholder="ירש" value="${sub.eq_pct!=null?sub.eq_pct:''}"></div><div class="form-group"><label>אלטרנטיבי (%)</label><input class="salt" type="number" min="0" max="100" step="0.1" placeholder="ירש" value="${sub.alt_pct!=null?sub.alt_pct:''}"></div></div>`;
   document.getElementById('sublist').appendChild(div);
 }
-function colSubs(){return Array.from(document.querySelectorAll('.sub-item')).map(d=>{const tv=d.querySelector('.stax').value;return{name:d.querySelector('.sn').value.trim(),switch_text:d.querySelector('.st').value.trim(),switcher_selector:d.querySelector('.sw').value.trim(),url:d.querySelector('.su').value.trim(),selector:d.querySelector('.ss').value.trim(),currency:d.querySelector('.scur').value,tax_rate:tv!==''?parseFloat(tv):null,balance:0};});}
+function nv(d,sel){const v=d.querySelector(sel).value;return v!==''?parseFloat(v):null;}
+function colSubs(){return Array.from(document.querySelectorAll('.sub-item')).map(d=>{const tv=d.querySelector('.stax').value;return{name:d.querySelector('.sn').value.trim(),switch_text:d.querySelector('.st').value.trim(),switcher_selector:d.querySelector('.sw').value.trim(),url:d.querySelector('.su').value.trim(),selector:d.querySelector('.ss').value.trim(),currency:d.querySelector('.scur').value,tax_rate:tv!==''?parseFloat(tv):null,fx_pct:nv(d,'.sfx'),eq_pct:nv(d,'.seq'),alt_pct:nv(d,'.salt'),balance:0};});}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;');}
 function tpw(id,btn){const i=document.getElementById(id);i.type=i.type==='password'?'text':'password';btn.textContent=i.type==='password'?'הצג':'הסתר';}
 
