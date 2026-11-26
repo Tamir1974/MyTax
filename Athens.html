@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>טיול בר מצווה באתונה 🇬🇷🎄 | 5–8 בדצמבר 2026</title>
+    
+    <!-- Google Fonts: Heebo & Rubik for crisp Hebrew typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&family=Rubik:wght@500;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Leaflet CSS & JS for Interactive Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Heebo', 'sans-serif'],
+                        display: ['Rubik', 'sans-serif'],
+                    },
+                    colors: {
+                        navy: {
+                            900: '#0a1128',
+                            800: '#121e42',
+                            700: '#1c2e63',
+                        },
+                        gold: {
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                        },
+                        festive: {
+                            red: '#e11d48',
+                            green: '#059669',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Heebo', sans-serif;
+            background-color: #f1f5f9;
+            color: #0f172a;
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e2e8f0;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+
+        /* Map Custom Marker Styling */
+        .custom-div-icon {
+            background: transparent;
+            border: none;
+        }
+        .marker-pin {
+            width: 34px;
+            height: 34px;
+            border-radius: 50% 50% 50% 0;
+            position: absolute;
+            transform: rotate(-45deg);
+            left: 50%;
+            top: 50%;
+            margin: -17px 0 0 -17px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.35);
+            border: 2px solid #ffffff;
+            transition: transform 0.2s ease;
+        }
+        .marker-pin:hover {
+            transform: rotate(-45deg) scale(1.15);
+            z-index: 1000 !important;
+        }
+        .marker-pin span {
+            transform: rotate(45deg);
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 13px;
+            font-family: 'Rubik', sans-serif;
+        }
+
+        /* Leaflet RTL Popup Fixes */
+        .leaflet-popup-content-wrapper {
+            border-radius: 16px;
+            padding: 4px;
+            font-family: 'Heebo', sans-serif;
+            direction: rtl;
+            text-align: right;
+        }
+        .leaflet-popup-content {
+            margin: 12px 14px;
+            line-height: 1.5;
+        }
+
+        /* Smooth Card Highlight Animation */
+        @keyframes pulseHighlight {
+            0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
+            70% { box-shadow: 0 0 0 12px rgba(245, 158, 11, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+        }
+        .highlight-card {
+            animation: pulseHighlight 1.5s ease-out;
+            border-color: #f59e0b !important;
+        }
+
+        /* Hide scrollbar on horizontal tabs */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-900 antialiased selection:bg-amber-200 selection:text-slate-900">
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed bottom-5 left-5 z-[9999] flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- Top Hero Header -->
+    <header class="bg-gradient-to-l from-navy-900 via-navy-800 to-slate-900 text-white shadow-xl border-b-4 border-amber-400">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div>
+                    <div class="inline-flex items-center gap-2 bg-amber-400/20 border border-amber-400/40 text-amber-300 text-xs sm:text-sm font-semibold px-3 py-1 rounded-full mb-2">
+                        <i class="fa-solid fa-star"></i>
+                        <span>5–8 בדצמבר 2026 • הורים + נער בר מצווה</span>
+                    </div>
+                    <h1 class="text-2xl sm:text-4xl font-display font-extrabold tracking-tight flex items-center gap-3">
+                        <span>טיול בר מצווה באתונה</span>
+                        <span class="text-2xl sm:text-3xl">🇬🇷🎄</span>
+                    </h1>
+                    <p class="text-slate-300 text-sm sm:text-base mt-1">
+                        שווקי חג מולד מרהיבים, אקסטרים VR, קולינריה יוונית ויפנית, וקניות בלב העיר
+                    </p>
+                </div>
+
+                <!-- Progress & Quick Actions -->
+                <div class="flex flex-wrap items-center gap-3">
+                    <div class="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl px-4 py-2.5 flex items-center gap-3">
+                        <div class="text-right">
+                            <div class="text-xs text-slate-300">התקדמות בטיול</div>
+                            <div id="progress-text" class="text-sm font-bold text-amber-400">0 מתוך 16 הושלמו</div>
+                        </div>
+                        <div class="w-12 h-12 rounded-full bg-navy-900 border-2 border-amber-400 flex items-center justify-center font-display font-bold text-sm text-white" id="progress-percent">
+                            0%
+                        </div>
+                    </div>
+                    <button onclick="toggleTipsModal()" class="bg-emerald-600 hover:bg-emerald-500 active:scale-95 transition text-white font-semibold px-4 py-3 rounded-2xl shadow-lg flex items-center gap-2 text-sm cursor-pointer">
+                        <i class="fa-solid fa-lightbulb text-amber-300"></i>
+                        <span>טיפים והזמנות</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Flight & Hotel Summary Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-6">
+                <!-- Outbound Flight -->
+                <div class="bg-white/10 backdrop-blur-sm border border-white/15 rounded-2xl p-3.5 flex items-center justify-between hover:bg-white/15 transition">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-sky-500/20 text-sky-300 flex items-center justify-center text-lg shrink-0">
+                            <i class="fa-solid fa-plane-departure"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs text-sky-300 font-semibold">טיסת הלוך • E2703</div>
+                            <div class="font-bold text-sm sm:text-base">שבת, 05/12 • חיפה ➔ אתונה</div>
+                            <div class="text-xs text-slate-300">המראה: 14:15 | נחיתה: 17:10</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hotel Info -->
+                <div class="bg-white/10 backdrop-blur-sm border border-amber-400/30 rounded-2xl p-3.5 flex items-center justify-between hover:bg-white/15 transition">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-300 flex items-center justify-center text-lg shrink-0">
+                            <i class="fa-solid fa-hotel"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs text-amber-300 font-semibold flex items-center gap-2">
+                                <span>Hellenic Vibes Smart Hotel</span>
+                                <button onclick="copyText('6782830464', 'מספר אישור המלון הועתק!')" class="bg-amber-400/20 hover:bg-amber-400/30 text-amber-200 px-1.5 py-0.5 rounded text-[11px] cursor-pointer" title="העתק מספר הזמנה">
+                                    #6782830464 <i class="fa-regular fa-copy"></i>
+                                </button>
+                            </div>
+                            <div class="font-bold text-xs sm:text-sm">Agias Eirinis 7 / Ermou 66</div>
+                            <div class="text-xs text-slate-300 flex items-center gap-2 mt-0.5">
+                                <a href="tel:+302103240504" class="hover:text-white underline"><i class="fa-solid fa-phone text-[10px]"></i> +30 21 0324 0504</a>
+                                <span>•</span>
+                                <a href="https://www.google.com/maps/search/?api=1&query=37.9774,23.7277" target="_blank" class="text-emerald-300 hover:underline font-medium">נווט למלון</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Return Flight -->
+                <div class="bg-white/10 backdrop-blur-sm border border-white/15 rounded-2xl p-3.5 flex items-center justify-between hover:bg-white/15 transition">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-rose-500/20 text-rose-300 flex items-center justify-center text-lg shrink-0">
+                            <i class="fa-solid fa-plane-arrival"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs text-rose-300 font-semibold">טיסת חזור • E2704</div>
+                            <div class="font-bold text-sm sm:text-base">שלישי, 08/12 • אתונה ➔ חיפה</div>
+                            <div class="text-xs text-slate-300">המראה: 17:50 | נחיתה: 20:35</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Interactive Workspace -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        
+        <!-- Day Selector Filter Bar -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-2 mb-6 sticky top-2 z-30">
+            <div class="flex items-center justify-between gap-2 overflow-x-auto no-scrollbar" id="day-tabs">
+                <button onclick="selectDay('all')" data-day="all" class="day-tab active flex-1 min-w-[100px] py-2.5 px-4 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 cursor-pointer bg-navy-900 text-white shadow">
+                    <i class="fa-solid fa-map"></i>
+                    <span>כל הטיול</span>
+                </button>
+                <button onclick="selectDay('day1')" data-day="day1" class="day-tab flex-1 min-w-[125px] py-2.5 px-4 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 cursor-pointer text-slate-600 hover:bg-slate-100">
+                    <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                    <span>שבת 05/12</span>
+                </button>
+                <button onclick="selectDay('day2')" data-day="day2" class="day-tab flex-1 min-w-[125px] py-2.5 px-4 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 cursor-pointer text-slate-600 hover:bg-slate-100">
+                    <span class="w-2.5 h-2.5 rounded-full bg-sky-500"></span>
+                    <span>ראשון 06/12</span>
+                </button>
+                <button onclick="selectDay('day3')" data-day="day3" class="day-tab flex-1 min-w-[125px] py-2.5 px-4 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 cursor-pointer text-slate-600 hover:bg-slate-100">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                    <span>שני 07/12</span>
+                </button>
+                <button onclick="selectDay('day4')" data-day="day4" class="day-tab flex-1 min-w-[125px] py-2.5 px-4 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 cursor-pointer text-slate-600 hover:bg-slate-100">
+                    <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                    <span>שלישי 08/12</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Split View: Timeline & Interactive Map -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            
+            <!-- Map Column (Top on Mobile, Left/Sticky on Desktop) -->
+            <div class="lg:col-span-5 lg:sticky lg:top-20 order-1 lg:order-2">
+                <div class="bg-white rounded-3xl shadow-md border border-slate-200 overflow-hidden">
+                    <!-- Map Header -->
+                    <div class="bg-slate-50 px-4 py-3 border-b border-slate-200 flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-location-dot text-rose-600 text-lg"></i>
+                            <h2 class="font-display font-bold text-slate-800 text-base">מפת ניווט ומסלולים</h2>
+                        </div>
+                        <button onclick="resetMapBounds()" class="text-xs font-semibold bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 px-3 py-1.5 rounded-xl transition flex items-center gap-1.5 cursor-pointer shadow-xs">
+                            <i class="fa-solid fa-expand"></i>
+                            <span>מרכז מפה</span>
+                        </button>
+                    </div>
+
+                    <!-- Map Canvas -->
+                    <div id="map" class="w-full h-[340px] sm:h-[420px] lg:h-[520px] z-10"></div>
+
+                    <!-- Map Legend -->
+                    <div class="bg-slate-50 px-4 py-2.5 border-t border-slate-200 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-600">
+                        <div class="flex items-center gap-3 flex-wrap">
+                            <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-rose-500 inline-block"></span> שבת</span>
+                            <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-sky-500 inline-block"></span> ראשון</span>
+                            <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span> שני</span>
+                            <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-amber-500 inline-block"></span> שלישי</span>
+                        </div>
+                        <span class="text-[11px] text-slate-400">לחצו על סיכה לניווט מהיר</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timeline Column (Bottom on Mobile, Right on Desktop) -->
+            <div class="lg:col-span-7 order-2 lg:order-1 space-y-6" id="itinerary-container">
+                <!-- Populated dynamically via JavaScript -->
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Useful Info & Tips Modal -->
+    <div id="tips-modal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[88vh] overflow-y-auto shadow-2xl border border-slate-200 animate-fadeIn">
+            <div class="sticky top-0 bg-navy-900 text-white px-6 py-4 flex items-center justify-between rounded-t-3xl z-10">
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-compass text-amber-400 text-xl"></i>
+                    <h3 class="font-display font-bold text-lg">טיפים חיוניים והזמנות לטיול</h3>
+                </div>
+                <button onclick="toggleTipsModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white cursor-pointer">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <div class="p-6 space-y-5 text-sm sm:text-base">
+                <!-- Bookings Alert -->
+                <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4">
+                    <h4 class="font-bold text-amber-900 flex items-center gap-2 mb-2">
+                        <i class="fa-solid fa-ticket text-amber-600"></i>
+                        <span>מה חובה להזמין מראש?</span>
+                    </h4>
+                    <ul class="space-y-2 text-slate-700 list-disc list-inside">
+                        <li><strong>כרטיסים לאקרופוליס (יום ראשון 08:30):</strong> יש לרכוש מראש באתר הרשמי <a href="https://hhticket.gr" target="_blank" class="text-sky-600 underline font-semibold">hhticket.gr</a> לפי שעת כניסה מדויקת כדי לדלג על התורים.</li>
+                        <li><strong>Retro VRcade (יום ראשון 16:00):</strong> מומלץ לשריין מראש זירת <em>Free-Roam VR</em> עבור 3 משתתפים באתר המתחם (סניף Kallithea).</li>
+                        <li><strong>מסעדת One Piece (יום שני 13:30):</strong> מסעדת קונספט פופולרית מאוד בקרב חובבי אנימה – כדאי להזמין שולחן מראש.</li>
+                    </ul>
+                </div>
+
+                <!-- Transportation -->
+                <div class="bg-sky-50 border border-sky-200 rounded-2xl p-4">
+                    <h4 class="font-bold text-sky-900 flex items-center gap-2 mb-2">
+                        <i class="fa-solid fa-taxi text-sky-600"></i>
+                        <span>התניידות, מוניות ומטרו באתונה</span>
+                    </h4>
+                    <ul class="space-y-2 text-slate-700 list-disc list-inside">
+                        <li><strong>אפליקציות מוניות:</strong> הורידו מראש את <strong>FreeNow</strong> או <strong>Uber</strong>. נסיעות קצרות בתוך אתונה זולות מאוד (לרוב 6–10 אירו) וחוסכות מיקוח על מחיר.</li>
+                        <li><strong>מטרו:</strong> תחנת <em>Monastiraki</em> נמצאת 3 דקות הליכה מהמלון שלכם. קו 3 (הכחול) מגיע ישירות משדה התעופה, והקו האדום (מתחנת Syntagma) מגיע ישירות לקניון <em>Athens Metro Mall</em>.</li>
+                    </ul>
+                </div>
+
+                <!-- Weather & Packing -->
+                <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-4">
+                    <h4 class="font-bold text-emerald-900 flex items-center gap-2 mb-2">
+                        <i class="fa-solid fa-cloud-sun text-emerald-600"></i>
+                        <span>מזג אוויר וציוד לדצמבר</span>
+                    </h4>
+                    <p class="text-slate-700 leading-relaxed">
+                        בתחילת דצמבר מזג האוויר באתונה קריר ונעים (כ-15–17 מעלות ביום, 8–10 מעלות בערב). מומלץ להתלבש בשיטת השכבות: חולצה קלה, סווטשירט ומעיל חורף טוב לשעות הערב בפסטיבלי הכריסמס ובהחלקה על הקרח, וכמובן נעלי הליכה נוחות במיוחד לאבנים החלקלקות של האקרופוליס.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // --- 1. ITINERARY & LOCATION DATA ---
+        const tripData = [
+            // DAY 1: Saturday Dec 5, 2026
+            {
+                id: 'd1-1',
+                day: 'day1',
+                dayLabel: 'שבת, 05/12/2026',
+                dayColor: '#f43f5e', // Rose
+                stepNumber: 1,
+                time: '17:10 - 18:30',
+                title: 'נחיתה באתונה והגעה למלון',
+                locationName: 'Athens International Airport (ATH)',
+                category: 'טיסה ומלון',
+                categoryIcon: 'fa-plane-arrival',
+                categoryBadge: 'bg-slate-200 text-slate-800',
+                description: 'נחיתה בטיסה E2703 מחיפה בשעה 17:10. איסוף מזוודות ונסיעה למלון Hellenic Vibes Smart Hotel (רחוב Agias Eirinis 7 / Ermou 66) לצ׳ק-אין והתארגנות.',
+                distanceInfo: '34 ק"מ מהשדה למלון • 40–45 דק׳ במונית או במטרו (קו כחול לתחנת Monastiraki)',
+                lat: 37.9364,
+                lng: 23.9445,
+                secondaryLat: 37.9774,
+                secondaryLng: 23.7277,
+                navLat: 37.9774,
+                navLng: 23.7277,
+                navLabel: 'נווט למלון'
+            },
+            {
+                id: 'd1-2',
+                day: 'day1',
+                dayLabel: 'שבת, 05/12/2026',
+                dayColor: '#f43f5e',
+                stepNumber: 2,
+                time: '19:00 - 20:00',
+                title: 'עץ חג המולד הענק בכיכר סינטגמה',
+                locationName: 'Syntagma Square (כיכר סינטגמה)',
+                category: 'כריסמס',
+                categoryIcon: 'fa-tree',
+                categoryBadge: 'bg-emerald-100 text-emerald-800',
+                description: 'טיול ערב קליל מהמלון ללב אתונה: צפייה בעץ חג המולד המרכזי המואר באלפי נורות, מופעי רחוב ואווירת חג חורפית תוססת.',
+                distanceInfo: '750 מטר מהמלון • 9 דק׳ הליכה נינוחה',
+                lat: 37.9755,
+                lng: 23.7348,
+                navLat: 37.9755,
+                navLng: 23.7348,
+                navLabel: 'נווט לכיכר סינטגמה'
+            },
+            {
+                id: 'd1-3',
+                day: 'day1',
+                dayLabel: 'שבת, 05/12/2026',
+                dayColor: '#f43f5e',
+                stepNumber: 3,
+                time: '20:15 - 22:00',
+                title: 'אגדת כריסמס ב-Little Kook וארוחת סופלאקי',
+                locationName: 'Little Kook (שכונת Psiri)',
+                category: 'קולינריה וכריסמס',
+                categoryIcon: 'fa-candy-cane',
+                categoryBadge: 'bg-rose-100 text-rose-800',
+                description: 'ביקור ברחוב המקושט ביותר באתונה בשכונת פסירי! בית הקפה Little Kook עטוף כולו בתפאורת חג מולד מהאגדות עם קינוחים מושחתים, ולאחר מכן ארוחת ערב של סופלאקי וגירוס אותנטי באזור.',
+                distanceInfo: '950 מטר מסינטגמה • 12 דק׳ הליכה (3 דק׳ מהמלון)',
+                lat: 37.9781,
+                lng: 23.7244,
+                navLat: 37.9781,
+                navLng: 23.7244,
+                navLabel: 'נווט ל-Little Kook'
+            },
+
+            // DAY 2: Sunday Dec 6, 2026
+            {
+                id: 'd2-1',
+                day: 'day2',
+                dayLabel: 'ראשון, 06/12/2026',
+                dayColor: '#0ea5e9', // Sky Blue
+                stepNumber: 1,
+                time: '08:30 - 11:00',
+                title: 'האקרופוליס והפרתנון',
+                locationName: 'Acropolis & Parthenon',
+                category: 'היסטוריה ותרבות',
+                categoryIcon: 'fa-landmark',
+                categoryBadge: 'bg-amber-100 text-amber-900',
+                description: 'עלייה בשעות הבוקר המוקדמות אל פסגת אתונה לפני העומס. סיור בפרתנון, מקדש אתנה ניקה ותצפית פנורמית על כל העיר והים.',
+                distanceInfo: '1.3 ק"מ מהמלון • 16 דק׳ הליכה בעלייה מתונה',
+                lat: 37.9715,
+                lng: 23.7257,
+                navLat: 37.9715,
+                navLng: 23.7257,
+                navLabel: 'נווט לאקרופוליס'
+            },
+            {
+                id: 'd2-2',
+                day: 'day2',
+                dayLabel: 'ראשון, 06/12/2026',
+                dayColor: '#0ea5e9',
+                stepNumber: 2,
+                time: '11:15 - 12:45',
+                title: 'מוזיאון האקרופוליס החדשני',
+                locationName: 'Acropolis Museum',
+                category: 'היסטוריה ותרבות',
+                categoryIcon: 'fa-building-columns',
+                categoryBadge: 'bg-amber-100 text-amber-900',
+                description: 'ירידה דרך שכונת אנפיוטיקה הציורית אל מוזיאון האקרופוליס המרשים, כולל הליכה מעל רצפת זכוכית החושפת חפירות ארכיאולוגיות עתיקות.',
+                distanceInfo: '450 מטר מיציאת האקרופוליס • 6 דק׳ הליכה',
+                lat: 37.9684,
+                lng: 23.7285,
+                navLat: 37.9684,
+                navLng: 23.7285,
+                navLabel: 'נווט למוזיאון האקרופוליס'
+            },
+            {
+                id: 'd2-3',
+                day: 'day2',
+                dayLabel: 'ראשון, 06/12/2026',
+                dayColor: '#0ea5e9',
+                stepNumber: 3,
+                time: '13:00 - 14:30',
+                title: 'ארוחת צהריים תוססת במתחם STOA',
+                locationName: 'STOA (אזור Stadiou / Kolokotroni / Lekka)',
+                category: 'קולינריה',
+                categoryIcon: 'fa-utensils',
+                categoryBadge: 'bg-orange-100 text-orange-800',
+                description: 'הליכה לפסאז׳ים המקורים והמגניבים של מרכז העיר (Stoa). שפע של אוכל רחוב שווה, המבורגרים מעולים, סופלאקי מודרני ואווירה צעירה ותוססת.',
+                distanceInfo: '1.5 ק"מ מהמוזיאון • 18 דק׳ הליכה או תחנה אחת במטרו ל-Syntagma',
+                lat: 37.9786,
+                lng: 23.7317,
+                navLat: 37.9786,
+                navLng: 23.7317,
+                navLabel: 'נווט למתחם STOA'
+            },
+            {
+                id: 'd2-4',
+                day: 'day2',
+                dayLabel: 'ראשון, 06/12/2026',
+                dayColor: '#0ea5e9',
+                stepNumber: 4,
+                time: '14:45 - 15:45',
+                title: 'מוזיאון האשליות (Museum of Illusions)',
+                locationName: 'Museum of Illusions Athens (Ermou 119)',
+                category: 'אטרקציה',
+                categoryIcon: 'fa-wand-magic-sparkles',
+                categoryBadge: 'bg-purple-100 text-purple-800',
+                description: 'עצירה קלילה ומצחיקה במרחק דקה מהמלון שלכם – חדרי אשליות אופטיות, מנהרת מערבולת ותמונות בר מצווה יצירתיות ומגניבות.',
+                distanceInfo: '550 מטר מ-Stoa • 7 דק׳ הליכה (צמוד למלון)',
+                lat: 37.9772,
+                lng: 23.7248,
+                navLat: 37.9772,
+                navLng: 23.7248,
+                navLabel: 'נווט למוזיאון האשליות'
+            },
+            {
+                id: 'd2-5',
+                day: 'day2',
+                dayLabel: 'ראשון, 06/12/2026',
+                dayColor: '#0ea5e9',
+                stepNumber: 5,
+                time: '16:30 - 18:15',
+                title: 'אקסטרים VR ללא כבלים – Retro VRcade',
+                locationName: 'Retro VRcade (סניף Kallithea)',
+                category: 'אקסטרים ו-VR',
+                categoryIcon: 'fa-vr-cardboard',
+                categoryBadge: 'bg-indigo-100 text-indigo-800',
+                description: 'מתחם מציאות מדומה מתקדם מסוג Free-Roam (הליכה חופשית בזירה בלי כבלים!). קרבות לייזר טאג עתידניים ב-VR, חדרי בריחה ומשחקי אקשן קבוצתיים.',
+                distanceInfo: '4.5 ק"מ מהמלון • 12–15 דק׳ נסיעה במונית',
+                lat: 37.9575,
+                lng: 23.7025,
+                navLat: 37.9575,
+                navLng: 23.7025,
+                navLabel: 'נווט ל-Retro VRcade'
+            },
+            {
+                id: 'd2-6',
+                day: 'day2',
+                dayLabel: 'ראשון, 06/12/2026',
+                dayColor: '#0ea5e9',
+                stepNumber: 6,
+                time: '18:45 - 21:30',
+                title: 'פסטיבל הכריסמס הגדול – The Christmas Factory',
+                locationName: 'Technopolis (מתחם Gazi)',
+                category: 'כריסמס',
+                categoryIcon: 'fa-ferris-wheel',
+                categoryBadge: 'bg-emerald-100 text-emerald-800',
+                description: 'הפארק המרכזי של חג המולד באתונה! גלגל ענק בגובה 20 מטר עם נוף לעיר המוארת, החלקה על הקרח, קרוסלות, סדנאות, דוכני מתוקים ואוכל רחוב.',
+                distanceInfo: '4 ק"מ מ-VRcade • 10–12 דק׳ במונית (וחזרה למלון 5 דק׳ במטרו)',
+                lat: 37.9783,
+                lng: 23.7138,
+                navLat: 37.9783,
+                navLng: 23.7138,
+                navLabel: 'נווט לטכנופוליס'
+            },
+
+            // DAY 3: Monday Dec 7, 2026
+            {
+                id: 'd3-1',
+                day: 'day3',
+                dayLabel: 'שני, 07/12/2026',
+                dayColor: '#10b981', // Emerald
+                stepNumber: 1,
+                time: '10:00 - 13:00',
+                title: 'שופינג משתלם בקניון Athens Metro Mall',
+                locationName: 'Athens Metro Mall (Agios Dimitrios)',
+                category: 'שופינג',
+                categoryIcon: 'fa-bag-shopping',
+                categoryBadge: 'bg-pink-100 text-pink-800',
+                description: 'ביקור במרכז קניות מקורה, נגיש וזול עם רשתות אהובות כמו Jumbo (הכל מהכל במחירים מצחיקים), H&M, Pull&Bear, Zara וחנויות ספורט וגאדג׳טים.',
+                distanceInfo: '5.5 ק"מ מהמלון • 12 דק׳ במטרו האדום (מ-Syntagma לתחנת Agios Dimitrios)',
+                lat: 37.9404,
+                lng: 23.7402,
+                navLat: 37.9404,
+                navLng: 23.7402,
+                navLabel: 'נווט ל-Athens Metro Mall'
+            },
+            {
+                id: 'd3-2',
+                day: 'day3',
+                dayLabel: 'שני, 07/12/2026',
+                dayColor: '#10b981',
+                stepNumber: 2,
+                time: '13:30 - 15:00',
+                title: 'ארוחת פיראטים – One Piece Sushi & NoodleBar',
+                locationName: 'One Piece Sushi & NoodleBar (Neos Kosmos)',
+                category: 'קולינריה',
+                categoryIcon: 'fa-bowl-food',
+                categoryBadge: 'bg-orange-100 text-orange-800',
+                description: 'מסעדה אסייתית שכולה בהשראת הסדרה וואן פיס! תפריט עם מנות על שם הדמויות והמתקפות – ראמן של גארפ, פוקה בול של לופי, זורו וסאנג׳י, ורולים מיוחדים באווירת פיראטים.',
+                distanceInfo: '3 ק"מ מהקניון • 8–10 דק׳ במונית (או 2 תחנות מטרו ל-Neos Kosmos)',
+                lat: 37.9585,
+                lng: 23.7285,
+                navLat: 37.9585,
+                navLng: 23.7285,
+                navLabel: 'נווט למסעדת One Piece'
+            },
+            {
+                id: 'd3-3',
+                day: 'day3',
+                dayLabel: 'שני, 07/12/2026',
+                dayColor: '#10b981',
+                stepNumber: 3,
+                time: '16:30 - 20:00',
+                title: 'Christmas World והחלקה על הקרח ב-SNFCC',
+                locationName: 'Stavros Niarchos Foundation Cultural Center (SNFCC)',
+                category: 'כריסמס ואקשן',
+                categoryIcon: 'fa-snowflake',
+                categoryBadge: 'bg-emerald-100 text-emerald-800',
+                description: 'מרכז התרבות הענק הופך לממלכת אורות מרהיבה! משטח החלקה על הקרח מעל תעלת המים, מיצגי תאורה ענקיים, מוזיקה חיה ודוכני חג (הכניסה לפארק חינמית).',
+                distanceInfo: '4.8 ק"מ מהמסעדה • 10–12 דק׳ במונית (חזרה למלון כ-15 דק׳ במונית)',
+                lat: 37.9396,
+                lng: 23.6915,
+                navLat: 37.9396,
+                navLng: 23.6915,
+                navLabel: 'נווט למרכז ניארכוס'
+            },
+
+            // DAY 4: Tuesday Dec 8, 2026
+            {
+                id: 'd4-1',
+                day: 'day4',
+                dayLabel: 'שלישי, 08/12/2026',
+                dayColor: '#f59e0b', // Amber
+                stepNumber: 1,
+                time: '10:30 - 12:30',
+                title: 'יריד הכריסמס בפארק Pedion tou Areos',
+                locationName: 'Pedion tou Areos Christmas Market',
+                category: 'כריסמס',
+                categoryIcon: 'fa-gifts',
+                categoryBadge: 'bg-emerald-100 text-emerald-800',
+                description: 'צ׳ק-אאוט מהמלון עד 11:00 והשארת מזוודות בקבלה. ביקור בכפר חג המולד החגיגי בפארק – ביתני עץ מעוצבים, משטח החלקה על הקרח, מתקני יריד ומוזיקה.',
+                distanceInfo: '2.5 ק"מ מהמלון • 10 דק׳ במונית (או 2 תחנות מטרו מ-Monastiraki ל-Victoria)',
+                lat: 37.9922,
+                lng: 23.7345,
+                navLat: 37.9922,
+                navLng: 23.7345,
+                navLabel: 'נווט ליריד בפארק'
+            },
+            {
+                id: 'd4-2',
+                day: 'day4',
+                dayLabel: 'שלישי, 08/12/2026',
+                dayColor: '#f59e0b',
+                stepNumber: 2,
+                time: '12:45 - 14:30',
+                title: 'קניות אחרונות בארמו ושוק מונסטיראקי',
+                locationName: 'Ermou Street & Monastiraki Flea Market',
+                category: 'שופינג וקולינריה',
+                categoryIcon: 'fa-store',
+                categoryBadge: 'bg-pink-100 text-pink-800',
+                description: 'סיבוב פרידה במדרחוב ארמו הצמוד למלון ובשוק הפשפשים של מונסטיראקי לקניית מזכרות, נעליים ומתנות, וארוחת צהריים יוונית אחרונה.',
+                distanceInfo: '2.5 ק"מ מהפארק • 10 דק׳ חזרה לאזור המלון',
+                lat: 37.9764,
+                lng: 23.7255,
+                navLat: 37.9764,
+                navLng: 23.7255,
+                navLabel: 'נווט למונסטיראקי'
+            },
+            {
+                id: 'd4-3',
+                day: 'day4',
+                dayLabel: 'שלישי, 08/12/2026',
+                dayColor: '#f59e0b',
+                stepNumber: 3,
+                time: '14:45 - 17:50',
+                title: 'יציאה לשדה התעופה וטיסה חזרה לחיפה',
+                locationName: 'Athens International Airport (ATH)',
+                category: 'טיסה ומלון',
+                categoryIcon: 'fa-plane-departure',
+                categoryBadge: 'bg-slate-200 text-slate-800',
+                description: 'איסוף המזוודות מהמלון בשעה 14:45 ויציאה לשדה התעופה. המראה בטיסה E2704 בשעה 17:50 ונחיתה בחיפה ב-20:35. נסיעה טובה ומזל טוב לבר המצווה!',
+                distanceInfo: '34 ק"מ מהמלון לשדה • 40–45 דק׳ במונית או במטרו',
+                lat: 37.9364,
+                lng: 23.9445,
+                navLat: 37.9364,
+                navLng: 23.9445,
+                navLabel: 'נווט לשדה התעופה'
+            }
+        ];
+
+        // --- 2. STATE MANAGEMENT ---
+        let currentDay = 'all';
+        let completedItems = JSON.parse(localStorage.getItem('athens_barmitzvah_completed') || '{}');
+        let map;
+        let markersLayer;
+        let polylinesLayer;
+        let markersById = {};
+
+        // --- 3. INITIALIZE MAP ---
+        function initMap() {
+            // Center on Athens City Center
+            map = L.map('map', {
+                zoomControl: true,
+                scrollWheelZoom: false
+            }).setView([37.9735, 23.7275], 13);
+
+            // Clean, modern CartoDB Voyager tiles (great legibility & aesthetics)
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; OpenStreetMap &copy; CARTO',
+                subdomains: 'abcd',
+                maxZoom: 19
+            }).addTo(map);
+
+            markersLayer = L.layerGroup().addTo(map);
+            polylinesLayer = L.layerGroup().addTo(map);
+
+            renderMapElements();
+        }
+
+        // Create Custom Pin Icon
+        function createPinIcon(color, label) {
+            return L.divIcon({
+                className: 'custom-div-icon',
+                html: `<div class="marker-pin" style="background-color: ${color};"><span>${label}</span></div>`,
+                iconSize: [34, 42],
+                iconAnchor: [17, 42],
+                popupAnchor: [0, -38]
+            });
+        }
+
+        // Render Markers & Route Polylines on Map
+        function renderMapElements() {
+            markersLayer.clearLayers();
+            polylinesLayer.clearLayers();
+            markersById = {};
+
+            // Always add Hotel Marker as Home Base
+            const hotelIcon = L.divIcon({
+                className: 'custom-div-icon',
+                html: `<div class="marker-pin" style="background-color: #0a1128; border-color: #fbbf24;"><span><i class="fa-solid fa-bed text-[11px] text-amber-400"></i></span></div>`,
+                iconSize: [34, 42],
+                iconAnchor: [17, 42],
+                popupAnchor: [0, -38]
+            });
+
+            const hotelMarker = L.marker([37.9774, 23.7277], { icon: hotelIcon }).addTo(markersLayer);
+            hotelMarker.bindPopup(`
+                <div class="min-w-[200px]">
+                    <div class="text-xs font-bold text-amber-600 mb-0.5">המלון שלכם • בסיס הטיול</div>
+                    <div class="font-bold text-slate-900 text-sm">Hellenic Vibes Smart Hotel</div>
+                    <div class="text-xs text-slate-600 mt-1">Agias Eirinis 7 / Ermou 66</div>
+                    <a href="https://www.google.com/maps/search/?api=1&query=37.9774,23.7277" target="_blank" class="mt-2.5 inline-flex items-center justify-center gap-1.5 w-full bg-navy-900 text-white text-xs font-bold py-2 px-3 rounded-xl hover:bg-navy-800 transition">
+                        <i class="fa-solid fa-diamond-turn-right text-amber-400"></i>
+                        <span>נווט ב-Google Maps</span>
+                    </a>
+                </div>
+            `);
+
+            // Filter stops by selected day
+            const filteredStops = currentDay === 'all' 
+                ? tripData 
+                : tripData.filter(item => item.day === currentDay);
+
+            // Group coordinates by day to draw route lines
+            const dayRoutes = {
+                day1: [[37.9774, 23.7277]], // Start from hotel for city walks
+                day2: [[37.9774, 23.7277]],
+                day3: [[37.9774, 23.7277]],
+                day4: [[37.9774, 23.7277]]
+            };
+
+            const boundsPoints = [[37.9774, 23.7277]];
+
+            filteredStops.forEach(stop => {
+                // Skip duplicate airport pin clutter if viewing all days, keep for specific days
+                const isAirport = stop.id === 'd1-1' || stop.id === 'd4-3';
+                if (!isAirport) {
+                    dayRoutes[stop.day].push([stop.lat, stop.lng]);
+                    boundsPoints.push([stop.lat, stop.lng]);
+                } else if (currentDay !== 'all') {
+                    boundsPoints.push([stop.lat, stop.lng]);
+                }
+
+                const marker = L.marker([stop.lat, stop.lng], {
+                    icon: createPinIcon(stop.dayColor, stop.stepNumber)
+                }).addTo(markersLayer);
+
+                const gmapsUrl = `https://www.google.com/maps/search/?api=1&query=${stop.navLat},${stop.navLng}`;
+
+                marker.bindPopup(`
+                    <div class="min-w-[215px]">
+                        <div class="text-xs font-bold mb-0.5" style="color: ${stop.dayColor}">${stop.dayLabel} • ${stop.time}</div>
+                        <div class="font-bold text-slate-900 text-sm">${stop.title}</div>
+                        <div class="text-xs text-slate-500 mt-0.5">${stop.locationName}</div>
+                        <div class="mt-2.5 flex gap-1.5">
+                            <a href="${gmapsUrl}" target="_blank" class="flex-1 inline-flex items-center justify-center gap-1.5 bg-emerald-600 text-white text-xs font-bold py-2 px-2.5 rounded-xl hover:bg-emerald-500 transition">
+                                <i class="fa-solid fa-diamond-turn-right"></i>
+                                <span>Google Maps</span>
+                            </a>
+                            <button onclick="scrollToCard('${stop.id}')" class="bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold py-2 px-2.5 rounded-xl transition cursor-pointer" title="הצג בלוח הזמנים">
+                                <i class="fa-solid fa-list-ul"></i>
+                            </button>
+                        </div>
+                    </div>
+                `);
+
+                markersById[stop.id] = marker;
+            });
+
+            // Draw dashed route polylines for each visible day
+            const dayColors = {
+                day1: '#f43f5e',
+                day2: '#0ea5e9',
+                day3: '#10b981',
+                day4: '#f59e0b'
+            };
+
+            Object.keys(dayRoutes).forEach(dayKey => {
+                if ((currentDay === 'all' || currentDay === dayKey) && dayRoutes[dayKey].length > 1) {
+                    L.polyline(dayRoutes[dayKey], {
+                        color: dayColors[dayKey],
+                        weight: 3.5,
+                        opacity: 0.75,
+                        dashArray: '8, 8'
+                    }).addTo(polylinesLayer);
+                }
+            });
+
+            // Fit map bounds smoothly
+            if (boundsPoints.length > 0) {
+                const bounds = L.latLngBounds(boundsPoints);
+                map.fitBounds(bounds, { padding: [40, 40], maxZoom: 15 });
+            }
+        }
+
+        function resetMapBounds() {
+            renderMapElements();
+        }
+
+        // Fly to specific stop on map
+        function focusOnMap(stopId) {
+            const stop = tripData.find(item => item.id === stopId);
+            if (!stop || !map) return;
+
+            // Scroll map into view on mobile
+            if (window.innerWidth < 1024) {
+                document.getElementById('map').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+
+            map.flyTo([stop.lat, stop.lng], 15, {
+                duration: 1.1
+            });
+
+            setTimeout(() => {
+                if (markersById[stopId]) {
+                    markersById[stopId].openPopup();
+                }
+            }, 600);
+        }
+
+        // Scroll from map popup back to timeline card
+        function scrollToCard(stopId) {
+            const cardEl = document.getElementById(`card-${stopId}`);
+            if (cardEl) {
+                cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                cardEl.classList.remove('highlight-card');
+                void cardEl.offsetWidth; // trigger reflow
+                cardEl.classList.add('highlight-card');
+            }
+        }
+
+        // --- 4. RENDER TIMELINE CARDS ---
+        function renderItinerary() {
+            const container = document.getElementById('itinerary-container');
+            container.innerHTML = '';
+
+            const daysMetadata = [
+                { key: 'day1', title: 'יום 1 • שבת, 05 בדצמבר 2026', subtitle: 'נחיתה, אורות החג הראשונים ו-Little Kook', badgeColor: 'bg-rose-500' },
+                { key: 'day2', title: 'יום 2 • ראשון, 06 בדצמבר 2026', subtitle: 'אקרופוליס, מתחם STOA, אקסטרים VR ופסטיבל טכנופוליס', badgeColor: 'bg-sky-500' },
+                { key: 'day3', title: 'יום 3 • שני, 07 בדצמבר 2026', subtitle: 'קניות ב-Metro Mall, מסעדת One Piece והחלקה על הקרח ב-SNFCC', badgeColor: 'bg-emerald-500' },
+                { key: 'day4', title: 'יום 4 • שלישי, 08 בדצמבר 2026', subtitle: 'יריד הכריסמס בפארק, שוק מונסטיראקי וטיסה חזרה', badgeColor: 'bg-amber-500' }
+            ];
+
+            const visibleDays = currentDay === 'all' 
+                ? daysMetadata 
+                : daysMetadata.filter(d => d.key === currentDay);
+
+            visibleDays.forEach(dayMeta => {
+                const dayStops = tripData.filter(item => item.day === dayMeta.key);
+
+                const daySection = document.createElement('section');
+                daySection.className = 'space-y-4';
+
+                // Day Section Header
+                daySection.innerHTML = `
+                    <div class="flex items-center justify-between bg-white px-5 py-3.5 rounded-2xl shadow-xs border border-slate-200">
+                        <div class="flex items-center gap-3">
+                            <span class="w-3.5 h-3.5 rounded-full ${dayMeta.badgeColor} shrink-0"></span>
+                            <div>
+                                <h2 class="font-display font-extrabold text-lg sm:text-xl text-slate-900">${dayMeta.title}</h2>
+                                <p class="text-xs sm:text-sm text-slate-500">${dayMeta.subtitle}</p>
+                            </div>
+                        </div>
+                        <span class="text-xs font-bold bg-slate-100 text-slate-600 px-3 py-1 rounded-full">
+                            ${dayStops.length} תחנות
+                        </span>
+                    </div>
+                `;
+
+                const cardsWrapper = document.createElement('div');
+                cardsWrapper.className = 'space-y-3.5';
+
+                dayStops.forEach(stop => {
+                    const isDone = !!completedItems[stop.id];
+                    const gmapsUrl = `https://www.google.com/maps/search/?api=1&query=${stop.navLat},${stop.navLng}`;
+
+                    const card = document.createElement('div');
+                    card.id = `card-${stop.id}`;
+                    card.className = `bg-white rounded-2xl p-4 sm:p-5 shadow-xs border-2 transition-all duration-200 ${
+                        isDone ? 'border-emerald-300 bg-emerald-50/30 opacity-85' : 'border-slate-200 hover:border-slate-300'
+                    }`;
+
+                    card.innerHTML = `
+                        <div class="flex items-start justify-between gap-3">
+                            <!-- Step Badge & Time -->
+                            <div class="flex items-center gap-2.5 flex-wrap">
+                                <span class="w-7 h-7 rounded-full text-white font-display font-bold text-sm flex items-center justify-center shadow-xs shrink-0" style="background-color: ${stop.dayColor}">
+                                    ${stop.stepNumber}
+                                </span>
+                                <span class="font-display font-bold text-sm sm:text-base text-slate-800 bg-slate-100 px-2.5 py-0.5 rounded-lg">
+                                    <i class="fa-regular fa-clock text-slate-500 ml-1"></i>${stop.time}
+                                </span>
+                                <span class="text-xs font-bold px-2.5 py-1 rounded-full inline-flex items-center gap-1.5 ${stop.categoryBadge}">
+                                    <i class="fa-solid ${stop.categoryIcon}"></i>
+                                    <span>${stop.category}</span>
+                                </span>
+                            </div>
+
+                            <!-- Interactive Checklist Toggle -->
+                            <button onclick="toggleComplete('${stop.id}')" class="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer border ${
+                                isDone 
+                                    ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs' 
+                                    : 'bg-slate-50 hover:bg-slate-100 text-slate-600 border-slate-200'
+                            }">
+                                <i class="fa-solid ${isDone ? 'fa-check-circle' : 'fa-circle'}"></i>
+                                <span>${isDone ? 'בוצע!' : 'סמן כבוצע'}</span>
+                            </button>
+                        </div>
+
+                        <!-- Title & Location -->
+                        <div class="mt-3">
+                            <h3 class="font-display font-bold text-lg text-slate-900 ${isDone ? 'line-through text-slate-500' : ''}">
+                                ${stop.title}
+                            </h3>
+                            <div class="text-xs font-semibold text-slate-500 flex items-center gap-1.5 mt-0.5">
+                                <i class="fa-solid fa-location-pin text-rose-500"></i>
+                                <span>${stop.locationName}</span>
+                            </div>
+                        </div>
+
+                        <!-- Description -->
+                        <p class="text-slate-600 text-sm leading-relaxed mt-2.5">
+                            ${stop.description}
+                        </p>
+
+                        <!-- Distance & Travel Time Pill -->
+                        <div class="mt-3.5 bg-slate-50 border border-slate-200/80 rounded-xl px-3.5 py-2 flex items-center gap-2 text-xs sm:text-sm text-slate-700">
+                            <i class="fa-solid fa-route text-amber-500 shrink-0"></i>
+                            <span class="font-medium">${stop.distanceInfo}</span>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="mt-4 pt-3 border-t border-slate-100 flex flex-wrap items-center gap-2.5">
+                            <button onclick="focusOnMap('${stop.id}')" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-navy-900 hover:bg-navy-800 active:scale-95 text-white text-xs sm:text-sm font-bold px-4 py-2.5 rounded-xl transition cursor-pointer shadow-xs">
+                                <i class="fa-solid fa-map-location-dot text-amber-400"></i>
+                                <span>הצג במפה</span>
+                            </button>
+                            <a href="${gmapsUrl}" target="_blank" rel="noopener noreferrer" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white text-xs sm:text-sm font-bold px-4 py-2.5 rounded-xl transition shadow-xs">
+                                <i class="fa-solid fa-diamond-turn-right"></i>
+                                <span>${stop.navLabel || 'נווט ב-Google Maps'}</span>
+                            </a>
+                        </div>
+                    `;
+
+                    cardsWrapper.appendChild(card);
+                });
+
+                daySection.appendChild(cardsWrapper);
+                container.appendChild(daySection);
+            });
+
+            updateProgressStats();
+        }
+
+        // --- 5. INTERACTIVE CONTROLS ---
+        function selectDay(dayKey) {
+            currentDay = dayKey;
+
+            // Update Tab Styles
+            document.querySelectorAll('.day-tab').forEach(btn => {
+                if (btn.dataset.day === dayKey) {
+                    btn.className = 'day-tab active flex-1 min-w-[115px] py-2.5 px-4 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 cursor-pointer bg-navy-900 text-white shadow';
+                } else {
+                    btn.className = 'day-tab flex-1 min-w-[115px] py-2.5 px-4 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 cursor-pointer text-slate-600 hover:bg-slate-100';
+                }
+            });
+
+            renderItinerary();
+            renderMapElements();
+        }
+
+        function toggleComplete(stopId) {
+            if (completedItems[stopId]) {
+                delete completedItems[stopId];
+            } else {
+                completedItems[stopId] = true;
+                showToast('התחנה סומנה כהושלמה! 🎉');
+            }
+            localStorage.setItem('athens_barmitzvah_completed', JSON.stringify(completedItems));
+            renderItinerary();
+        }
+
+        function updateProgressStats() {
+            const total = tripData.length;
+            const doneCount = Object.keys(completedItems).length;
+            const percent = Math.round((doneCount / total) * 100);
+
+            document.getElementById('progress-text').textContent = `${doneCount} מתוך ${total} הושלמו`;
+            document.getElementById('progress-percent').textContent = `${percent}%`;
+        }
+
+        function toggleTipsModal() {
+            const modal = document.getElementById('tips-modal');
+            if (modal.classList.contains('hidden')) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            } else {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        // Close modal on outside click
+        document.getElementById('tips-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                toggleTipsModal();
+            }
+        });
+
+        // Clipboard Helper (iframe safe)
+        function copyText(text, successMsg) {
+            const tempInput = document.createElement('input');
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            showToast(successMsg);
+        }
+
+        // Custom Toast Notification
+        function showToast(message) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'bg-navy-900 text-white border border-amber-400/50 px-4 py-3 rounded-2xl shadow-xl text-sm font-bold flex items-center gap-2.5 transform transition-all duration-300 translate-y-2 opacity-0';
+            toast.innerHTML = `<i class="fa-solid fa-circle-check text-amber-400"></i><span>${message}</span>`;
+            
+            container.appendChild(toast);
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            });
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-2', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 2600);
+        }
+
+        // --- 6. BOOTSTRAP APP ---
+        window.addEventListener('DOMContentLoaded', () => {
+            renderItinerary();
+            initMap();
+        });
+    </script>
+</body>
+</html>
