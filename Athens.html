@@ -273,15 +273,21 @@
             <div class="lg:col-span-5 lg:sticky lg:top-20 order-1 lg:order-2">
                 <div class="bg-white rounded-3xl shadow-md border border-slate-200 overflow-hidden">
                     <!-- Map Header -->
-                    <div class="bg-slate-50 px-4 py-3 border-b border-slate-200 flex items-center justify-between">
+                    <div class="bg-slate-50 px-4 py-3 border-b border-slate-200 flex items-center justify-between gap-2 flex-wrap">
                         <div class="flex items-center gap-2">
                             <i class="fa-solid fa-location-dot text-rose-600 text-lg"></i>
                             <h2 class="font-display font-bold text-slate-800 text-base">מפת ניווט ומסלולים</h2>
                         </div>
-                        <button onclick="resetMapBounds()" class="text-xs font-semibold bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 px-3 py-1.5 rounded-xl transition flex items-center gap-1.5 cursor-pointer shadow-xs">
-                            <i class="fa-solid fa-expand"></i>
-                            <span>מרכז מפה</span>
-                        </button>
+                        <div class="flex items-center gap-1.5">
+                            <button onclick="switchTileLayer()" id="layer-toggle-btn" class="text-xs font-semibold bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 px-2.5 py-1.5 rounded-xl transition flex items-center gap-1.5 cursor-pointer shadow-xs" title="החלף סגנון מפה">
+                                <i class="fa-solid fa-satellite text-sky-600"></i>
+                                <span>תצוגת לוויין</span>
+                            </button>
+                            <button onclick="resetMapBounds()" class="text-xs font-semibold bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 px-2.5 py-1.5 rounded-xl transition flex items-center gap-1.5 cursor-pointer shadow-xs">
+                                <i class="fa-solid fa-expand"></i>
+                                <span>מרכז מפה</span>
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Map Canvas -->
@@ -680,9 +686,42 @@
         let currentDay = 'all';
         let completedItems = JSON.parse(localStorage.getItem('athens_barmitzvah_completed') || '{}');
         let map;
+        let currentBaseLayer;
+        let activeLayerType = 'street';
         let markersLayer;
         let polylinesLayer;
         let markersById = {};
+
+        // Reliable Esri ArcGIS tile layers (zero 403 blocks or API key watermarks in sandboxed iframes)
+        const tileLayersConfig = {
+            street: {
+                url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+                options: {
+                    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, HERE, Garmin, USGS, Intermap, INCREMENT P, NRCan, Esri Japan, METI, Esri China (Hong Kong), Esri Korea, Esri (Thailand), NGCC, (c) OpenStreetMap contributors, and the GIS User Community',
+                    maxZoom: 19
+                },
+                nextLabel: 'תצוגת לוויין',
+                nextIcon: 'fa-satellite'
+            },
+            satellite: {
+                url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+                options: {
+                    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+                    maxZoom: 19
+                },
+                nextLabel: 'מפת רחובות',
+                nextIcon: 'fa-map'
+            },
+            topo: {
+                url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
+                options: {
+                    attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community',
+                    maxZoom: 19
+                },
+                nextLabel: 'תצוגת לוויין',
+                nextIcon: 'fa-satellite'
+            }
+        };
 
         // --- 3. INITIALIZE MAP ---
         function initMap() {
@@ -692,17 +731,50 @@
                 scrollWheelZoom: false
             }).setView([37.9735, 23.7275], 13);
 
-            // Clean, modern CartoDB Voyager tiles (great legibility & aesthetics)
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-                attribution: '&copy; OpenStreetMap &copy; CARTO',
-                subdomains: 'abcd',
-                maxZoom: 19
-            }).addTo(map);
+            // Load Esri World Street Map as reliable primary default layer
+            currentBaseLayer = L.tileLayer(tileLayersConfig.street.url, tileLayersConfig.street.options);
+            
+            // Automatic fallback to Esri World Topo Map if primary tiles fail
+            currentBaseLayer.on('tileerror', function() {
+                if (activeLayerType === 'street') {
+                    switchTileLayer(true);
+                }
+            });
+            currentBaseLayer.addTo(map);
 
             markersLayer = L.layerGroup().addTo(map);
             polylinesLayer = L.layerGroup().addTo(map);
 
             renderMapElements();
+
+            // Ensure proper tile sizing after layout settles
+            setTimeout(() => {
+                if (map) map.invalidateSize();
+            }, 250);
+        }
+
+        // Toggle between Esri World Street Map and Esri World Imagery (Satellite), or Topo fallback
+        function switchTileLayer(isAutoFallback = false) {
+            if (!map) return;
+            const nextType = isAutoFallback
+                ? 'topo'
+                : (activeLayerType === 'street' || activeLayerType === 'topo' ? 'satellite' : 'street');
+            
+            if (currentBaseLayer) {
+                map.removeLayer(currentBaseLayer);
+            }
+
+            currentBaseLayer = L.tileLayer(tileLayersConfig[nextType].url, tileLayersConfig[nextType].options).addTo(map);
+            activeLayerType = nextType;
+
+            const btn = document.getElementById('layer-toggle-btn');
+            if (btn) {
+                btn.innerHTML = `<i class="fa-solid ${tileLayersConfig[nextType].nextIcon} text-sky-600"></i><span>${tileLayersConfig[nextType].nextLabel}</span>`;
+            }
+
+            if (!isAutoFallback) {
+                showToast(nextType === 'satellite' ? 'עברת לתצוגת לוויין (Esri Imagery)' : 'עברת למפת רחובות (Esri Street)');
+            }
         }
 
         // Create Custom Pin Icon
@@ -737,7 +809,7 @@
                     <div class="text-xs font-bold text-amber-600 mb-0.5">המלון שלכם • בסיס הטיול</div>
                     <div class="font-bold text-slate-900 text-sm">Hellenic Vibes Smart Hotel</div>
                     <div class="text-xs text-slate-600 mt-1">Agias Eirinis 7 / Ermou 66</div>
-                    <a href="https://www.google.com/maps/search/?api=1&query=37.9774,23.7277" target="_blank" class="mt-2.5 inline-flex items-center justify-center gap-1.5 w-full bg-navy-900 text-white text-xs font-bold py-2 px-3 rounded-xl hover:bg-navy-800 transition">
+                    <a href="https://www.google.com/maps/dir/?api=1&destination=37.9774,23.7277" target="_blank" class="mt-2.5 inline-flex items-center justify-center gap-1.5 w-full bg-navy-900 text-white text-xs font-bold py-2 px-3 rounded-xl hover:bg-navy-800 transition">
                         <i class="fa-solid fa-diamond-turn-right text-amber-400"></i>
                         <span>נווט ב-Google Maps</span>
                     </a>
@@ -773,7 +845,7 @@
                     icon: createPinIcon(stop.dayColor, stop.stepNumber)
                 }).addTo(markersLayer);
 
-                const gmapsUrl = `https://www.google.com/maps/search/?api=1&query=${stop.navLat},${stop.navLng}`;
+                const gmapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${stop.navLat},${stop.navLng}`;
 
                 marker.bindPopup(`
                     <div class="min-w-[215px]">
@@ -900,7 +972,7 @@
 
                 dayStops.forEach(stop => {
                     const isDone = !!completedItems[stop.id];
-                    const gmapsUrl = `https://www.google.com/maps/search/?api=1&query=${stop.navLat},${stop.navLng}`;
+                    const gmapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${stop.navLat},${stop.navLng}`;
 
                     const card = document.createElement('div');
                     card.id = `card-${stop.id}`;
